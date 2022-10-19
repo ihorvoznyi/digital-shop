@@ -1,0 +1,100 @@
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import { Repository } from 'typeorm';
+import * as bcrypt from 'bcryptjs';
+import { User } from '../database/entities';
+import { RegistrationDto } from './dtos/registration.dto';
+import { LoginDto } from './dtos/login.dto';
+import { UserRolesEnum } from '../user/enums/user-roles.enum';
+
+@Injectable()
+export class AuthService {
+  constructor(
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
+    private jwtService: JwtService,
+    private config: ConfigService,
+  ) {}
+
+  // Checks if email is available
+  // Hash password
+  // Creating JWT using user data
+  async registration(dto: RegistrationDto) {
+    const { email, phoneNumber, password } = dto;
+    const candidate = await this.userRepository.findOneBy({ email });
+
+    if (candidate)
+      throw new HttpException(
+        'Email is already taken.',
+        HttpStatus.BAD_REQUEST,
+      );
+    const hashPassword = await bcrypt.hash(password, 5);
+
+    const newUser = await this.userRepository.create({
+      email,
+      phoneNumber,
+      password: hashPassword,
+      role: UserRolesEnum.USER,
+    });
+    await this.userRepository.save(newUser);
+
+    // Generate JWT Token
+    const token = await this.signToken(newUser);
+
+    return { token, user: newUser };
+  }
+
+  async login(dto: LoginDto) {
+    const user = await this.validateUser({
+      email: dto.email,
+      password: dto.password,
+    });
+    const token = await this.signToken(user);
+    return { token, user };
+  }
+
+  // Function which let user avoid extra authorization
+  // *When reload the page etc.*
+  async auth(email: string) {
+    const user = await this.userRepository.findOneBy({ email });
+    if (!user) throw new UnauthorizedException('Invalid token');
+    const token = await this.signToken(user);
+    return { token, user };
+  }
+
+  // Create JWT Token using user data (email, userId)
+  private async signToken(user: User): Promise<string> {
+    const payload = {
+      sub: user.id,
+      email: user.email,
+    };
+    const options = {
+      secret: this.config.get<string>('JWT_SECRET_KEY'),
+      expiresIn: '24h',
+    };
+
+    return this.jwtService.sign(payload, options);
+  }
+
+  // Checking if login parameters is correct
+  private async validateUser({ email, password }) {
+    const user = await this.userRepository.findOneBy({ email });
+
+    if (!user)
+      throw new HttpException('User is not exists.', HttpStatus.BAD_REQUEST);
+
+    const passwordEquals = await bcrypt.compare(password, user.password);
+
+    if (!passwordEquals)
+      throw new HttpException('Wrong credentials', HttpStatus.BAD_REQUEST);
+
+    return user;
+  }
+}
