@@ -12,7 +12,7 @@ import * as bcrypt from 'bcryptjs';
 import { User } from '../database/entities';
 import { RegistrationDto } from './dtos/registration.dto';
 import { LoginDto } from './dtos/login.dto';
-import { UserRolesEnum } from '../user/enums/user-roles.enum';
+import { UserRolesEnum } from '../user/enums';
 
 @Injectable()
 export class AuthService {

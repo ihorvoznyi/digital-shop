@@ -9,8 +9,8 @@ import { User } from '../database/entities';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    PassportModule,
     JwtModule.register({}),
+    PassportModule,
   ],
   providers: [AuthService],
   controllers: [AuthController],
