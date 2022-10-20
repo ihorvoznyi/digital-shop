@@ -1,16 +1,15 @@
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Country } from './country.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ name: 'addresses' })
 export class Address {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column()
+  country: string;
+
+  @Column()
+  city: string;
 
   @Column()
   street: string;
@@ -19,12 +18,5 @@ export class Address {
   unitNumber: string;
 
   @Column()
-  postalCode: number;
-
-  @Column()
-  city: string;
-
-  @ManyToOne(() => Country)
-  @JoinTable()
-  country: Country;
+  postalCode: string;
 }
