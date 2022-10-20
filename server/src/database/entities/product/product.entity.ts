@@ -16,6 +16,9 @@ export class Product {
   @Column()
   image: string;
 
+  @Column()
+  price: number;
+
   @ManyToOne(() => Brand)
   brand: Brand;
 

@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from './user.entity';
-import { ProductItem } from '../product/product-item.entity';
+import { Product } from '../product/product.entity';
 
 @Entity({ name: 'reviews' })
 export class Review {
@@ -23,6 +23,6 @@ export class Review {
   @JoinColumn()
   user: User;
 
-  @ManyToOne(() => ProductItem)
-  productItem: ProductItem;
+  @ManyToOne(() => Product)
+  product: Product;
 }
