@@ -25,7 +25,9 @@ export class User {
   @Column({ default: UserRolesEnum.USER })
   role: UserRolesEnum;
 
-  @OneToOne(() => Address)
+  @OneToOne(() => Address, {
+    nullable: true,
+  })
   @JoinColumn()
   address: Address;
 }
