@@ -9,6 +9,8 @@ export class Type {
   @Column()
   type: string;
 
-  @OneToMany(() => Feature, (feature) => feature.type)
+  @OneToMany(() => Feature, (feature) => feature.type, {
+    cascade: true,
+  })
   features: Feature[];
 }

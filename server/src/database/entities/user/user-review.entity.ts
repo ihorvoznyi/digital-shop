@@ -19,10 +19,14 @@ export class Review {
   @Column()
   estimate: number;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   user: User;
 
-  @ManyToOne(() => Product)
+  @ManyToOne(() => Product, {
+    onDelete: 'CASCADE',
+  })
   product: Product;
 }

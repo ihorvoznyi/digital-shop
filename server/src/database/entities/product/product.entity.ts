@@ -19,9 +19,13 @@ export class Product {
   @Column()
   price: number;
 
-  @ManyToOne(() => Brand)
+  @ManyToOne(() => Brand, {
+    onDelete: 'CASCADE',
+  })
   brand: Brand;
 
-  @ManyToOne(() => Type)
+  @ManyToOne(() => Type, {
+    onDelete: 'CASCADE',
+  })
   type: Type;
 }

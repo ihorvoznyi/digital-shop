@@ -5,7 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Feature } from './feature.entity';
+import { Feature, Product } from '../';
 
 @Entity({ name: 'characteristic_values' })
 export class CharacteristicValue {
@@ -15,7 +15,14 @@ export class CharacteristicValue {
   @Column()
   value: string;
 
-  @ManyToOne(() => Feature)
+  @ManyToOne(() => Feature, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   feature: Feature;
+
+  @ManyToOne(() => Product, {
+    onDelete: 'CASCADE',
+  })
+  product: Product;
 }

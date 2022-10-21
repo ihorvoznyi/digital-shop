@@ -9,6 +9,8 @@ export class Feature {
   @Column()
   featureName: string;
 
-  @ManyToOne(() => Type, (type) => type.features)
+  @ManyToOne(() => Type, (type) => type.features, {
+    onDelete: 'CASCADE',
+  })
   type: Type;
 }
