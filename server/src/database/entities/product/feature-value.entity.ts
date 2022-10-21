@@ -7,8 +7,8 @@ import {
 } from 'typeorm';
 import { Feature, Product } from '../';
 
-@Entity({ name: 'characteristic_values' })
-export class CharacteristicValue {
+@Entity({ name: 'feature_values' })
+export class FeatureValue {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
