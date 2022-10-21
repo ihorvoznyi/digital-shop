@@ -13,6 +13,7 @@ import { User } from '../database/entities';
 import { RegistrationDto } from './dtos/registration.dto';
 import { LoginDto } from './dtos/login.dto';
 import { UserRolesEnum } from '../user/enums';
+import { IAuthReturn } from './interfaces/auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -26,15 +27,16 @@ export class AuthService {
   // Checks if email is available
   // Hash password
   // Creating JWT using user data
-  async registration(dto: RegistrationDto) {
+  async registration(dto: RegistrationDto): Promise<IAuthReturn> {
     const { email, phoneNumber, password } = dto;
     const candidate = await this.userRepository.findOneBy({ email });
 
-    if (candidate)
+    if (candidate) {
       throw new HttpException(
         'Email is already taken.',
         HttpStatus.BAD_REQUEST,
       );
+    }
     const hashPassword = await bcrypt.hash(password, 5);
 
     const newUser = await this.userRepository.create({
@@ -46,26 +48,28 @@ export class AuthService {
     await this.userRepository.save(newUser);
 
     // Generate JWT Token
-    const token = await this.signToken(newUser);
+    const token: string = await this.signToken(newUser);
 
     return { token, user: newUser };
   }
 
-  async login(dto: LoginDto) {
+  async login(dto: LoginDto): Promise<IAuthReturn> {
     const user = await this.validateUser({
       email: dto.email,
       password: dto.password,
     });
-    const token = await this.signToken(user);
+    const token: string = await this.signToken(user);
+
     return { token, user };
   }
 
   // Function which let user avoid extra authorization
   // *When reload the page etc.*
-  async auth(email: string) {
+  async auth(email: string): Promise<IAuthReturn> {
     const user = await this.userRepository.findOneBy({ email });
     if (!user) throw new UnauthorizedException('Invalid token');
-    const token = await this.signToken(user);
+    const token: string = await this.signToken(user);
+
     return { token, user };
   }
 
@@ -84,16 +88,21 @@ export class AuthService {
   }
 
   // Checking if login parameters is correct
-  private async validateUser({ email, password }) {
+  private async validateUser({ email, password }): Promise<User> {
     const user = await this.userRepository.findOneBy({ email });
 
-    if (!user)
+    if (!user) {
       throw new HttpException('User is not exists.', HttpStatus.BAD_REQUEST);
+    }
 
-    const passwordEquals = await bcrypt.compare(password, user.password);
+    const isPasswordEquals: boolean = await bcrypt.compare(
+      password,
+      user.password,
+    );
 
-    if (!passwordEquals)
+    if (!isPasswordEquals) {
       throw new HttpException('Wrong credentials', HttpStatus.BAD_REQUEST);
+    }
 
     return user;
   }
