@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Feature, FeatureValue } from '../database/entities';
 import { Repository } from 'typeorm';
-import { IFeatureType } from './interfaces';
+import { Feature, FeatureValue } from '../database/entities';
+import { IFeatureType, IProductFeature } from './interfaces';
 
 @Injectable()
 export class FeatureService {
@@ -20,5 +20,40 @@ export class FeatureService {
     });
 
     return this.featureRepository.save(newFeature);
+  }
+
+  async createProductFeatureList({
+    product,
+    type,
+    features,
+  }: IProductFeature): Promise<FeatureValue[]> {
+    const productFeatures: FeatureValue[] = [];
+
+    for await (const featureItem of features) {
+      const featureEntity = type.features.find(
+        (feature) => feature.id === featureItem.featureId,
+      );
+
+      try {
+        const productFeature = this.featureValueRepository.create({
+          value: featureItem.value,
+          feature: featureEntity,
+          product,
+        });
+
+        const savedProductFeature = await this.featureValueRepository.save(
+          productFeature,
+        );
+
+        productFeatures.push(savedProductFeature);
+      } catch {
+        throw new HttpException(
+          'Feature: Wrong options',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
+    return productFeatures;
   }
 }

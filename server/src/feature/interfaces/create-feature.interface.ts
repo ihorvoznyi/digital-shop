@@ -6,7 +6,7 @@ export interface IFeature {
 }
 
 export interface IFeatureValue {
-  id: string;
+  featureId: string;
   value: string;
 }
 
