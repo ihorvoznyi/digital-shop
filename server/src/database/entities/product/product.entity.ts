@@ -1,6 +1,13 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Brand } from './product-brand.entity';
 import { Type } from './product-type.entity';
+import { FeatureValue } from './feature-value.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -28,4 +35,7 @@ export class Product {
     onDelete: 'CASCADE',
   })
   type: Type;
+
+  @OneToMany(() => FeatureValue, (featureValue) => featureValue.product)
+  features: FeatureValue[];
 }
