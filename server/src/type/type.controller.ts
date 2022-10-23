@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { TypeService } from './type.service';
 import { Type } from '../database/entities';
 import { CreateTypeDto } from './dtos';
@@ -34,5 +34,10 @@ export class TypeController {
       typeName: typeName.toLowerCase(),
       featureList: uniqueFeatureList,
     });
+  }
+
+  @Delete(':id')
+  deleteType(@Param('id') typeId: string): Promise<Type> {
+    return this.typeService.deleteType(typeId);
   }
 }

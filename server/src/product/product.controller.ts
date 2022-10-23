@@ -1,8 +1,18 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { FindManyOptions, FindOneOptions } from 'typeorm';
 import { CreateProductDto } from './dtos';
 import { IProduct } from './interfaces';
+import { UpdateProductDto } from './dtos/update-product.dto';
+import { Product } from '../database/entities';
 
 @Controller('products')
 export class ProductController {
@@ -30,5 +40,18 @@ export class ProductController {
   @Post()
   createProduct(@Body() createProductDto: CreateProductDto): Promise<IProduct> {
     return this.productService.createProduct(createProductDto);
+  }
+
+  @Put(':id')
+  updateProduct(
+    @Param('id') productId: string,
+    @Body() updateDto: UpdateProductDto,
+  ): Promise<IProduct> {
+    return this.productService.updateProduct(productId, updateDto);
+  }
+
+  @Delete(':id')
+  deleteProduct(@Param('id') productId: string): Promise<Product> {
+    return this.productService.deleteProduct(productId);
   }
 }

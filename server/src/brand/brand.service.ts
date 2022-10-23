@@ -39,4 +39,14 @@ export class BrandService {
       throw new HttpException('', HttpStatus.BAD_REQUEST);
     }
   }
+
+  async deleteBrand(brandId: string): Promise<Brand> {
+    const brand = await this.brandRepository.findOneBy({ id: brandId });
+
+    if (!brand) {
+      throw new HttpException("Brand doesn't exist", HttpStatus.BAD_REQUEST);
+    }
+
+    return this.brandRepository.remove(brand);
+  }
 }

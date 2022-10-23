@@ -57,4 +57,14 @@ export class TypeService {
 
     return this.typeRepository.save(savedType);
   }
+
+  async deleteType(typeId: string): Promise<Type> {
+    const type = await this.typeRepository.findOneBy({ id: typeId });
+
+    if (!type) {
+      throw new HttpException("Type doesn't exist", HttpStatus.BAD_REQUEST);
+    }
+
+    return this.typeRepository.remove(type);
+  }
 }

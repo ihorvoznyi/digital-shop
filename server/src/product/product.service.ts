@@ -7,7 +7,8 @@ import { FeatureService } from '../feature/feature.service';
 import { CreateProductDto } from './dtos';
 import { IFeature } from '../feature/interfaces';
 import { IProduct } from './interfaces';
-import { Product } from '../database/entities';
+import { FeatureValue, Product } from '../database/entities';
+import { UpdateProductDto } from './dtos/update-product.dto';
 
 @Injectable()
 export class ProductService {
@@ -73,6 +74,64 @@ export class ProductService {
       await this.productRepository.remove(savedProduct);
       throw new HttpException('Product: server error', HttpStatus.BAD_REQUEST);
     }
+  }
+
+  async updateProduct(
+    productId: string,
+    dto: UpdateProductDto,
+  ): Promise<IProduct> {
+    const options: FindOneOptions = {
+      where: { id: productId },
+      relations: ['brand', 'type', 'features', 'features.feature'],
+    };
+    const product = await this.productRepository.findOne(options);
+
+    if (!product) {
+      throw new HttpException("Product doesn't exist", HttpStatus.BAD_REQUEST);
+    }
+
+    const { name, description, price, image, features } = dto;
+
+    const updatedFeatures: FeatureValue[] = [];
+
+    for (const item of product.features) {
+      const featureValue = features.find(
+        (feature) => feature.featureId === item.feature.id,
+      ).value;
+
+      const updatedFeature: FeatureValue =
+        await this.featureService.updateFeatureValue({
+          featureId: item.id,
+          value: featureValue,
+        });
+
+      updatedFeatures.push(updatedFeature);
+    }
+
+    try {
+      const updated = await this.productRepository.save({
+        ...product,
+        name,
+        description,
+        image,
+        price,
+        features: updatedFeatures,
+      });
+
+      return ProductService.generateClientProduct(updated);
+    } catch {
+      throw new HttpException('Product: update error', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async deleteProduct(productId): Promise<Product> {
+    const product = await this.productRepository.findOneBy({ id: productId });
+
+    if (!product) {
+      throw new HttpException("Product doesn't exist", HttpStatus.BAD_REQUEST);
+    }
+
+    return this.productRepository.remove(product);
   }
 
   static generateClientProduct(product: Product): IProduct {

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { BrandService } from './brand.service';
 import { Brand } from '../database/entities';
 import { CreateBrandDto } from './dtos';
@@ -22,5 +22,10 @@ export class BrandController {
     const { brandName } = createBrandDto;
 
     return this.brandService.createBrand(brandName.toLowerCase());
+  }
+
+  @Delete(':id')
+  deleteBrand(@Param('id') brandId: string): Promise<Brand> {
+    return this.brandService.deleteBrand(brandId);
   }
 }

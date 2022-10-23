@@ -56,4 +56,19 @@ export class FeatureService {
 
     return productFeatures;
   }
+
+  async updateFeatureValue({ featureId, value }): Promise<FeatureValue> {
+    const feature = await this.featureValueRepository.findOne({
+      where: { id: featureId },
+      relations: ['feature'],
+    });
+
+    if (!feature) {
+      throw new HttpException("Feature: doesn't exist", HttpStatus.BAD_REQUEST);
+    }
+
+    feature.value = value;
+
+    return this.featureValueRepository.save(feature);
+  }
 }
