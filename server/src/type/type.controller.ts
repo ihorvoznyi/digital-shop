@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { TypeService } from './type.service';
 import { Type } from '../database/entities';
 import { CreateTypeDto } from './dtos';
-import { FindOneOptions } from 'typeorm';
 
 @Controller('types')
 export class TypeController {
@@ -15,12 +14,7 @@ export class TypeController {
 
   @Get(':id')
   getType(@Param('id') typeId: string): Promise<Type> {
-    const options: FindOneOptions = {
-      where: { id: typeId },
-      relations: ['features'],
-    };
-
-    return this.typeService.getType(options);
+    return this.typeService.getType(typeId);
   }
 
   @Post()

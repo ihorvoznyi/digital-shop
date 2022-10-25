@@ -1,9 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Feature, Type } from '../database/entities';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
-import { CreateTypeDto } from './dtos';
+
+import { Feature, Type } from '../database/entities';
+
 import { FeatureService } from '../feature/feature.service';
+
+import { CreateTypeDto } from './dtos';
 
 @Injectable()
 export class TypeService {
@@ -12,20 +15,6 @@ export class TypeService {
     private typeRepository: Repository<Type>,
     private featureService: FeatureService,
   ) {}
-
-  async getTypes(options: FindManyOptions): Promise<Type[]> {
-    return this.typeRepository.find(options);
-  }
-
-  async getType(options: FindOneOptions): Promise<Type> {
-    const type = await this.typeRepository.findOne(options);
-
-    if (!type) {
-      throw new HttpException("Type doesn't exist", HttpStatus.BAD_REQUEST);
-    }
-
-    return type;
-  }
 
   async createType(dto: CreateTypeDto): Promise<Type> {
     const { typeName, featureList } = dto;
@@ -66,5 +55,24 @@ export class TypeService {
     }
 
     return this.typeRepository.remove(type);
+  }
+
+  async getType(typeId: string): Promise<Type> {
+    const options: FindOneOptions = {
+      where: { id: typeId },
+      relations: ['features'],
+    };
+
+    const type = await this.typeRepository.findOne(options);
+
+    if (!type) {
+      throw new HttpException("Type doesn't exist", HttpStatus.BAD_REQUEST);
+    }
+
+    return type;
+  }
+
+  async getTypes(options: FindManyOptions): Promise<Type[]> {
+    return this.typeRepository.find(options);
   }
 }

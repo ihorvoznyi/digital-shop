@@ -1,4 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+
 import { Type } from './product-type.entity';
 
 @Entity({ name: 'features' })
