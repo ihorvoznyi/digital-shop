@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -8,6 +9,7 @@ import {
 import { Brand } from './product-brand.entity';
 import { Type } from './product-type.entity';
 import { FeatureValue } from './feature-value.entity';
+import { Review } from '../user/user-review.entity';
 
 @Entity({ name: 'products' })
 export class Product {
@@ -20,11 +22,24 @@ export class Product {
   @Column()
   description: string;
 
+  @Column({ default: 0 })
+  rating: number;
+
   @Column()
   image: string;
 
   @Column()
   price: number;
+
+  @OneToMany(() => Review, (review) => review.product, {
+    cascade: true,
+  })
+  @JoinColumn()
+  comments: Review[];
+
+  @OneToMany(() => FeatureValue, (featureValue) => featureValue.product)
+  @JoinColumn()
+  features: FeatureValue[];
 
   @ManyToOne(() => Brand, {
     onDelete: 'CASCADE',
@@ -35,7 +50,4 @@ export class Product {
     onDelete: 'CASCADE',
   })
   type: Type;
-
-  @OneToMany(() => FeatureValue, (featureValue) => featureValue.product)
-  features: FeatureValue[];
 }

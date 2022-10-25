@@ -13,6 +13,8 @@ import { CreateProductDto } from './dtos';
 import { IProduct } from './interfaces';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { Product } from '../database/entities';
+import { AddReviewDto } from './dtos/add-review.dto';
+import { RELATIONS } from './constants/product.constant';
 
 @Controller('products')
 export class ProductController {
@@ -21,7 +23,7 @@ export class ProductController {
   @Get()
   getProducts(): Promise<IProduct[]> {
     const options: FindManyOptions = {
-      relations: ['features', 'features.feature', 'brand', 'type'],
+      relations: RELATIONS,
     };
 
     return this.productService.getProducts(options);
@@ -31,7 +33,7 @@ export class ProductController {
   getProduct(@Param('id') productId: string): Promise<IProduct> {
     const options: FindOneOptions = {
       where: { id: productId },
-      relations: ['features', 'features.feature', 'brand', 'type'],
+      relations: RELATIONS,
     };
 
     return this.productService.getProduct(options);
@@ -40,6 +42,11 @@ export class ProductController {
   @Post()
   createProduct(@Body() createProductDto: CreateProductDto): Promise<IProduct> {
     return this.productService.createProduct(createProductDto);
+  }
+
+  @Post('/reviews')
+  addReview(@Body() reviewDto: AddReviewDto) {
+    return this.productService.addReview(reviewDto);
   }
 
   @Put(':id')
