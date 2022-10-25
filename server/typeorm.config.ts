@@ -8,6 +8,7 @@ const config: PostgresConnectionOptions = {
   password: 'devroot',
   database: 'digital_shop',
   entities: ['dist/src/**/*.entity.js'],
+  synchronize: true,
 };
 
 export default config;

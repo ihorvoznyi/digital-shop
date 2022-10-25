@@ -6,9 +6,6 @@ export class Address {
   id: string;
 
   @Column()
-  country: string;
-
-  @Column()
   city: string;
 
   @Column()
