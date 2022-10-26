@@ -12,6 +12,7 @@ import { UpdateProductDto } from './dtos/update-product.dto';
 import { UserService } from '../user/user.service';
 import { AddReviewDto } from './dtos/add-review.dto';
 import { RELATIONS } from './constants/product.constant';
+import { NumberService } from '../utils/number.service';
 
 @Injectable()
 export class ProductService {
@@ -34,14 +35,14 @@ export class ProductService {
     );
   }
 
-  async getProduct(options: FindOneOptions): Promise<IProduct> {
+  async getProduct(options: FindOneOptions): Promise<Product> {
     const product = await this.productRepository.findOne(options);
 
     if (!product) {
       throw new HttpException("Product doesn't exist", HttpStatus.BAD_REQUEST);
     }
 
-    return ProductService.generateClientProduct(product);
+    return product;
   }
 
   // POST methods
@@ -62,7 +63,6 @@ export class ProductService {
       price: dto.price,
       brand: productBrand,
       type: productType,
-      rating: 0,
       comments: [],
     });
 
@@ -111,7 +111,6 @@ export class ProductService {
 
     product.comments = [...product.comments, savedReview];
     await this.productRepository.save(product);
-    await this.updateRate(product);
 
     return savedReview;
   }
@@ -175,14 +174,13 @@ export class ProductService {
     return this.productRepository.remove(product);
   }
 
-  private async updateRate(product: Product): Promise<void> {
+  static updateRate(product: Product): number {
     const { comments } = product;
     const size: number = comments.length;
-
-    product.rating =
+    const rating: number =
       comments.reduce((acc, obj) => acc + obj.estimate, 0) / size;
 
-    await this.productRepository.save(product);
+    return NumberService.round(rating, 1);
   }
 
   static generateClientProduct(product: Product): IProduct {
@@ -194,10 +192,12 @@ export class ProductService {
     });
 
     let productComments: IReview[] = [];
+    let rating = 0;
 
     const isComments = product?.comments && product.comments.length;
 
     if (isComments) {
+      rating = ProductService.updateRate(product);
       productComments = product.comments.map((review) => {
         return {
           author: review.user.email,
@@ -215,7 +215,7 @@ export class ProductService {
       type: product.type.type,
       brand: product.brand.brand,
       price: product.price,
-      rating: product.rating,
+      rating,
       features: productFeatures,
       comments: productComments,
     };

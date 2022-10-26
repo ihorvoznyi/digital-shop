@@ -22,9 +22,6 @@ export class Product {
   @Column()
   description: string;
 
-  @Column({ default: 0 })
-  rating: number;
-
   @Column()
   image: string;
 

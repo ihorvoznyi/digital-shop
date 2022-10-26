@@ -14,17 +14,18 @@ export class ValidTokenMiddleware implements NestMiddleware {
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
   ) {}
+
   async use(req: Request, res: Response, next: NextFunction) {
-    const type: string = req.headers['authorization'].split(' ')[0];
-    const token: string = req.headers['authorization'].split(' ')[1];
-
-    if (type.toLowerCase() !== 'bearer' || !token) {
-      throw new UnauthorizedException('Unauthorized');
-    }
-
-    const secret = this.config.get<string>('JWT_SECRET_KEY');
-
     try {
+      const type: string = req.headers['authorization'].split(' ')[0];
+      const token: string = req.headers['authorization'].split(' ')[1];
+
+      if (type.toLowerCase() !== 'bearer' || !token) {
+        throw 401;
+      }
+
+      const secret = this.config.get<string>('JWT_SECRET_KEY');
+
       req.user = (await this.jwtService.verify(token, { secret })) as IAuth;
     } catch {
       throw new UnauthorizedException('Unauthorized');

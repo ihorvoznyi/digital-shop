@@ -30,7 +30,7 @@ export class ProductController {
   }
 
   @Get(':id')
-  getProduct(@Param('id') productId: string): Promise<IProduct> {
+  getProduct(@Param('id') productId: string): Promise<Product> {
     const options: FindOneOptions = {
       where: { id: productId },
       relations: RELATIONS,

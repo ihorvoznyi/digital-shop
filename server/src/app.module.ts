@@ -14,6 +14,7 @@ import { ProductModule } from './product/product.module';
 import { BrandModule } from './brand/brand.module';
 import { TypeModule } from './type/type.module';
 import { FeatureModule } from './feature/feature.module';
+import { OrderModule } from './order/order.module';
 import config from '../typeorm.config';
 
 @Module({
@@ -27,6 +28,7 @@ import config from '../typeorm.config';
     BrandModule,
     TypeModule,
     FeatureModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [],
@@ -35,6 +37,10 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
     consumer.apply(ValidTokenMiddleware).forRoutes({
       path: '/auth/auth',
+      method: RequestMethod.GET,
+    });
+    consumer.apply(ValidTokenMiddleware).forRoutes({
+      path: '/orders',
       method: RequestMethod.GET,
     });
   }
