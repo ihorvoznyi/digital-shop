@@ -45,6 +45,11 @@ export class ProductService {
     return product;
   }
 
+  async getProductForClient(options: FindOneOptions): Promise<IProduct> {
+    const product = await this.getProduct(options);
+    return ProductService.generateClientProduct(product);
+  }
+
   // POST methods
   async createProduct(dto: CreateProductDto): Promise<IProduct> {
     const productType = await this.typeService.getType({

@@ -30,13 +30,13 @@ export class ProductController {
   }
 
   @Get(':id')
-  getProduct(@Param('id') productId: string): Promise<Product> {
+  getProduct(@Param('id') productId: string): Promise<IProduct> {
     const options: FindOneOptions = {
       where: { id: productId },
       relations: RELATIONS,
     };
 
-    return this.productService.getProduct(options);
+    return this.productService.getProductForClient(options);
   }
 
   @Post()
