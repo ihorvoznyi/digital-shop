@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { FindManyOptions, FindOneOptions } from 'typeorm';
@@ -15,15 +16,20 @@ import { UpdateProductDto } from './dtos/update-product.dto';
 import { Product } from '../database/entities';
 import { AddReviewDto } from './dtos/add-review.dto';
 import { RELATIONS } from '../constants/product.constant';
+import { IProductFilter } from './interfaces/product-filter.interface';
 
 @Controller('products')
 export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Get()
-  getProducts(): Promise<IProduct[]> {
+  getProducts(@Query() filters: IProductFilter) {
     const options: FindManyOptions = {
       relations: RELATIONS,
+      where: {
+        brand: { id: filters.brandId },
+        type: { id: filters.typeId },
+      },
     };
 
     return this.productService.getProducts(options);

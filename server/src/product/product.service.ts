@@ -27,7 +27,7 @@ export class ProductService {
     private userService: UserService,
   ) {}
 
-  async getProducts(options: FindManyOptions): Promise<IProduct[]> {
+  async getProducts(options: FindManyOptions) {
     const products = await this.productRepository.find(options);
 
     return products.map((product) =>
