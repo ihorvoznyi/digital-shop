@@ -14,7 +14,7 @@ import { IProduct } from './interfaces';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { Product } from '../database/entities';
 import { AddReviewDto } from './dtos/add-review.dto';
-import { RELATIONS } from './constants/product.constant';
+import { RELATIONS } from '../constants/product.constant';
 
 @Controller('products')
 export class ProductController {

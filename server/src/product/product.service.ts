@@ -11,7 +11,7 @@ import { FeatureValue, Product, Review } from '../database/entities';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { UserService } from '../user/user.service';
 import { AddReviewDto } from './dtos/add-review.dto';
-import { RELATIONS } from './constants/product.constant';
+import { RELATIONS } from '../constants/product.constant';
 import { NumberService } from '../utils/number.service';
 
 @Injectable()
