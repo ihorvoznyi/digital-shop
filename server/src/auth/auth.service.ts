@@ -20,6 +20,7 @@ import { IAuthReturn } from './interfaces/auth.interface';
 @Injectable()
 export class AuthService {
   readonly secret: string;
+
   constructor(
     private jwtService: JwtService,
     private config: ConfigService,

@@ -25,7 +25,9 @@ export class ValidTokenMiddleware implements NestMiddleware {
       const token: string = req.headers['authorization'].split(' ')[1];
       const secret = this.secret;
 
-      req.user = (await this.jwtService.verify(token, { secret })) as IAuth;
+      req.user = (await this.jwtService.verify(token, {
+        secret,
+      })) as IAuth;
     } catch {
       throw new UnauthorizedException('Unauthorized');
     }

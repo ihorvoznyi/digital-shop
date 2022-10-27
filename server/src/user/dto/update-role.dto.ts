@@ -1,6 +1,5 @@
-import { UserRolesEnum } from '../enums';
+import { RoleEnum } from '../../auth/enums/role.enum';
 
 export class UpdateRoleDto {
-  userId: string;
-  role: UserRolesEnum;
+  role: RoleEnum;
 }

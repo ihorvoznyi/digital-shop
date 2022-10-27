@@ -4,7 +4,7 @@ import { FindOneOptions, Repository } from 'typeorm';
 
 import { Address, User } from '../database/entities';
 
-import { CreateUserDto, SetAddressDto } from './dto';
+import { CreateUserDto, SetAddressDto, UpdateRoleDto } from './dto';
 
 @Injectable()
 export class UserService {
@@ -15,6 +15,10 @@ export class UserService {
     private addressRepository: Repository<Address>,
   ) {}
 
+  async getUsers(): Promise<User[]> {
+    return this.userRepository.find({ relations: ['address'] });
+  }
+
   async getUser(options: FindOneOptions): Promise<User> {
     const user = await this.userRepository.findOne(options);
 
@@ -23,6 +27,19 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async changeRole(userId: string, updateRoleDto: UpdateRoleDto) {
+    const { role } = updateRoleDto;
+    const user = await this.userRepository.findOneBy({ id: userId });
+
+    if (!user) {
+      throw new HttpException("User: doesn't exist", HttpStatus.BAD_REQUEST);
+    }
+
+    user.role = role;
+
+    return this.userRepository.save(user);
   }
 
   async createUser(createUserDto: CreateUserDto) {
