@@ -16,7 +16,7 @@ export class UserService {
   ) {}
 
   async getUsers(): Promise<User[]> {
-    return this.userRepository.find();
+    return this.userRepository.find({ relations: ['address'] });
   }
 
   async getUser(options: FindOneOptions): Promise<User> {
@@ -29,8 +29,8 @@ export class UserService {
     return user;
   }
 
-  async changeRole(updateRoleDto: UpdateRoleDto) {
-    const { userId, role } = updateRoleDto;
+  async changeRole(userId: string, updateRoleDto: UpdateRoleDto) {
+    const { role } = updateRoleDto;
     const user = await this.userRepository.findOneBy({ id: userId });
 
     if (!user) {

@@ -33,7 +33,6 @@ export class AuthService {
       email,
       phoneNumber,
       password: hashPassword,
-      role: UserRolesEnum.USER,
     });
 
     // Generate JWT Token

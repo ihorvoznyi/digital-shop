@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 import { Address } from '../';
 import { UserRolesEnum } from '../../../user/enums';
+import { RoleEnum } from '../../../auth/enums/role.enum';
 
 @Entity({ name: 'users' })
 export class User {
@@ -22,8 +23,12 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ default: UserRolesEnum.USER })
-  role: UserRolesEnum;
+  @Column({
+    type: 'enum',
+    enum: RoleEnum,
+    default: RoleEnum.USER,
+  })
+  role: RoleEnum;
 
   @OneToOne(() => Address)
   @JoinColumn()
