@@ -1,4 +1,7 @@
-export interface IProductFilter {
-  brandId?: string;
-  typeId?: string;
+export class IProductFilter {
+  names?: string[];
+  types?: string[];
+  brands?: string[];
+  priceRange?: [number, number] | number[];
+  features?: string[];
 }

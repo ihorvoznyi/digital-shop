@@ -10,8 +10,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { FindManyOptions, FindOneOptions } from 'typeorm';
-import { CreateProductDto } from './dtos';
+import { DataSource, FindManyOptions, FindOneOptions } from 'typeorm';
+import { CreateProductDto, FilterDto } from './dtos';
 import { IProduct } from './interfaces';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { Product } from '../database/entities';
@@ -27,16 +27,16 @@ export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Get()
-  getProducts(@Query() filters: IProductFilter) {
-    const options: FindManyOptions = {
-      relations: RELATIONS,
-      where: {
-        brand: { id: filters.brandId },
-        type: { id: filters.typeId },
-      },
-    };
+  getProducts(@Query() filters) {
+    if (Object.keys(filters).length) {
+      // const modifiedFilters = ProductService.representFilters(filters);
 
-    return this.productService.getProducts(options);
+      return this.productService.getProductWithFilters(filters);
+    }
+
+    return this.productService.getProducts({
+      relations: RELATIONS,
+    });
   }
 
   @Get(':id')

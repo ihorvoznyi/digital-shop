@@ -47,4 +47,7 @@ export class Product {
     onDelete: 'CASCADE',
   })
   type: Type;
+
+  @Column()
+  tags: string[];
 }

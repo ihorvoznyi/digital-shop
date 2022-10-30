@@ -1,18 +1,32 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { All, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import {
+  DataSource,
+  FindManyOptions,
+  FindOneOptions,
+  In,
+  IsNull,
+  Not,
+  Repository,
+} from 'typeorm';
 import { TypeService } from '../type/type.service';
 import { BrandService } from '../brand/brand.service';
 import { FeatureService } from '../feature/feature.service';
-import { CreateProductDto } from './dtos';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+  AddReviewDto,
+  FilterDto,
+} from './dtos';
 import { IFeature } from '../feature/interfaces';
 import { IProduct, IReview } from './interfaces';
 import { FeatureValue, Product, Review } from '../database/entities';
-import { UpdateProductDto } from './dtos/update-product.dto';
 import { UserService } from '../user/user.service';
-import { AddReviewDto } from './dtos/add-review.dto';
 import { RELATIONS } from '../constants/product.constant';
 import { NumberService } from '../utils/number.service';
+import { IProductFilter } from './interfaces/product-filter.interface';
+import { FeatureValuesEnum } from '../feature/enums';
+import { nameOf } from '../utils/general.service';
 
 @Injectable()
 export class ProductService {
@@ -25,14 +39,45 @@ export class ProductService {
     private brandService: BrandService,
     private featureService: FeatureService,
     private userService: UserService,
+    private dataSource: DataSource,
   ) {}
 
   async getProducts(options: FindManyOptions) {
-    const products = await this.productRepository.find(options);
+    const customOptions: FindManyOptions = {
+      relations: ['features', 'features.feature'],
+    };
+    const products = await this.productRepository.find(customOptions);
 
-    return products.map((product) =>
-      ProductService.generateClientProduct(product),
-    );
+    return products;
+  }
+
+  // typeId: fcd49389-fdb4-4b34-9901-cc4738d0cc8d
+  async getProductWithFilters(dto) {
+    // const products = await this.dataSource.getRepository(Product).find({
+    //   relations: RELATIONS,
+    //   where: {
+    //     name: names.length ? In(names) : Not(IsNull()),
+    //     type: { id: types.length ? In(types) : Not(IsNull()) },
+    //     brand: { id: brands.length ? In(brands) : Not(IsNull()) },
+    //     price: priceRange.length
+    //       ? Between(Math.min(...priceRange), Math.max(...priceRange))
+    //       : Not(IsNull()),
+    //   },
+    // });
+
+    const { screenSize, color } = dto;
+
+    const products = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.features', 'FValue')
+      .leftJoinAndSelect('FValue.feature', 'FName')
+      .where('FName.featureName = :name', { name: 'memory' })
+      .andWhere('FValue.value IN (:...values)', {
+        values: ['128 GB', 'memory'],
+      })
+      .getMany();
+
+    return products;
   }
 
   async getProduct(options: FindOneOptions): Promise<Product> {
@@ -223,6 +268,19 @@ export class ProductService {
       rating,
       features: productFeatures,
       comments: productComments,
+    };
+  }
+
+  static representFilters(dto: FilterDto): IProductFilter {
+    const { names, brands, types, priceRange } = dto;
+
+    return {
+      names: names ? names.split(',') : [],
+      brands: brands ? brands.split(',') : [],
+      types: types ? types.split(',') : [],
+      priceRange: priceRange
+        ? priceRange.split(',').map((price) => +price)
+        : [],
     };
   }
 }
