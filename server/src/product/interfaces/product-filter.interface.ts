@@ -5,3 +5,9 @@ export class IProductFilter {
   priceRange?: [number, number] | number[];
   features?: string[];
 }
+
+export class IFilterQuery {
+  priceRange?: string;
+  brands?: string;
+  features?;
+}

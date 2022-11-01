@@ -23,4 +23,7 @@ export class Feature {
 
   @OneToMany(() => FeatureValue, (featureValue) => featureValue.feature)
   featureValues: FeatureValue[];
+
+  @Column()
+  tag: string;
 }

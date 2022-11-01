@@ -1,7 +1,7 @@
-import { All, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
-  DataSource,
+  Between,
   FindManyOptions,
   FindOneOptions,
   In,
@@ -24,9 +24,7 @@ import { FeatureValue, Product, Review } from '../database/entities';
 import { UserService } from '../user/user.service';
 import { RELATIONS } from '../constants/product.constant';
 import { NumberService } from '../utils/number.service';
-import { IProductFilter } from './interfaces/product-filter.interface';
-import { FeatureValuesEnum } from '../feature/enums';
-import { nameOf } from '../utils/general.service';
+import { IFilterQuery } from './interfaces/product-filter.interface';
 
 @Injectable()
 export class ProductService {
@@ -39,45 +37,50 @@ export class ProductService {
     private brandService: BrandService,
     private featureService: FeatureService,
     private userService: UserService,
-    private dataSource: DataSource,
   ) {}
 
-  async getProducts(options: FindManyOptions) {
-    const customOptions: FindManyOptions = {
-      relations: ['features', 'features.feature'],
-    };
-    const products = await this.productRepository.find(customOptions);
+  async getProducts(options: FindManyOptions): Promise<IProduct[]> {
+    const products = await this.productRepository.find(options);
 
-    return products;
+    return products.map((product) => {
+      return ProductService.generateClientProduct(product);
+    });
   }
 
-  // typeId: fcd49389-fdb4-4b34-9901-cc4738d0cc8d
-  async getProductWithFilters(dto) {
-    // const products = await this.dataSource.getRepository(Product).find({
-    //   relations: RELATIONS,
-    //   where: {
-    //     name: names.length ? In(names) : Not(IsNull()),
-    //     type: { id: types.length ? In(types) : Not(IsNull()) },
-    //     brand: { id: brands.length ? In(brands) : Not(IsNull()) },
-    //     price: priceRange.length
-    //       ? Between(Math.min(...priceRange), Math.max(...priceRange))
-    //       : Not(IsNull()),
-    //   },
-    // });
+  // Filter function
+  // Get products from database with filters by price, type & brand
+  // Iterating on products to filter them by characteristics
+  // Return modify product array
+  async filterProduct(typeId: string, dto: FilterDto): Promise<IProduct[]> {
+    const { priceRange, brands, features } = dto;
 
-    const { screenSize, color } = dto;
+    const products = await this.productRepository.find({
+      relations: RELATIONS,
+      where: {
+        type: { id: typeId },
+        price: priceRange.length
+          ? Between(Math.min(...priceRange), Math.max(...priceRange))
+          : Not(IsNull()),
+        brand: { brand: brands.length ? In(brands) : Not(IsNull()) },
+      },
+    });
 
-    const products = await this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.features', 'FValue')
-      .leftJoinAndSelect('FValue.feature', 'FName')
-      .where('FName.featureName = :name', { name: 'memory' })
-      .andWhere('FValue.value IN (:...values)', {
-        values: ['128 GB', 'memory'],
-      })
-      .getMany();
+    const filtered = products.filter((product) => {
+      // Check if product includes all filter characteristic
+      return features.every((tag) => {
+        const feature = product.features.find(
+          (item) => item.feature.tag === tag.name,
+        );
 
-    return products;
+        if (!feature) return false;
+
+        return tag.values.includes(feature.value);
+      });
+    });
+
+    return filtered.map((product) => {
+      return ProductService.generateClientProduct(product);
+    });
   }
 
   async getProduct(options: FindOneOptions): Promise<Product> {
@@ -271,16 +274,24 @@ export class ProductService {
     };
   }
 
-  static representFilters(dto: FilterDto): IProductFilter {
-    const { names, brands, types, priceRange } = dto;
+  static representFilters(filter: IFilterQuery) {
+    const { brands, priceRange, features } = filter;
+
+    const mapFeatures = [];
+
+    for (const item in features) {
+      mapFeatures.push({
+        name: item,
+        values: features[item].split(','),
+      });
+    }
 
     return {
-      names: names ? names.split(',') : [],
       brands: brands ? brands.split(',') : [],
-      types: types ? types.split(',') : [],
       priceRange: priceRange
         ? priceRange.split(',').map((price) => +price)
         : [],
+      features: mapFeatures,
     };
   }
 }

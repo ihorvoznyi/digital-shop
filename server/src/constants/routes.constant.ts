@@ -14,7 +14,7 @@ const USER_ROUTES = [
 const PRODUCT_ROUTES = [
   { path: '/products', method: RequestMethod.GET },
   { path: '/products/:id', method: RequestMethod.GET },
-  { path: '/products', method: RequestMethod.POST },
+  { path: '/products/type/:id', method: RequestMethod.GET },
 ];
 
 const ORDER_ROUTES = [];

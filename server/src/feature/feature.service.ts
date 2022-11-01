@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Feature, FeatureValue } from '../database/entities';
 import { IFeatureType, IProductFeature } from './interfaces';
+import { toCamelCase } from '../utils/general.service';
 
 @Injectable()
 export class FeatureService {
@@ -14,9 +15,12 @@ export class FeatureService {
   ) {}
 
   async createTypeFeature({ type, name }: IFeatureType): Promise<Feature> {
+    const tag = toCamelCase(name);
+
     const newFeature = this.featureRepository.create({
       type,
       featureName: name,
+      tag,
     });
 
     return this.featureRepository.save(newFeature);

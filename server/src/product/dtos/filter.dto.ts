@@ -1,7 +1,9 @@
 export class FilterDto {
-  names?: string;
-  types?: string;
-  brands?: string;
-  priceRange?: string;
-  features?: string;
+  priceRange?: number[];
+  features?: any[];
+  brands?: string[];
+}
+
+export class TypeFilterDto {
+  type: string;
 }

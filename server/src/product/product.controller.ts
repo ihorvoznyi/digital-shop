@@ -10,14 +10,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { DataSource, FindManyOptions, FindOneOptions } from 'typeorm';
-import { CreateProductDto, FilterDto } from './dtos';
+import { FindOneOptions } from 'typeorm';
+import { CreateProductDto } from './dtos';
 import { IProduct } from './interfaces';
-import { UpdateProductDto } from './dtos/update-product.dto';
+import { UpdateProductDto, AddReviewDto } from './dtos';
 import { Product } from '../database/entities';
-import { AddReviewDto } from './dtos/add-review.dto';
 import { RELATIONS } from '../constants/product.constant';
-import { IProductFilter } from './interfaces/product-filter.interface';
 import { RoleGuard } from '../auth/guards/role.guard';
 import { Roles } from '../auth/decorators/role.decorator';
 import { RoleEnum } from '../auth/enums/role.enum';
@@ -27,15 +25,32 @@ export class ProductController {
   constructor(private productService: ProductService) {}
 
   @Get()
-  getProducts(@Query() filters) {
-    if (Object.keys(filters).length) {
-      // const modifiedFilters = ProductService.representFilters(filters);
+  getProducts() {
+    return this.productService.getProducts({
+      relations: RELATIONS,
+    });
+  }
 
-      return this.productService.getProductWithFilters(filters);
+  @Get('/type/:id')
+  getByFilters(
+    @Param('id') typeId: string,
+    @Query() filters,
+  ): Promise<IProduct[]> {
+    if (Object.keys(filters).length) {
+      const { priceRange, brands, ...features } = filters;
+
+      const modifyFilters = ProductService.representFilters({
+        priceRange,
+        brands,
+        features,
+      });
+
+      return this.productService.filterProduct(typeId, modifyFilters);
     }
 
     return this.productService.getProducts({
       relations: RELATIONS,
+      where: { type: { id: typeId } },
     });
   }
 
