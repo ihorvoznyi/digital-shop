@@ -10,6 +10,10 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ValidTokenMiddleware } from './auth/middlewares/valid-token.middleware';
+import { ProductModule } from './product/product.module';
+import { BrandModule } from './brand/brand.module';
+import { TypeModule } from './type/type.module';
+import { FeatureModule } from './feature/feature.module';
 import config from '../typeorm.config';
 
 @Module({
@@ -19,6 +23,10 @@ import config from '../typeorm.config';
     JwtModule.register({}),
     UserModule,
     AuthModule,
+    ProductModule,
+    BrandModule,
+    TypeModule,
+    FeatureModule,
   ],
   controllers: [],
   providers: [],
