@@ -5,8 +5,6 @@ import {
   FindManyOptions,
   FindOneOptions,
   In,
-  IsNull,
-  Not,
   Repository,
 } from 'typeorm';
 import { TypeService } from '../type/type.service';
@@ -39,46 +37,26 @@ export class ProductService {
     private userService: UserService,
   ) {}
 
-  async getProducts(options: FindManyOptions): Promise<IProduct[]> {
-    const products = await this.productRepository.find(options);
+  async getProducts(typeId: string, filters: FilterDto): Promise<IProduct[]> {
+    const options = ProductService.generateFilterOptions(typeId, filters);
+    let products = await this.productRepository.find(options);
+
+    if (filters.features && filters.features.length) {
+      products = products.filter((product) => {
+        // Check if product includes all filter characteristic
+        return filters.features.every((tag) => {
+          const feature = product.features.find(
+            (item) => item.feature.tag === tag.name,
+          );
+
+          if (!feature) return false;
+
+          return tag.values.includes(feature.value);
+        });
+      });
+    }
 
     return products.map((product) => {
-      return ProductService.generateClientProduct(product);
-    });
-  }
-
-  // Filter function
-  // Get products from database with filters by price, type & brand
-  // Iterating on products to filter them by characteristics
-  // Return modify product array
-  async filterProduct(typeId: string, dto: FilterDto): Promise<IProduct[]> {
-    const { priceRange, brands, features } = dto;
-
-    const products = await this.productRepository.find({
-      relations: RELATIONS,
-      where: {
-        type: { id: typeId },
-        price: priceRange.length
-          ? Between(Math.min(...priceRange), Math.max(...priceRange))
-          : Not(IsNull()),
-        brand: { brand: brands.length ? In(brands) : Not(IsNull()) },
-      },
-    });
-
-    const filtered = products.filter((product) => {
-      // Check if product includes all filter characteristic
-      return features.every((tag) => {
-        const feature = product.features.find(
-          (item) => item.feature.tag === tag.name,
-        );
-
-        if (!feature) return false;
-
-        return tag.values.includes(feature.value);
-      });
-    });
-
-    return filtered.map((product) => {
       return ProductService.generateClientProduct(product);
     });
   }
@@ -93,7 +71,12 @@ export class ProductService {
     return product;
   }
 
-  async getProductForClient(options: FindOneOptions): Promise<IProduct> {
+  async getProductForClient(productId: string): Promise<IProduct> {
+    const options: FindOneOptions = {
+      relations: RELATIONS,
+      where: { id: productId },
+    };
+
     const product = await this.getProduct(options);
     return ProductService.generateClientProduct(product);
   }
@@ -274,8 +257,39 @@ export class ProductService {
     };
   }
 
+  // CHANGE FUNCTION
+  // Generate filter options
+  static generateFilterOptions(typeId: string, filters: FilterDto) {
+    const { priceRange, brands } = filters;
+
+    const options: FindManyOptions = {
+      relations: RELATIONS,
+      where: {
+        type: { id: typeId },
+      },
+    };
+
+    if (filters) {
+      if (priceRange && priceRange.length) {
+        options.where = {
+          ...options.where,
+          price: Between(Math.min(...priceRange), Math.max(...priceRange)),
+        };
+      }
+
+      if (brands && brands.length) {
+        options.where = {
+          ...options.where,
+          brand: { brand: In(brands) },
+        };
+      }
+    }
+
+    return options;
+  }
+
   static representFilters(filter: IFilterQuery) {
-    const { brands, priceRange, features } = filter;
+    const { brands, priceRange, ...features } = filter;
 
     const mapFeatures = [];
 

@@ -10,21 +10,18 @@ import { IAuth } from '../interfaces/auth.interface';
 
 @Injectable()
 export class ValidTokenMiddleware implements NestMiddleware {
+  readonly config: string;
   constructor(
     private readonly jwtService: JwtService,
-    private readonly config: ConfigService,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    this.config = this.configService.get<string>('JWT_SECRET_KEY');
+  }
 
   async use(req: Request, res: Response, next: NextFunction) {
     try {
-      const type: string = req.headers['authorization'].split(' ')[0];
       const token: string = req.headers['authorization'].split(' ')[1];
-
-      if (type.toLowerCase() !== 'bearer' || !token) {
-        throw 401;
-      }
-
-      const secret = this.config.get<string>('JWT_SECRET_KEY');
+      const secret = this.config;
 
       req.user = (await this.jwtService.verify(token, {
         secret,

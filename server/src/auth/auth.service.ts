@@ -10,17 +10,19 @@ import * as bcrypt from 'bcryptjs';
 import { User } from '../database/entities';
 import { RegistrationDto } from './dtos/registration.dto';
 import { LoginDto } from './dtos/login.dto';
-import { UserRolesEnum } from '../user/enums';
 import { IAuthReturn } from './interfaces/auth.interface';
 import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
+  readonly config: string;
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-    private config: ConfigService,
-  ) {}
+    private configService: ConfigService,
+  ) {
+    this.config = configService.get<string>('JWT_SECRET_KEY');
+  }
 
   // Hash password
   // Create User
@@ -68,7 +70,7 @@ export class AuthService {
       email: user.email,
     };
     const options = {
-      secret: this.config.get<string>('JWT_SECRET_KEY'),
+      secret: this.config,
       expiresIn: '24h',
     };
 
