@@ -16,14 +16,10 @@ import { TypeModule } from './type/type.module';
 import { FeatureModule } from './feature/feature.module';
 import { OrderModule } from './order/order.module';
 import config from '../typeorm.config';
-import { BrandController } from './brand/brand.controller';
 import {
   AVAILABLE_ROUTES,
   PROTECTED_ROUTES,
 } from './constants/routes.constant';
-import { UserController } from './user/user.controller';
-import { TypeController } from './type/type.controller';
-import { ProductController } from './product/product.controller';
 
 @Module({
   imports: [
