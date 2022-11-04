@@ -5,9 +5,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   // Redirect
-  useEffect(() => {
-    navigate('/');
-  }, []);
+  useEffect(() => navigate('/'), []);
 
   return (
     <div>

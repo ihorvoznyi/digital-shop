@@ -1,0 +1,11 @@
+.cabinet {
+  margin: 1rem 2rem;
+
+  &__container {
+    display: flex;
+  }
+
+  &__content {
+    margin-top: 1rem;
+  }
+}
