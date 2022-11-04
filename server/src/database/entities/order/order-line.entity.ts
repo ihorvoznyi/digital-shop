@@ -12,8 +12,8 @@ export class OrderLine {
   @Column()
   price: number;
 
-  // @ManyToOne(() => User)
-  // user: User;
+  @ManyToOne(() => User)
+  user: User;
 
   @ManyToOne(() => Product, {
     onDelete: 'CASCADE',

@@ -1,0 +1,19 @@
+.custom-input {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+
+  input {
+    border: 1px solid #958c7e;
+    border-radius: 3px;
+
+    min-height: 34px;
+
+    padding: 5px 6px;
+  }
+
+  label {
+    color: #737373;
+  }
+}
