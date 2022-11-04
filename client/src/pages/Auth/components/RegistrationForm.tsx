@@ -3,11 +3,12 @@ import { AiOutlineGoogle } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '../../../components';
 import './styles/Auth.scss';
+import { userStore } from "../../../store";
 
 const RegistrationFrom = () => {
   const navigate = useNavigate();
 
-  const [username, setUsername] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -16,7 +17,8 @@ const RegistrationFrom = () => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if(!termsAgree) return;
-    if(!username || !email || !password) return;
+    if(!phoneNumber || !email || !password) return;
+    userStore.registration({ phoneNumber, email, password })
   };
 
   return (
@@ -29,10 +31,10 @@ const RegistrationFrom = () => {
       <form className="registration__form" onSubmit={handleSubmit}>
         <Input
           id="registration__username-field"
-          label="Username"
+          label="Phone"
           type="text"
-          value={username}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
+          value={phoneNumber}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setPhoneNumber(e.target.value)}
           required={true}
         />
         <Input

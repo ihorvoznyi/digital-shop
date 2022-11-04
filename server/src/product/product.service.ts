@@ -61,16 +61,34 @@ export class ProductService {
       });
     }
 
-    return products.map((product) => {
-      return ProductService.generateClientProduct(product);
-    });
+    return products.map((product) =>
+      ProductService.generateClientProduct(product),
+    );
+  }
+
+  async getInitialProducts(): Promise<IProduct[]> {
+    const options: FindManyOptions = {
+      relations: RELATIONS,
+      take: 8,
+      order: {
+        comments: {
+          estimate: 'ASC',
+        },
+      },
+    };
+
+    const products = await this.productRepository.find(options);
+
+    return products.map((product) =>
+      ProductService.generateClientProduct(product),
+    );
   }
 
   async getProduct(options: FindOneOptions): Promise<Product> {
     const product = await this.productRepository.findOne(options);
 
     if (!product) {
-      throw new HttpException("Product doesn't exist", HttpStatus.BAD_REQUEST);
+      throw new HttpException('Product does not exist', HttpStatus.BAD_REQUEST);
     }
 
     return product;
@@ -135,7 +153,7 @@ export class ProductService {
     const user = await this.userService.getUser({ where: { id: userId } });
 
     if (!product) {
-      throw new HttpException("Product doesn't exist", HttpStatus.BAD_REQUEST);
+      throw new HttpException('Product does not exist', HttpStatus.BAD_REQUEST);
     }
 
     const newReview = this.reviewRepository.create({
@@ -165,7 +183,7 @@ export class ProductService {
     const product = await this.productRepository.findOne(options);
 
     if (!product) {
-      throw new HttpException("Product doesn't exist", HttpStatus.BAD_REQUEST);
+      throw new HttpException('Product does not exist', HttpStatus.BAD_REQUEST);
     }
 
     const { name, description, price, image, features } = dto;
@@ -206,7 +224,7 @@ export class ProductService {
     const product = await this.productRepository.findOneBy({ id: productId });
 
     if (!product) {
-      throw new HttpException("Product doesn't exist", HttpStatus.BAD_REQUEST);
+      throw new HttpException('Product does not exist', HttpStatus.BAD_REQUEST);
     }
 
     return this.productRepository.remove(product);
@@ -250,7 +268,10 @@ export class ProductService {
       name: product.name,
       description: product.description,
       image: product.image,
-      type: product.type.type,
+      type: {
+        typeName: product.type.type,
+        typeTag: product.type.tag,
+      },
       brand: product.brand.brand,
       price: product.price,
       rating,

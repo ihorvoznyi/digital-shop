@@ -7,7 +7,10 @@ export interface IProduct {
   description: string;
   image: string;
   brand: string;
-  type: string;
+  type: {
+    typeName: string;
+    typeTag: string;
+  };
   price: number;
   rating: number;
   features: IFeature[];

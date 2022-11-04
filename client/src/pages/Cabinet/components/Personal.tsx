@@ -1,6 +1,9 @@
 import './styles/Personal.scss';
+import { userStore } from "../../../store";
+import { toPhoneNumber } from "../../../utils/toPhoneNumber";
 
 const Personal = () => {
+  const { phoneNumber, email } = userStore.user;
   return (
     <div className='cabinet-personal'>
       <div className='cabinet-personal__container'>
@@ -16,12 +19,12 @@ const Personal = () => {
 
           <div className='cabinet-personal__row'>
             <p>Номер телефону:</p>
-            <p>+380 (99) 634 87 51</p>
+            <p>{toPhoneNumber(phoneNumber)}</p>
           </div>
 
           <div className='cabinet-personal__row'>
             <p>E-mail:</p>
-            <p>devphase01@gmail.com</p>
+            <p>{email}</p>
           </div>
         </div>
 

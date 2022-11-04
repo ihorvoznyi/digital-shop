@@ -16,6 +16,7 @@ import { RegistrationDto } from './dtos/registration.dto';
 import { LoginDto } from './dtos/login.dto';
 
 import { IAuthReturn } from './interfaces/auth.interface';
+import { IClientUser } from './interfaces/client-user.interface';
 
 @Injectable()
 export class AuthService {
@@ -45,7 +46,9 @@ export class AuthService {
     // Generate JWT Token
     const token: string = await this.signToken(newUser);
 
-    return { token, user: newUser };
+    const clientUser = AuthService.userForClient(newUser);
+
+    return { token, user: clientUser };
   }
 
   async login(dto: LoginDto): Promise<IAuthReturn> {
@@ -55,7 +58,9 @@ export class AuthService {
     });
     const token: string = await this.signToken(user);
 
-    return { token, user };
+    const clientUser = AuthService.userForClient(user);
+
+    return { token, user: clientUser };
   }
 
   // Function which let user avoid extra authorization
@@ -68,7 +73,9 @@ export class AuthService {
     if (!user) throw new UnauthorizedException('Invalid token');
     const token: string = await this.signToken(user);
 
-    return { token, user };
+    const clientUser = AuthService.userForClient(user);
+
+    return { token, user: clientUser };
   }
 
   // Create JWT Token using user data (email, userId)
@@ -106,5 +113,15 @@ export class AuthService {
     }
 
     return user;
+  }
+
+  static userForClient(user): IClientUser {
+    return {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      phoneNumber: user.phoneNumber,
+      address: user.address,
+    };
   }
 }
