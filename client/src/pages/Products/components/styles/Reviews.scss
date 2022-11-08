@@ -1,0 +1,106 @@
+@import '../../../../assets/scss/variables';
+@import '../../../../assets/scss/mixins';
+
+.product-reviews {
+  margin-top: 2rem;
+
+  h3 {
+    font-size: 24px;
+    margin-bottom: 1.5rem;
+  }
+
+  &__title {
+    font-size: 28px;
+    text-align: center;
+  }
+
+  &__review {
+    display: flex;
+    flex-direction: column;
+
+    padding: 1rem;
+    margin-bottom: 1rem;
+
+    gap: 1rem;
+
+    background-color: #1D1D1D;
+
+    &-author {
+      font-weight: bold;
+    }
+
+    &-estimate {
+      display: flex;
+    }
+
+    &-comment {
+      color: $gray-text;
+      margin-left: 4px;
+    }
+  }
+
+  &__no-reviews {
+    color: $gray-text;
+    font-weight: 600;
+  }
+
+  &__add-review{
+    background-color: #1D1D1D;
+    border-radius: 5px;
+
+    padding: 2rem;
+
+    margin-top: 1rem;
+  }
+
+  &__add-estimate {
+    font-size: 18px;
+    font-weight: bold;
+
+    display: flex;
+    gap: 1rem;
+
+    margin-bottom: 1rem;
+  }
+
+  &__add-comment {
+    height: 120px;
+    border: 2px solid aliceblue;
+    border-radius: 5px;
+    overflow: hidden;
+
+    padding: 0.5rem;
+
+    textarea {
+      width: 100%;
+      height: 100%;
+
+      padding: 5px;
+      font-weight: 500;
+
+      color: #FFFFFF;
+
+      font-size: 18px;
+    }
+  }
+
+  &__add-btn {
+    width: 100%;
+    max-width: 500px;
+
+    background-color: aliceblue;
+    border-radius: 3px;
+
+    padding: 12px 24px;
+    margin-top: 1rem;
+
+    span {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

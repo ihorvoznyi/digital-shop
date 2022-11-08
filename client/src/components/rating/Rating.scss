@@ -1,0 +1,9 @@
+.star-block {
+  &__star {
+    &_hover {
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+}
