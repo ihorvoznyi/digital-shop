@@ -1,9 +1,11 @@
+import './styles/Auth.scss';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AiFillApple } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { observer } from "mobx-react-lite";
 import { Input } from '../../../components';
-import './styles/Auth.scss';
+import { userStore } from "../../../store";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -16,6 +18,8 @@ const LoginForm = () => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!email || !password) return;
+
+    userStore.login({ email, password }).then(() => console.log('Auth Status:', userStore.isAuth));
   };
 
   return (
@@ -26,23 +30,23 @@ const LoginForm = () => {
       </div>
       <div className='login__services'>
         <div className='login__services__google'>
-          <FcGoogle className='login__services__icon' />
+          <FcGoogle className='login__services__icon'/>
           <p>Sign in with Google</p>
         </div>
 
         <div className='login__services__apple'>
-          <AiFillApple className='login__services__icon' />
+          <AiFillApple className='login__services__icon'/>
           <p>Sign in with Apple</p>
         </div>
       </div>
 
       <div className='login__divider'>
-        <div />
+        <div/>
         <p>or</p>
-        <div />
+        <div/>
       </div>
 
-      <form className='login__form'>
+      <form className='login__form' onSubmit={handleSubmit}>
         <Input
           id='login__email-field'
           type='text'
@@ -68,4 +72,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default observer(LoginForm);

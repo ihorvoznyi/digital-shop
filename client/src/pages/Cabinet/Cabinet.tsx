@@ -3,6 +3,7 @@ import './Cabinet.scss';
 
 import { CabinetSidebar } from './components';
 import { FC } from 'react';
+import { observer } from "mobx-react-lite";
 
 interface PropsType {
   children: React.ReactNode;
@@ -22,4 +23,4 @@ const Cabinet: FC<PropsType> = ({ children }) => {
   );
 };
 
-export default Cabinet;
+export default observer(Cabinet);

@@ -1,5 +1,9 @@
+@import '../../assets/scss/variables';
+
 .cabinet {
   margin: 1rem 2rem;
+  background-color: $black-color;
+  padding: 1rem;
 
   &__container {
     display: flex;
