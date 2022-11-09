@@ -1,7 +1,7 @@
 import './styles/Product.scss';
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { productStore } from "../../store";
+import { productStore, cartStore } from "../../store";
 import { observer } from "mobx-react-lite";
 import { IProduct } from "../../store/product/interfaces";
 import { Loader } from "../../components";
@@ -18,6 +18,10 @@ const Product = () => {
   useEffect(() => {
     productStore.getProduct(id as string).then((item) => setProduct(item));
   }, []);
+
+  const handleAddToCart = (product: IProduct) => {
+    cartStore.addToCart(product);
+  }
 
   if (productStore.isLoading) return <Loader/>
   if (!product) {
@@ -42,7 +46,7 @@ const Product = () => {
                   Купити
                 </div>
 
-                <div className='product-page__cart-btn'>
+                <div className='product-page__cart-btn' onClick={() => handleAddToCart(product)}>
                   Додати в Кошик
                 </div>
               </div>
