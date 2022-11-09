@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import { Login, Registration, Cabinet, Home, Products } from './pages';
+import { Login, Registration, Cabinet, Home, Products, Order } from './pages';
 import { Orders, Personal } from './pages/Cabinet/components';
 import { observer } from "mobx-react-lite";
 import { Fragment, useEffect } from "react";
@@ -21,6 +21,7 @@ export const App = observer(() => {
     <div className='app container'>
       <Routes>
         <Route path='*' element={<Home/>}/>
+        <Route path='/order-page' element={<Order />} />
         {generalStore.types && generalStore.types.map((type) => (
           <Fragment key={type.id}>
             <Route

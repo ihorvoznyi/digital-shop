@@ -1,0 +1,59 @@
+@import '../../../../assets/scss/variables';
+@import '../../../../assets/scss/mixins';
+
+.order-item {
+  &__container {
+    display: flex;
+  }
+
+  &__right {
+    flex: 1;
+    display: flex;
+  }
+
+  &__image {
+    @include unselectable;
+  }
+
+  &__product {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+  }
+
+  &__price {
+    margin-top: 1rem;
+
+    span {
+      &:nth-child(1) {
+        margin-right: 0.5rem;
+      }
+    }
+  }
+
+  &__counter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-top: 0.5rem;
+
+    @include unselectable;
+  }
+
+  &__count-btn {
+    border-radius: 3px;
+    border: 1px solid #919191;
+
+    width: 20px;
+    height: 20px;
+
+    span {
+      color: #919191;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

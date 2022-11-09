@@ -1,0 +1,50 @@
+@import '../../assets/scss/variables';
+@import '../../assets/scss/mixins';
+
+.order-page {
+  color: aliceblue;
+
+  &__container {
+    display: flex;
+    max-width: 1200px;
+
+    background-color: #1D1D1D;
+
+    padding: 2rem 1rem;
+    margin: 1rem auto;
+  }
+
+  &__contact-info {
+    flex: 1;
+  }
+
+  &__order {
+    flex: 2;
+
+    &-title {
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    p {
+      font-size: 20px;
+      font-weight: 500;
+      color: #FFFFFF;
+    }
+
+    span {
+      font-size: 20px;
+      font-weight: 500;
+      color: #FFFFFF;
+
+      &:nth-child(1) {
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}
