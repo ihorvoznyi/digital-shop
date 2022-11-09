@@ -23,7 +23,7 @@ export class UserService {
     const user = await this.userRepository.findOne(options);
 
     if (!user) {
-      throw new HttpException("User doesn't exist", HttpStatus.BAD_REQUEST);
+      throw new HttpException('User does not exist', HttpStatus.BAD_REQUEST);
     }
 
     return user;
@@ -34,7 +34,7 @@ export class UserService {
     const user = await this.userRepository.findOneBy({ id: userId });
 
     if (!user) {
-      throw new HttpException("User: doesn't exist", HttpStatus.BAD_REQUEST);
+      throw new HttpException('User: does not exist', HttpStatus.BAD_REQUEST);
     }
 
     user.role = role;

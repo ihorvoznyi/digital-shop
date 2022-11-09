@@ -20,7 +20,7 @@ export class TypeController {
   constructor(private typeService: TypeService) {}
 
   @Get()
-  getTypes(): Promise<Type[]> {
+  getTypes() {
     return this.typeService.getTypes({ relations: ['features'] });
   }
 
@@ -38,13 +38,14 @@ export class TypeController {
   @UseGuards(RoleGuard)
   @Roles(RoleEnum.ADMIN)
   createType(@Body() createTypeDto: CreateTypeDto): Promise<Type> {
-    const { featureList, typeName } = createTypeDto;
+    const { featureList, typeName, tag } = createTypeDto;
 
     const lowerCaseList = featureList.map((item) => item.toLowerCase());
     const uniqueFeatureList = Array.from(new Set(lowerCaseList));
 
     return this.typeService.createType({
       typeName: typeName.toLowerCase(),
+      tag,
       featureList: uniqueFeatureList,
     });
   }

@@ -22,6 +22,11 @@ import { RoleEnum } from '../auth/enums/role.enum';
 export class ProductController {
   constructor(private productService: ProductService) {}
 
+  @Get('')
+  getInitialProducts(): Promise<IProduct[]> {
+    return this.productService.getInitialProducts();
+  }
+
   @Get('/type/:id')
   getProducts(
     @Param('id') typeId: string,

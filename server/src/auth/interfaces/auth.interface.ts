@@ -1,4 +1,4 @@
-import { User } from '../../database/entities';
+import { IClientUser } from './client-user.interface';
 
 export interface IAuth {
   email: string;
@@ -7,5 +7,5 @@ export interface IAuth {
 
 export interface IAuthReturn {
   token: string;
-  user: User;
+  user: IClientUser;
 }

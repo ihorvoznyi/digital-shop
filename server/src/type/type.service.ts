@@ -13,22 +13,26 @@ export class TypeService {
     private featureService: FeatureService,
   ) {}
 
-  async getTypes(options: FindManyOptions): Promise<Type[]> {
-    return this.typeRepository.find(options);
+  async getTypes(options: FindManyOptions) {
+    const types = await this.typeRepository.find(options);
+
+    if (!types.length) return types;
+
+    return types.map((type) => TypeService.generateClientType(type));
   }
 
   async getType(options: FindOneOptions): Promise<Type> {
     const type = await this.typeRepository.findOne(options);
 
     if (!type) {
-      throw new HttpException("Type doesn't exist", HttpStatus.BAD_REQUEST);
+      throw new HttpException('Type does not exist', HttpStatus.BAD_REQUEST);
     }
 
     return type;
   }
 
   async createType(dto: CreateTypeDto): Promise<Type> {
-    const { typeName, featureList } = dto;
+    const { typeName, featureList, tag } = dto;
 
     const type = await this.typeRepository.findOneBy({ type: typeName });
 
@@ -38,6 +42,7 @@ export class TypeService {
 
     const newType = this.typeRepository.create({
       type: typeName,
+      tag,
     });
     const savedType = await this.typeRepository.save(newType);
 
@@ -62,9 +67,20 @@ export class TypeService {
     const type = await this.typeRepository.findOneBy({ id: typeId });
 
     if (!type) {
-      throw new HttpException("Type doesn't exist", HttpStatus.BAD_REQUEST);
+      throw new HttpException('Type does not exist', HttpStatus.BAD_REQUEST);
     }
 
     return this.typeRepository.remove(type);
+  }
+
+  static generateClientType(type: Type) {
+    // Capitalize
+    const name = type.type.charAt(0).toUpperCase() + type.type.slice(1);
+
+    return {
+      id: type.id,
+      name,
+      tag: type.tag,
+    };
   }
 }

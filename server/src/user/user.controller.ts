@@ -21,8 +21,6 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
-  @UseGuards(RoleGuard)
-  @Roles(RoleEnum.ADMIN)
   getUsers(): Promise<User[]> {
     return this.userService.getUsers();
   }
