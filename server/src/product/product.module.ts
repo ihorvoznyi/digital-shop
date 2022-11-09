@@ -9,6 +9,7 @@ import { FeatureModule } from '../feature/feature.module';
 import { UserModule } from '../user/user.module';
 
 import { ProductService } from './product.service';
+
 import { ProductController } from './product.controller';
 
 @Module({

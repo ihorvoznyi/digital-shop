@@ -24,6 +24,7 @@ import {
   AVAILABLE_ROUTES,
   PROTECTED_ROUTES,
 } from './constants/routes.constant';
+import { AddressModule } from './address/address.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import {
     TypeModule,
     FeatureModule,
     OrderModule,
+    AddressModule,
   ],
   controllers: [],
   providers: [],

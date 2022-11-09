@@ -1,0 +1,128 @@
+@import '../../../../assets/scss/responsive';
+@import '../../../../assets/scss/variables';
+@import '../../../../assets/scss/mixins';
+
+.cabinet-sidebar {
+  max-width: 250px;
+  border-right: 1px solid $light-blue;
+
+  margin-right: 2rem;
+
+  @include _992 {
+    max-width: 100%;
+    border: none;
+  }
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__user-info {
+    font-size: 14px;
+    color: $gray-text;
+    line-height: 1.5rem;
+
+    border-bottom: 1px solid $light-blue;
+
+    padding: 8px 10px 8px 32px;
+
+    @include _992 {
+      border: none;
+      display: none;
+    }
+  }
+
+  &__username {
+    position: relative;
+
+    p {
+      font-size: 18px;
+      font-weight: 600;
+
+      color: aliceblue;
+    }
+
+    &-icon {
+      color: #0F0F0F;
+      font-size: 22px;
+
+      position: absolute;
+      left: -30px;
+    }
+  }
+
+  &__links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    
+    width: 100%;
+
+    @include _992 {
+      flex-direction: row;
+    }
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+
+    font-weight: 500;
+
+    color: $gray-text;
+
+    padding: 10px 16px 10px calc(32px - 18px);
+    border-radius: 3px;
+
+    @include unselectable;
+
+    transition-property: color, background;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+
+    @include _992 {
+      width: 100%;
+      justify-content: center;
+
+      padding: 10px 16px 10px calc(32px - 18px);
+      border-radius: 0;
+    }
+
+    &-icon {
+      margin-right: 4px;
+      font-size: 18px;
+    }
+
+    &.active {
+      background-color: #E9EEFD;
+      border-left: 3px solid $blue-color;
+      border-radius: 0;
+
+      padding-left: calc(29px - 18px);
+
+      color: #0F0F0F;
+
+      .cabinet-sidebar__link {
+        color: #0F0F0F;
+      }
+
+      @include _992 {
+        border: 0;
+        border-bottom: 3px solid $blue-color;
+      }
+    }
+
+    &:hover {
+      background-color: #E9EEFD;
+      cursor: pointer;
+
+      color: #0F0F0F;
+
+      .cabinet-sidebar__link {
+        color: #0F0F0F;
+      }
+    }
+  }
+}

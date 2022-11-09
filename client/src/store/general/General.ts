@@ -1,10 +1,13 @@
 import { makeAutoObservable } from "mobx";
 import axios from "axios";
 import { ITypes } from "./interfaces/ITypes";
+import { ShippingMethodEnum } from "../../pages/Order/components/shipping/enums/ShippingMethodEnum";
 
 class GeneralStore {
   isLoading = true;
+  openSection: null | string = null;
   types: ITypes[] = [];
+  shippingMethod: ShippingMethodEnum = ShippingMethodEnum.POST_OFFICE;
 
   constructor() {
     makeAutoObservable(this, {}, {
@@ -16,18 +19,8 @@ class GeneralStore {
     this.isLoading = value;
   }
 
-  async fetchTypes() {
-    try {
-      this.isLoading = true;
-
-      const response = await axios.get('http://localhost:8080/types');
-
-      this.types = response.data;
-    } catch {
-      throw new Error('Global Error');
-    } finally {
-      this.isLoading = false;
-    }
+  setOpenSection(section: string | null) {
+    this.openSection = section;
   }
 }
 

@@ -1,0 +1,144 @@
+@import '../../assets/scss/variables';
+@import '../../assets/scss/mixins';
+@import '../../assets/scss/responsive';
+
+.order-page {
+  color: aliceblue;
+
+  &__container {
+    display: flex;
+    max-width: 1200px;
+    gap: 1rem;
+
+    background-color: #1D1D1D;
+
+    padding: 2rem 1rem;
+    margin: 1rem auto;
+
+    position: relative;
+
+    @include _992 {
+      flex-direction: column;
+    }
+  }
+
+  &__contact-info {
+    flex: 1;
+
+    @include _992 {
+      margin-top: 4rem;
+      order: 2;
+    }
+  }
+
+  &__contact-form {
+    @include _992 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @include _768 {
+      display: flex;
+      flex-direction: column;
+
+      gap: 2rem;
+    }
+  }
+
+  &__submit-btn {
+    width: 100%;
+    max-width: 300px;
+
+    background-color: $red-color;
+    border-radius: 3px;
+
+    padding: 12px 16px;
+
+    text-align: center;
+
+    transition: background-color 0.3s ease;
+
+    position: absolute;
+    right: 10px;
+    bottom: 30px;
+
+    &:hover {
+      background-color: #911c1d;
+      cursor: pointer;
+    }
+
+    span {
+      color: aliceblue;
+      white-space: nowrap;
+      font-size: 16px;
+    }
+
+    @include _992 {
+      position: initial;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      top: 0;
+      margin-top: 2rem;
+      max-width: 100%;
+      grid-column: span 12;
+    }
+  }
+
+  &__order {
+    flex: 2;
+    margin-bottom: 6rem;
+
+    &-title {
+      margin-bottom: 1rem;
+    }
+
+    @include _992 {
+      margin-bottom: 2rem;
+    }
+  }
+
+  &__total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    p {
+      font-size: 20px;
+      font-weight: 500;
+      color: #FFFFFF;
+    }
+
+    span {
+      font-size: 20px;
+      font-weight: 500;
+      color: #FFFFFF;
+
+      &:nth-child(1) {
+        margin-right: 0.5rem;
+      }
+    }
+
+    @include _576 {
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+  }
+
+  &__contact-title, &__order-title {
+    font-size: 20px;
+    margin-bottom: 1.5rem;
+  }
+
+  &__form-block, &__post-office {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__shipping-input {
+    @include _768 {
+      max-width: 100%;
+    }
+  }
+}

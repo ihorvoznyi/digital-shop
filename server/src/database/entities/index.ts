@@ -2,6 +2,7 @@
 export * from './user/user.entity';
 export * from './user/user-address.entity';
 export * from './user/user-review.entity';
+export * from './user/user-contact.entity';
 
 // Product
 export * from './product/product.entity';
@@ -13,3 +14,4 @@ export * from './product/feature-value.entity';
 // Order
 export * from './order/order-line.entity';
 export * from './order/shop-order.entity';
+export * from './order/order-address.entity';

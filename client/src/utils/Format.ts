@@ -1,3 +1,6 @@
+import { IPersonal } from "../pages/Cabinet/components/personal/interfaces/IPersonal";
+import { IUpdateUser } from "../store/user/interfaces";
+
 class Format {
   format (price: number) {
     price = Math.abs(price);
@@ -34,6 +37,17 @@ class Format {
   convertToDollar (price: number) {
     return Math.ceil(price / 40)
   }
+
+  // toUserObj (personal: IPersonal): IUpdateUser {
+  //   return {
+  //     ...personal,
+  //     address: {
+  //       city: personal.city,
+  //       home: personal.home,
+  //       postOffice: personal.postOffice,
+  //     }
+  //   }
+  // }
 }
 
 export default new Format();

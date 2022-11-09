@@ -1,12 +1,14 @@
 import { RequestMethod } from '@nestjs/common';
+
 import { UserController } from '../user/user.controller';
 import { ProductController } from '../product/product.controller';
 import { TypeController } from '../type/type.controller';
-import { BrandController } from '../brand/brand.controller';
+import { BrandController } from '../brand/controllers/brand.controller';
 import { OrderController } from '../order/order.controller';
 
 const USER_ROUTES = [
   { path: '/users/address/:id', method: RequestMethod.POST },
+  { path: '/users/validate-email', method: RequestMethod.POST },
   { path: '/users', method: RequestMethod.GET },
 ];
 
@@ -16,7 +18,7 @@ const PRODUCT_ROUTES = [
   { path: '/products/type/:id', method: RequestMethod.GET },
 ];
 
-const ORDER_ROUTES = [];
+const ORDER_ROUTES = [{ path: '/orders', method: RequestMethod.POST }];
 
 const BRAND_ROUTES = [
   { path: '/brands', method: RequestMethod.GET },
@@ -33,6 +35,7 @@ export const AVAILABLE_ROUTES = [
   ...BRAND_ROUTES,
   ...TYPE_ROUTES,
   ...PRODUCT_ROUTES,
+  ...ORDER_ROUTES,
 ];
 
 export const PROTECTED_ROUTES = [

@@ -8,5 +8,5 @@ async function bootstrap() {
 }
 
 bootstrap().then(() =>
-  console.log(`Server is running on ${process.env.PORT} port.`),
+  console.log(`Server is running on ${process.env.PORT} port.`)
 );

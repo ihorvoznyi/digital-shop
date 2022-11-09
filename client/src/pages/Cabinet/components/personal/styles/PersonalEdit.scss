@@ -1,0 +1,36 @@
+.cabinet-personal {
+  &__row {
+    input {
+      border-bottom: 1px solid #999999;
+
+      height: 24px;
+
+      padding: 0 1px;
+
+      color: aliceblue;
+      font-size: 16px;
+
+      &::placeholder {
+        color: #888888;
+        font-size: 14px;
+      }
+    }
+  }
+
+  &__warehouse-input {
+    position: relative;
+
+    input {
+      width: 100%;
+    }
+  }
+
+  &__warehouses {
+    max-height: 200px;
+    width: 100%;
+
+    &.hide {
+      display: none;
+    }
+  }
+}

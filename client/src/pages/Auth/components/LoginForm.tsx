@@ -6,6 +6,7 @@ import { FcGoogle } from 'react-icons/fc';
 import { observer } from "mobx-react-lite";
 import { Input } from '../../../components';
 import { userStore } from "../../../store";
+import { login } from '../../../store/user/services/AuthService';
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ const LoginForm = () => {
     event.preventDefault();
     if (!email || !password) return;
 
-    userStore.login({ email, password }).then(() => console.log('Auth Status:', userStore.isAuth));
+    login({ email, password }).then(() => console.log('Auth Status:', userStore.isAuth));
   };
 
   return (

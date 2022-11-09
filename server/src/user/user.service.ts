@@ -1,25 +1,42 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, Repository } from 'typeorm';
 
-import { Address, User } from '../database/entities';
+import { FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
 
-import { CreateUserDto, SetAddressDto, UpdateRoleDto } from './dto';
+import { User } from '../database/entities';
+
+import { AuthService } from '../auth/auth.service';
+
+import { CreateUserDto, UpdateRoleDto, UpdateUserDto } from './dtos';
+
+import { IClientUser } from '../auth/interfaces/client-user.interface';
+import { ADDRESS_RELATION } from './constants/user.constant';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(Address)
-    private addressRepository: Repository<Address>,
+    @Inject(forwardRef(() => AuthService))
+    private authService: AuthService
   ) {}
 
-  async getUsers(): Promise<User[]> {
-    return this.userRepository.find({ relations: ['address'] });
+  public async getUsers(): Promise<User[]> {
+    return this.userRepository.find({ relations: ADDRESS_RELATION });
   }
 
-  async getUser(options: FindOneOptions): Promise<User> {
+  public async getUser(findWhere: FindOptionsWhere<User>): Promise<User> {
+    const options: FindOneOptions = {
+      where: findWhere,
+      relations: ADDRESS_RELATION,
+    };
+
     const user = await this.userRepository.findOne(options);
 
     if (!user) {
@@ -29,7 +46,7 @@ export class UserService {
     return user;
   }
 
-  async changeRole(userId: string, updateRoleDto: UpdateRoleDto) {
+  public async changeRole(userId: string, updateRoleDto: UpdateRoleDto) {
     const { role } = updateRoleDto;
     const user = await this.userRepository.findOneBy({ id: userId });
 
@@ -42,19 +59,34 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  async createUser(createUserDto: CreateUserDto) {
+  public async checkIsAvailable(email: string): Promise<boolean> {
+    const candidate = await this.userRepository.findOneBy({ email });
+
+    if (candidate) {
+      throw new HttpException(
+        `Email #${email} is already taken`,
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    return true;
+  }
+
+  public async createUser(createUserDto: CreateUserDto) {
     const { email } = createUserDto;
     const candidate = await this.userRepository.findOneBy({ email });
 
     if (candidate) {
       throw new HttpException(
         'User: Email already exist',
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST
       );
     }
 
     try {
       const newUser = this.userRepository.create(createUserDto);
+
+      newUser.userAddresses = [];
 
       return this.userRepository.save(newUser);
     } catch {
@@ -62,20 +94,65 @@ export class UserService {
     }
   }
 
-  async setAddress(userId: string, address: SetAddressDto): Promise<User> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-      relations: ['address'],
-    });
+  public async updateUser(userId: string, dto: UpdateUserDto) {
+    const { name, email, phoneNumber } = dto;
+
+    const user = await this.getUser({ id: userId });
 
     if (!user) {
       throw new HttpException('User is not exists.', HttpStatus.BAD_REQUEST);
     }
 
-    const newAddress = this.addressRepository.create(address);
+    let token = null;
 
-    user.address = await this.addressRepository.save(newAddress);
+    if (user.email !== email) {
+      const candidate = await this.userRepository.findOneBy({ email });
 
-    return this.userRepository.save(user);
+      if (candidate) {
+        throw new HttpException(
+          'Email is already exist',
+          HttpStatus.BAD_REQUEST
+        );
+      }
+
+      user.email = email;
+      token = await this.authService.signToken({ ...user, email });
+    }
+
+    if (user.name !== name) user.name = name;
+    if (user.phoneNumber !== phoneNumber) user.phoneNumber = phoneNumber;
+
+    const savedUser = await this.userRepository.save(user);
+
+    return { user: UserService.userForClient(savedUser), token };
+  }
+
+  static userForClient(user: User): IClientUser {
+    const { userAddresses } = user;
+
+    const homeDelivery = [];
+    const warehouseDelivery = [];
+
+    if (userAddresses.length) {
+      userAddresses.forEach((address) => {
+        if (address.method === 'homeDelivery') {
+          homeDelivery.push(address);
+        } else {
+          warehouseDelivery.push(address);
+        }
+      });
+    }
+
+    return {
+      id: user.id,
+      name: user.name,
+      role: user.role,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      addresses: {
+        homeDelivery: homeDelivery,
+        warehouseDelivery: warehouseDelivery,
+      },
+    };
   }
 }

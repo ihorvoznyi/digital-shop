@@ -3,7 +3,7 @@ import { AiOutlineGoogle } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '../../../components';
 import './styles/Auth.scss';
-import { userStore } from "../../../store";
+import { registration } from '../../../store/user/services/AuthService';
 
 const RegistrationFrom = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const RegistrationFrom = () => {
     event.preventDefault();
     if(!termsAgree) return;
     if(!phoneNumber || !email || !password) return;
-    userStore.registration({ phoneNumber, email, password })
+    registration({ phoneNumber, email, password })
   };
 
   return (

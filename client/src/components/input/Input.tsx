@@ -4,7 +4,7 @@ import './input.style.scss';
 
 const Input: FC<IInputProps> = (props) => {
   return (
-    <div className="custom-input">
+    <div className="custom-input-1">
       <label htmlFor={props.id}>{props.label}</label>
       <input
         id={props.id}
