@@ -17,10 +17,12 @@ const OrderItem: FC<PropsType> = ({ product, quantity }) => {
   return (
     <div className='order-item'>
       <div className='order-item__container'>
-        <div className='order-item__right'>
-          <div className='order-item__image'>
-            <img src={imageLink} alt={''} />
-          </div>
+        {/*<div className='order-item__right'>*/}
+        <div className='order-item__image'>
+          <img src={imageLink} alt={''}/>
+        </div>
+
+        <div className="order-item__details">
 
           <div className='order-item__product'>
             <span>{product.name}</span>
@@ -43,18 +45,32 @@ const OrderItem: FC<PropsType> = ({ product, quantity }) => {
               </button>
             </div>
           </div>
+
+          <div className='order-item__price'>
+            <span>
+              {format(product.price)} грн
+            </span>
+
+            <span>
+              ({format(convertToDollar(product.price))} $)
+            </span>
+          </div>
+
         </div>
 
-        <div className='order-item__price'>
-          <span>
-            {format(product.price)} грн
-          </span>
-
-          <span>
-            ({format(convertToDollar(product.price))} $)
-          </span>
-        </div>
       </div>
+
+
+      {/*<div className='order-item__price'>*/}
+      {/*  <span>*/}
+      {/*    {format(product.price)} грн*/}
+      {/*  </span>*/}
+
+      {/*  <span>*/}
+      {/*    ({format(convertToDollar(product.price))} $)*/}
+      {/*  </span>*/}
+      {/*</div>*/}
+      {/*</div>*/}
     </div>
   );
 };

@@ -13,9 +13,15 @@ const Cart = () => {
   const navigate = useNavigate();
   const { format } = Format;
   const size = cartStore.cart.length;
+
+  const handleRedirect = () => {
+    if (!size) return;
+    navigate('/order-page');
+  }
+
   return (
     <div className='navbar__cart navbar__cart_dropdown'>
-      <div className='navbar__cart-btn' onClick={() => navigate('/order-page')}>
+      <div className='navbar__cart-btn' onClick={() => handleRedirect()}>
         <div
           className={`navbar__cart-icon ${size ? 'navbar__cart-icon_not-empty' : ''}`}
           data-products={size ? size : ''}

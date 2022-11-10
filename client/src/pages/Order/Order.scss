@@ -1,5 +1,6 @@
 @import '../../assets/scss/variables';
 @import '../../assets/scss/mixins';
+@import '../../assets/scss/responsive';
 
 .order-page {
   color: aliceblue;
@@ -7,15 +8,70 @@
   &__container {
     display: flex;
     max-width: 1200px;
+    gap: 1rem;
 
     background-color: #1D1D1D;
 
     padding: 2rem 1rem;
     margin: 1rem auto;
+
+    @include _992 {
+      flex-direction: column;
+    }
   }
 
   &__contact-info {
     flex: 1;
+
+    @include _992 {
+      margin-top: 4rem;
+      order: 2;
+    }
+  }
+
+  &__contact-form {
+    @include _992 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    @include _768 {
+      display: flex;
+      flex-direction: column;
+
+      gap: 2rem;
+    }
+  }
+
+  &__submit-btn {
+    width: 100%;
+    max-width: 300px;
+
+    background-color: $red-color;
+    border-radius: 3px;
+
+    padding: 12px 16px;
+    margin-top: 2rem;
+
+    text-align: center;
+
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #911c1d;
+      cursor: pointer;
+    }
+
+    span {
+      color: aliceblue;
+      white-space: nowrap;
+      font-size: 16px;
+    }
+
+    @include _992 {
+      max-width: 100%;
+      grid-column: span 12;
+    }
   }
 
   &__order {
@@ -44,6 +100,51 @@
 
       &:nth-child(1) {
         margin-right: 0.5rem;
+      }
+    }
+
+    @include _576 {
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+  }
+
+  &__contact-title, &__order-title {
+    font-size: 20px;
+    margin-bottom: 1.5rem;
+  }
+
+  &__form-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    input {
+      border: 1px solid #999999;
+      border-radius: 5px;
+
+      height: 35px;
+      max-width: 300px;
+      width: 100%;
+
+      padding-left: 10px;
+      text-align: left;
+
+      color: aliceblue;
+
+      &::placeholder {
+        color: #999999;
+      }
+
+      &:focus {
+        &::placeholder {
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+      }
+
+      @include _768 {
+        max-width: 100%;
       }
     }
   }

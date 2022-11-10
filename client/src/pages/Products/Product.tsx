@@ -19,8 +19,9 @@ const Product = () => {
     productStore.getProduct(id as string).then((item) => setProduct(item));
   }, []);
 
-  const handleAddToCart = (product: IProduct) => {
+  const handleBuyProduct = (product: IProduct) => {
     cartStore.addToCart(product);
+    navigate('/order-page');
   }
 
   if (productStore.isLoading) return <Loader/>
@@ -42,11 +43,11 @@ const Product = () => {
               <Details product={product as IProduct}/>
 
               <div className="product-page__buttons">
-                <div className='product-page__buy-btn'>
+                <div className='product-page__buy-btn' onClick={() => handleBuyProduct(product)}>
                   Купити
                 </div>
 
-                <div className='product-page__cart-btn' onClick={() => handleAddToCart(product)}>
+                <div className='product-page__cart-btn' onClick={() => cartStore.addToCart(product)}>
                   Додати в Кошик
                 </div>
               </div>

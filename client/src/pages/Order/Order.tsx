@@ -3,7 +3,7 @@ import React, { FormEvent, Fragment, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
 import { cartStore } from '../../store';
-import { Contact, OrderItem } from './components';
+import { Contact, OrderItem, Shipping } from './components';
 import Format from '../../utils/Format';
 import { orderStore } from '../../store/order/Order';
 
@@ -39,12 +39,9 @@ const Order = () => {
     <div className='order-page'>
       <div className='order-page__container'>
         <div className='order-page__contact-info'>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className='order-page__contact-form'>
             <Contact />
-
-            <div className='order-page__location'>
-              <input />
-            </div>
+            <Shipping />
 
             <button className='order-page__submit-btn'>
               <span>Оформити замовлення</span>

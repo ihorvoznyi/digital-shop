@@ -1,5 +1,6 @@
 @import '../../../../assets/scss/variables';
 @import '../../../../assets/scss/mixins';
+@import '../../../../assets/scss/responsive';
 
 .order-item {
   &__container {
@@ -13,6 +14,19 @@
 
   &__image {
     @include unselectable;
+  }
+
+  &__details {
+    display: flex;
+    justify-content: space-between;
+
+    width: 100%;
+
+    @include _576 {
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 1rem;
+    }
   }
 
   &__product {
