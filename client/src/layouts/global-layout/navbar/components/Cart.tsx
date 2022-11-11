@@ -46,7 +46,7 @@ const Cart = () => {
                   </div>
 
                   <div className='navbar__cart-product-price'>
-                    {format(item.product.price)}
+                    {format(item.product.price)} грн
                   </div>
                 </div>
 

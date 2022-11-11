@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,regular,500,700');
+@import './scss/responsive';
 
 * {
   margin: 0;
@@ -92,5 +93,55 @@ textarea {
   /* Handle on hover */
   &::-webkit-scrollbar-thumb:hover {
     background: #555;
+  }
+}
+
+
+.custom-input {
+  border: 1px solid #999999;
+  border-radius: 5px;
+
+  height: 35px;
+  max-width: 300px;
+  width: 100%;
+
+  padding-left: 10px;
+  text-align: left;
+
+  color: aliceblue;
+
+  &::placeholder {
+    color: #999999;
+  }
+
+  &:focus {
+    &::placeholder {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+  }
+
+  @include _992 {
+    max-width: 100%;
+  }
+}
+
+.custom-dropdown {
+  background-color: #1D1D1D;
+  border: 1px solid #999999;
+  border-radius: 3px;
+
+  position: absolute;
+  top: 110%;
+
+  overflow-y: auto;
+
+  li {
+    padding: 5px 10px;
+
+    &:hover {
+      cursor: pointer;
+      background-color: #999999;
+    }
   }
 }

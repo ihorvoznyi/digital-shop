@@ -1,0 +1,14 @@
+.order-page {
+  &__post-office {
+    position: relative;
+  }
+
+  &__shipping-warehouses {
+    max-width: 300px;
+    max-height: 200px;
+
+    &.hide {
+      display: none;
+    }
+  }
+}

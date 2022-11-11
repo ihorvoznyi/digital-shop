@@ -4,6 +4,7 @@ import { ITypes } from "./interfaces/ITypes";
 
 class GeneralStore {
   isLoading = true;
+  openSection: null | string = null;
   types: ITypes[] = [];
 
   constructor() {
@@ -14,6 +15,10 @@ class GeneralStore {
 
   setLoading(value: boolean) {
     this.isLoading = value;
+  }
+
+  setOpenSection(section: string | null) {
+    this.openSection = section;
   }
 
   async fetchTypes() {
