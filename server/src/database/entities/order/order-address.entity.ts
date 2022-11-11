@@ -1,13 +1,13 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity({ name: 'addresses' })
-export class Address {
+@Entity({ name: 'order_addresses' })
+export class OrderAddress {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
   city: string;
 
-  @Column({ nullable: false })
+  @Column()
   address: string;
 }

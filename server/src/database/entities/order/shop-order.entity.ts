@@ -8,8 +8,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../user/user.entity';
-import { Address } from '../user/user-address.entity';
 import { OrderLine } from './order-line.entity';
+import { OrderAddress } from './order-address.entity';
 
 @Entity({ name: 'orders' })
 export class UserOrder {
@@ -34,7 +34,7 @@ export class UserOrder {
   @OneToMany(() => OrderLine, (orderLine) => orderLine.order)
   products: OrderLine[];
 
-  @ManyToOne(() => Address)
+  @ManyToOne(() => OrderAddress)
   @JoinTable()
-  shippingAddress: Address;
+  shippingAddress: OrderAddress;
 }

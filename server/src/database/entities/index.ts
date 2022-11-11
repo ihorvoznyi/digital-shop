@@ -13,3 +13,4 @@ export * from './product/feature-value.entity';
 // Order
 export * from './order/order-line.entity';
 export * from './order/shop-order.entity';
+export * from './order/order-address.entity';

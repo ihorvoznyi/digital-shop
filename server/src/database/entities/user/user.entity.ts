@@ -6,7 +6,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Address } from '../';
-import { UserRolesEnum } from '../../../user/enums';
 import { RoleEnum } from '../../../auth/enums/role.enum';
 
 @Entity({ name: 'users' })
@@ -30,7 +29,9 @@ export class User {
   })
   role: RoleEnum;
 
-  @OneToOne(() => Address)
+  @OneToOne(() => Address, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   address: Address;
 }
