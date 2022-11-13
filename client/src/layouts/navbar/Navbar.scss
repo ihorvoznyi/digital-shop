@@ -1,0 +1,176 @@
+@use '../../assets/scss/index' as *;
+@import '../../assets/scss/responsive';
+
+.navbar {
+  height: 80px;
+  background-color: $black-color;
+  color: $gray-text;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  &__container {
+    display: flex;
+    justify-content: space-between;
+
+    padding: 0 2rem;
+
+    width: 100%;
+    height: 100%;
+  }
+
+  &__navigation {
+    flex: 2;
+    display: flex;
+    align-items: center;
+
+    width: 100%;
+  }
+
+  &__logotype {
+    display: flex;
+    align-items: center;
+
+    height: 100%;
+
+    padding: 8px 16px;
+    margin-right: 2rem;
+
+    cursor: pointer;
+
+    span {
+      font-size: 24px;
+      font-weight: bold;
+
+      color: aliceblue;
+    }
+  }
+
+  &__links {
+    display: flex;
+
+    height: 100%;
+    width: 100%;
+
+    @include unselectable;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+
+    padding: 8px 16px;
+
+    font-size: 16px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    &:hover {
+      background-color: #000;
+      color: aliceblue;
+    }
+
+    @include _1200 {
+      font-size: 16px;
+      padding: 8px 16px;
+    }
+  }
+
+  &__details {
+    flex: 2;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    width: 100%;
+  }
+
+  &__search {
+    @include flex;
+    gap: 1rem;
+
+    height: 36px;
+    width: 100%;
+    max-width: 300px;
+
+    padding: 0 8px;
+    margin-right: 4rem;
+
+    background-color: #1D1D1D;
+    border-radius: 3px;
+
+    input {
+      height: 100%;
+      width: 100%;
+      color: aliceblue;
+
+      &::placeholder {
+        color: #919191;
+      }
+    }
+
+    &-icon {
+      margin-top: 2px;
+      color: #919191;
+    }
+
+    @include _1200 {
+      margin-right: 2rem;
+    }
+  }
+
+  &__cart {
+    display: flex;
+    align-items: center;
+
+    margin-right: 1.4rem;
+
+    cursor: pointer;
+    @include unselectable;
+
+    &-icon {
+      font-size: 24px;
+      margin-right: 4px;
+    }
+
+    span {
+      font-weight: 500;
+    }
+
+    &:hover {
+      .navbar__cart-icon {
+        color: aliceblue;
+      }
+
+      span {
+        color: aliceblue;
+      }
+    }
+  }
+
+  &__profile {
+    display: flex;
+    align-items: center;
+
+    @include unselectable;
+
+    &-icon {
+      font-size: 24px;
+      margin-right: 5px;
+    }
+
+    &-text {
+      white-space: nowrap;
+    }
+
+    &:hover {
+      color: aliceblue;
+
+      cursor: pointer;
+    }
+  }
+}

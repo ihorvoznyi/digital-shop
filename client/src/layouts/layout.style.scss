@@ -1,0 +1,11 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  height: 100vh;
+
+  &__content {
+    margin-top: 80px;
+  }
+}
