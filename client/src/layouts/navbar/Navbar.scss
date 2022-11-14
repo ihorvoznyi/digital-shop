@@ -1,5 +1,6 @@
-@use '../../assets/scss/index' as *;
+@import '../../assets/scss/mixins';
 @import '../../assets/scss/responsive';
+@import '../../assets/scss/variables';
 
 .navbar {
   height: 80px;
@@ -11,6 +12,7 @@
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 15;
 
   &__container {
     display: flex;
@@ -87,90 +89,5 @@
     justify-content: flex-end;
 
     width: 100%;
-  }
-
-  &__search {
-    @include flex;
-    gap: 1rem;
-
-    height: 36px;
-    width: 100%;
-    max-width: 300px;
-
-    padding: 0 8px;
-    margin-right: 4rem;
-
-    background-color: #1D1D1D;
-    border-radius: 3px;
-
-    input {
-      height: 100%;
-      width: 100%;
-      color: aliceblue;
-
-      &::placeholder {
-        color: #919191;
-      }
-    }
-
-    &-icon {
-      margin-top: 2px;
-      color: #919191;
-    }
-
-    @include _1200 {
-      margin-right: 2rem;
-    }
-  }
-
-  &__cart {
-    display: flex;
-    align-items: center;
-
-    margin-right: 1.4rem;
-
-    cursor: pointer;
-    @include unselectable;
-
-    &-icon {
-      font-size: 24px;
-      margin-right: 4px;
-    }
-
-    span {
-      font-weight: 500;
-    }
-
-    &:hover {
-      .navbar__cart-icon {
-        color: aliceblue;
-      }
-
-      span {
-        color: aliceblue;
-      }
-    }
-  }
-
-  &__profile {
-    display: flex;
-    align-items: center;
-
-    @include unselectable;
-
-    &-icon {
-      font-size: 24px;
-      margin-right: 5px;
-    }
-
-    &-text {
-      white-space: nowrap;
-    }
-
-    &:hover {
-      color: aliceblue;
-
-      cursor: pointer;
-    }
   }
 }

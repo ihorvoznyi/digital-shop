@@ -1,6 +1,8 @@
 import React from 'react';
 import { BsSearch } from 'react-icons/bs';
 
+import './styles/Search.scss';
+
 const Search = () => {
   return (
     <div className='navbar__search'>

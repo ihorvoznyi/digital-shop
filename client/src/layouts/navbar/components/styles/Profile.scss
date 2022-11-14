@@ -1,0 +1,27 @@
+@import '../../../../assets/scss/mixins';
+@import '../../../../assets/scss/responsive';
+@import '../../../../assets/scss/variables';
+
+.navbar {
+  &__profile {
+    display: flex;
+    align-items: center;
+
+    @include unselectable;
+
+    &-icon {
+      font-size: 24px;
+      margin-right: 5px;
+    }
+
+    &-text {
+      white-space: nowrap;
+    }
+
+    &:hover {
+      color: aliceblue;
+
+      cursor: pointer;
+    }
+  }
+}

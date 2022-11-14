@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import Navbar from './navbar/Navbar';
 import Footer from './footer/Footer';
 
-import './layout.style.scss';
+import './Layout.scss';
 
 interface ILayout {
   children: React.ReactNode;
