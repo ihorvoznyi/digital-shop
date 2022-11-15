@@ -1,4 +1,4 @@
-import './styles/Orders.scss';
+import './Orders.scss';
 
 const Orders = () => {
   return (

@@ -7,13 +7,14 @@ class ShippingStore {
   private readonly ENTRY_POINT = 'https://api.novaposhta.ua/v2.0/json/';
 
   warehouses: string[] = [];
-  isOpen = false;
 
   constructor() {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {}, {
+      autoBind: true,
+    });
   }
 
-  async getWarehouses(city: string) {
+  async fetchWarehouses(city: string) {
     const response: IWarehouses  = (await axios.post(this.ENTRY_POINT, {
       apiKey: this.API_KEY,
       modelName: 'Address',
@@ -25,10 +26,12 @@ class ShippingStore {
 
     const data = response.data.map((item) => item.Description);
     this.warehouses = [...data];
+
+    return data;
   }
 
-  setIsOpen(state: boolean) {
-    this.isOpen = state;
+  getWarehouses() {
+    return [...this.warehouses];
   }
 }
 

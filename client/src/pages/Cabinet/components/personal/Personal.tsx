@@ -1,6 +1,6 @@
-import './styles/Personal.scss';
-import { userStore } from "../../../store";
-import { toPhoneNumber } from "../../../utils/toPhoneNumber";
+import './Personal.scss';
+import { userStore } from "../../../../store";
+import { toPhoneNumber } from "../../../../utils/toPhoneNumber";
 
 const Personal = () => {
   const { phoneNumber, email } = userStore.user;

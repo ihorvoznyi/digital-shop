@@ -3,9 +3,9 @@ import { AiOutlineUser } from 'react-icons/ai';
 import { FaClipboardList, FaUserAstronaut } from 'react-icons/fa';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 
-import './styles/CabinetSidebar.scss';
-import { userStore } from "../../../store";
-import { toPhoneNumber } from "../../../utils/toPhoneNumber";
+import './CabinetSidebar.scss';
+import { userStore } from "../../../../store";
+import { toPhoneNumber } from "../../../../utils/toPhoneNumber";
 
 const CabinetSidebar = () => {
   const navigate = useNavigate();

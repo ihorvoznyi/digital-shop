@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { OrderLine, UserOrder } from '../database/entities';
 import { UserService } from '../user/user.service';
 import { ProductService } from '../product/product.service';
@@ -56,9 +56,9 @@ export class OrderService {
   }
 
   async createOrder(orderDto: CreateOrderDto) {
-    const { userId, orderLineList } = orderDto;
+    const { userId, products } = orderDto;
 
-    if (!orderLineList.length) {
+    if (!products.length) {
       throw new HttpException('Order: no products', HttpStatus.BAD_REQUEST);
     }
 
@@ -66,7 +66,7 @@ export class OrderService {
       where: { id: userId },
     });
 
-    const orderTotal: number = orderLineList.reduce(
+    const orderTotal: number = products.reduce(
       (cur, prev) => cur + prev.quantity * prev.price,
       0,
     );
@@ -83,7 +83,7 @@ export class OrderService {
 
     const orderLines: OrderLine[] = [];
 
-    for await (const orderLine of orderLineList) {
+    for await (const orderLine of products) {
       const newOrderLine = await this.createOrderLine({
         order: savedOrder,
         productId: orderLine.productId,
