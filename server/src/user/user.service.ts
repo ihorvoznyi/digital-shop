@@ -55,6 +55,19 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+  public async checkIsAvailable(email: string): Promise<boolean> {
+    const candidate = await this.userRepository.findOneBy({ email });
+
+    if (candidate) {
+      throw new HttpException(
+        `Email #${email} is already taken`,
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    return true;
+  }
+
   public async createUser(createUserDto: CreateUserDto) {
     const { email } = createUserDto;
     const candidate = await this.userRepository.findOneBy({ email });

@@ -43,6 +43,11 @@ export class UserController {
     return this.userService.changeRole(userId, updateRoleDto);
   }
 
+  @Put('/validate-email')
+  validateEmail(@Body('email') email: string): Promise<boolean> {
+    return this.userService.checkIsAvailable(email);
+  }
+
   @Put(':id')
   updateUser(@Param('id') userId: string, @Body() dto: UpdateUserDto) {
     return this.userService.updateUser(userId, dto);
