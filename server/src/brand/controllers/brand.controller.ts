@@ -7,12 +7,15 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { BrandService } from './brand.service';
-import { Brand } from '../database/entities';
-import { CreateBrandDto } from './dtos';
-import { RoleGuard } from '../auth/guards/role.guard';
-import { Roles } from '../auth/decorators/role.decorator';
-import { RoleEnum } from '../auth/enums/role.enum';
+import { Brand } from '../../database/entities';
+
+import { BrandService } from '../services/brand.service';
+
+import { CreateBrandDto } from '../dtos';
+
+import { RoleGuard } from '../../auth/guards/role.guard';
+import { Roles } from '../../auth/decorators/role.decorator';
+import { RoleEnum } from '../../auth/enums/role.enum';
 
 @Controller('brands')
 export class BrandController {
@@ -20,7 +23,7 @@ export class BrandController {
 
   @Get(':id')
   getBrand(@Param('id') brandId: string): Promise<Brand> {
-    return this.brandService.getBrand({ where: { id: brandId } });
+    return this.brandService.getBrand(brandId);
   }
 
   @Get()

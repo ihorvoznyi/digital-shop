@@ -5,13 +5,13 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { SetAddressDto } from './dto/set-address.dto';
 import { User } from '../database/entities';
 import { FindOneOptions } from 'typeorm';
-import { UpdateRoleDto } from './dto/update-role.dto';
+import { UpdateRoleDto, UpdateUserDto } from './dto';
 import { RoleGuard } from '../auth/guards/role.guard';
 import { Roles } from '../auth/decorators/role.decorator';
 import { RoleEnum } from '../auth/enums/role.enum';
@@ -33,21 +33,18 @@ export class UserController {
     return this.userService.getUser(options);
   }
 
-  @Post('/address/:id')
-  setAddress(
-    @Param('id') userId: string,
-    @Body() addressDto: SetAddressDto,
-  ): Promise<User> {
-    return this.userService.setAddress(userId, addressDto);
-  }
-
   @Patch('/roles/:id')
   @UseGuards(RoleGuard)
   @Roles(RoleEnum.ADMIN)
   changeRole(
     @Param('id') userId: string,
-    @Body() updateRoleDto: UpdateRoleDto,
+    @Body() updateRoleDto: UpdateRoleDto
   ) {
     return this.userService.changeRole(userId, updateRoleDto);
+  }
+
+  @Put(':id')
+  updateUser(@Param('id') userId: string, @Body() dto: UpdateUserDto) {
+    return this.userService.updateUser(userId, dto);
   }
 }

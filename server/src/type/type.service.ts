@@ -10,7 +10,7 @@ export class TypeService {
   constructor(
     @InjectRepository(Type)
     private typeRepository: Repository<Type>,
-    private featureService: FeatureService,
+    private featureService: FeatureService
   ) {}
 
   async getTypes(options: FindManyOptions) {

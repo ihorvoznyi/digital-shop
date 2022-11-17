@@ -1,8 +1,9 @@
 import { RequestMethod } from '@nestjs/common';
+
 import { UserController } from '../user/user.controller';
 import { ProductController } from '../product/product.controller';
 import { TypeController } from '../type/type.controller';
-import { BrandController } from '../brand/brand.controller';
+import { BrandController } from '../brand/controllers/brand.controller';
 import { OrderController } from '../order/order.controller';
 
 const USER_ROUTES = [

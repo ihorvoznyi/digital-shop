@@ -8,6 +8,8 @@ node_modules/
 /.vscode
 /.devcontainer
 *.code-workspace
+.history/
+.vscode/
 
 # bundle
 packages/**/*.d.ts

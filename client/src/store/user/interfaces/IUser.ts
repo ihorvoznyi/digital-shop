@@ -2,8 +2,9 @@ import { IAddress } from "./IAddress";
 
 export interface IUser {
   id: string;
+  name: string;
+  role: string;
   email: string;
   phoneNumber: string;
-  role: string;
-  address?: IAddress;
+  addresses: IAddress;
 }

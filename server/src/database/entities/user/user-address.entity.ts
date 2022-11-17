@@ -5,9 +5,12 @@ export class Address {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ nullable: true })
   city: string;
 
-  @Column({ nullable: false })
-  address: string;
+  @Column({ nullable: true })
+  home: string;
+
+  @Column({ nullable: true })
+  postOffice: string;
 }

@@ -1,17 +1,15 @@
-import { UserRolesEnum } from '../../user/enums';
-
 type addressType = {
   id: string;
   city: string;
-  street: string;
-  unitNumber: string;
-  postalCode: string;
+  home: string;
+  postOffice: string;
 };
 
 export interface IClientUser {
   id: string;
+  name: string;
+  role: string;
   email: string;
-  role: UserRolesEnum;
   phoneNumber: string;
   address: addressType;
 }

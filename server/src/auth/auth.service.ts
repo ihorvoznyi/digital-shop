@@ -1,6 +1,8 @@
 import {
+  forwardRef,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -12,16 +14,16 @@ import { RegistrationDto } from './dtos/registration.dto';
 import { LoginDto } from './dtos/login.dto';
 import { IAuthReturn } from './interfaces/auth.interface';
 import { UserService } from '../user/user.service';
-import { IClientUser } from './interfaces/client-user.interface';
 
 @Injectable()
 export class AuthService {
   readonly config: string;
 
   constructor(
+    @Inject(forwardRef(() => UserService))
     private userService: UserService,
     private jwtService: JwtService,
-    private configService: ConfigService,
+    private configService: ConfigService
   ) {
     this.config = configService.get<string>('JWT_SECRET_KEY');
   }
@@ -42,7 +44,7 @@ export class AuthService {
     // Generate JWT Token
     const token: string = await this.signToken(newUser);
 
-    const clientUser = AuthService.userForClient(newUser);
+    const clientUser = UserService.userForClient(newUser);
 
     return { token, user: clientUser };
   }
@@ -54,7 +56,7 @@ export class AuthService {
     });
     const token: string = await this.signToken(user);
 
-    const clientUser = AuthService.userForClient(user);
+    const clientUser = UserService.userForClient(user);
 
     return { token, user: clientUser };
   }
@@ -66,13 +68,13 @@ export class AuthService {
     if (!user) throw new UnauthorizedException('Invalid token');
     const token: string = await this.signToken(user);
 
-    const clientUser = AuthService.userForClient(user);
+    const clientUser = UserService.userForClient(user);
 
     return { token, user: clientUser };
   }
 
   // Create JWT Token using user data (email, userId)
-  private async signToken(user: User): Promise<string> {
+  public async signToken(user: User): Promise<string> {
     const payload = {
       sub: user.id,
       email: user.email,
@@ -98,7 +100,7 @@ export class AuthService {
 
     const isPasswordEquals: boolean = await bcrypt.compare(
       password,
-      user.password,
+      user.password
     );
 
     if (!isPasswordEquals) {
@@ -106,15 +108,5 @@ export class AuthService {
     }
 
     return user;
-  }
-
-  static userForClient(user): IClientUser {
-    return {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-      phoneNumber: user.phoneNumber,
-      address: user.address,
-    };
   }
 }

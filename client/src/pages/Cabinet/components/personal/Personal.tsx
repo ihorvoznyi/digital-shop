@@ -1,9 +1,20 @@
-import './Personal.scss';
+import { PersonalMain } from "../index";
+
+import './styles/Personal.scss';
 import { userStore } from "../../../../store";
-import { toPhoneNumber } from "../../../../utils/toPhoneNumber";
+import { useState } from "react";
 
 const Personal = () => {
-  const { phoneNumber, email } = userStore.user;
+  const userInfo = userStore.user;
+
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+
+  const handleClose = () => {
+    setIsEditing(false);
+  }
+
+  const handleSave = () => {}
+
   return (
     <div className='cabinet-personal'>
       <div className='cabinet-personal__container'>
@@ -11,26 +22,23 @@ const Personal = () => {
           Особиста Інформація
         </h2>
 
-        <div className='cabinet-personal__info'>
-          <div className='cabinet-personal__row'>
-            <p>Ім'я та Прізвище:</p>
-            <p>Ігор Возний</p>
-          </div>
+        {isEditing ? '' : <PersonalMain userInfo={userInfo}/> }
 
-          <div className='cabinet-personal__row'>
-            <p>Номер телефону:</p>
-            <p>{toPhoneNumber(phoneNumber)}</p>
-          </div>
+        {isEditing ? (
+          <div className='cabinet-personal__editing-buttons'>
+            <div className='cabinet-personal__cancel-btn' onClick={() => setIsEditing(true)}>
+              <span>Відмінити</span>
+            </div>
 
-          <div className='cabinet-personal__row'>
-            <p>E-mail:</p>
-            <p>{email}</p>
+            <div className='cabinet-personal__save-btn' onClick={() => setIsEditing(true)}>
+              <span>Зберегти</span>
+            </div>
           </div>
-        </div>
-
-        <div className='cabinet-personal__change-info'>
-          <span>Редагувати</span>
-        </div>
+        ) : (
+          <div className='cabinet-personal__change-info' onClick={() => setIsEditing(true)}>
+            <span>Редагувати</span>
+          </div>
+        )}
       </div>
     </div>
   );

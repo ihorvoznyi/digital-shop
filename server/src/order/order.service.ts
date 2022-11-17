@@ -14,7 +14,7 @@ export class OrderService {
     @InjectRepository(UserOrder)
     private userOrderRepository: Repository<UserOrder>,
     private userService: UserService,
-    private productService: ProductService,
+    private productService: ProductService
   ) {}
 
   async getOrders(userId: string) {
@@ -39,7 +39,7 @@ export class OrderService {
     if (!product) {
       throw new HttpException(
         "Order: product doesn't exist",
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.BAD_REQUEST
       );
     }
 
@@ -68,7 +68,7 @@ export class OrderService {
 
     const orderTotal: number = products.reduce(
       (cur, prev) => cur + prev.quantity * prev.price,
-      0,
+      0
     );
 
     const newOrder = this.userOrderRepository.create({

@@ -13,7 +13,7 @@ export class ValidTokenMiddleware implements NestMiddleware {
   readonly config: string;
   constructor(
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService
   ) {
     this.config = this.configService.get<string>('JWT_SECRET_KEY');
   }
