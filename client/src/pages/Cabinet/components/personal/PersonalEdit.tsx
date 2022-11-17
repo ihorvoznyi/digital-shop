@@ -24,12 +24,12 @@ const PersonalEdit: FC<PropsType> = ({ userInfo, onChange }) => {
   const { email, phoneNumber, name, address } = userInfo;
   const { home, city, postOffice } = address;
 
-  const [newName, setNewName] = useState<string>(name);
+  const [newName, setNewName] = useState<string>(name ? name : '');
   const [newEmail, setNewEmail] = useState<string>(email);
   const [newPhone, setNewPhone] = useState<string>(phoneNumber);
-  const [newCity, setNewCity] = useState<string>(city);
-  const [newHome, setNewHome] = useState<string>(home);
-  const [newPostOffice, setNewPostOffice] = useState<string>(postOffice);
+  const [newCity, setNewCity] = useState<string>(city ? city : '');
+  const [newHome, setNewHome] = useState<string>(home ? home : '');
+  const [newPostOffice, setNewPostOffice] = useState<string>(postOffice ? postOffice : '');
 
   const [activeWarehouses, setActiveWarehouses] = useState(shippingStore.warehouses);
 
