@@ -64,7 +64,7 @@ export class AuthService {
   // Function which let user avoid extra authorization
   // *When reload the page etc.*
   async auth(email: string): Promise<IAuthReturn> {
-    const user = await this.userService.getUser({ where: { email } });
+    const user = await this.userService.getUser({ email });
     if (!user) throw new UnauthorizedException('Invalid token');
     const token: string = await this.signToken(user);
 
@@ -89,10 +89,7 @@ export class AuthService {
 
   // Checking if login parameters is correct
   private async validateUser({ email, password }): Promise<User> {
-    const user = await this.userService.getUser({
-      where: { email },
-      relations: ['address'],
-    });
+    const user = await this.userService.getUser({ email });
 
     if (!user) {
       throw new HttpException('User is not exists.', HttpStatus.BAD_REQUEST);

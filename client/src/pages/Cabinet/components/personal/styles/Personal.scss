@@ -1,10 +1,11 @@
-@import '../../../../../assets/scss/variables';
-@import '../../../../../assets/scss/mixins';
+@import "../../../../../assets/scss/variables";
+@import "../../../../../assets/scss/mixins";
 
 .cabinet-personal {
   color: aliceblue;
 
-  &__info {
+  &__info,
+  &__edit {
     margin-top: 2rem;
 
     display: grid;
@@ -15,6 +16,7 @@
 
   &__row {
     display: grid;
+    align-items: center;
     grid-template-columns: 1fr 1fr;
 
     p {
@@ -35,6 +37,35 @@
     &:hover {
       cursor: pointer;
       color: #800080;
+    }
+  }
+
+  &__editing-buttons {
+    display: flex;
+    gap: 2rem;
+
+    margin-top: 2rem;
+  }
+
+  &__editing-btn {
+    
+    transition: color 0.2s ease;
+
+    @include unselectable;
+    &:hover {
+      cursor: pointer;
+    }
+
+    &_save {
+      &:hover {
+        color: $blue-color;
+      }
+    }
+
+    &_cancel {
+      &:hover {
+        color: $red-color;
+      }
     }
   }
 }

@@ -10,13 +10,14 @@ interface PropsType {
 }
 
 const PersonalMain: FC<PropsType> = ({ userInfo }) => {
-  const { phoneNumber, email,  } = userInfo;
+  const { phoneNumber, email, name, address } = userInfo;
+  const { city, home, postOffice } = address;
 
   return (
     <div className='cabinet-personal__info'>
       <div className='cabinet-personal__row'>
         <p>Ім'я та Прізвище:</p>
-        <p>Ігор Возний</p>
+        <p>{name ? name : 'Не вказано'}</p>
       </div>
 
       <div className='cabinet-personal__row'>
@@ -31,14 +32,18 @@ const PersonalMain: FC<PropsType> = ({ userInfo }) => {
 
       <div className='cabinet-personal__row'>
         <p>Місто:</p>
-        <p>{email}</p>
+        <p>{city ? city : 'Не вказано'}</p>
       </div>
 
       <div className='cabinet-personal__row'>
-        <p>E-mail:</p>
-        <p>{email}</p>
+        <p>Дом. Адреса:</p>
+        <p>{home ? home : 'Не вказано'}</p>
       </div>
 
+      <div className='cabinet-personal__row'>
+        <p>Склад Нової Пошти:</p>
+        <p>{postOffice ? postOffice : 'Не вказано'}</p>
+      </div>
     </div>
   );
 };

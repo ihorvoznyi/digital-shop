@@ -1,21 +1,21 @@
-import { ILogin, IRegistration, IUser } from "./interfaces";
+import { ILogin, IRegistration, IUser, IUpdateUser } from "./interfaces";
 import { makeAutoObservable } from "mobx";
 import axios from "axios";
 
 const AUTH_URL = 'http://localhost:8080/auth';
+const USER_URL = 'http://localhost:8080/users';
 
 const initialState = {
   user: {
     id: '',
-    email: '',
+    name: '',
     role: '',
+    email: '',
     phoneNumber: '',
     address: {
-      id: '',
       city: '',
-      street: '',
-      unitNumber: '',
-      postalCode: '',
+      home: '',
+      postOffice: '',
     }
   },
 }
@@ -94,6 +94,36 @@ export class UserStore {
       throw new Error('Registration Error');
     } finally {
       this.setLoading(false);
+    }
+  }
+
+  async updateUser(updateInfo: IUpdateUser) {
+    const url = `${USER_URL}/${this.user.id}`;
+
+    try {
+      const response = await axios.put(url, updateInfo, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+      });
+
+      const { user, token } = response.data;
+  
+      if (token) localStorage.setItem('token', token);
+  
+      this.user = user;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async checkIsAvailable(email: string) {
+    const url = `${USER_URL}/validate-email`;
+
+    try {
+      await axios.post(url, { email });
+
+      return true;
+    } catch {
+      return false;
     }
   }
 

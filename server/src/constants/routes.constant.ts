@@ -8,6 +8,7 @@ import { OrderController } from '../order/order.controller';
 
 const USER_ROUTES = [
   { path: '/users/address/:id', method: RequestMethod.POST },
+  { path: '/users/validate-email', method: RequestMethod.POST },
   { path: '/users', method: RequestMethod.GET },
 ];
 

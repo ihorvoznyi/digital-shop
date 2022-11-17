@@ -4,9 +4,9 @@ import { observer } from "mobx-react-lite";
 import { generalStore, shippingStore } from "../../../../store";
 
 import { useDebounce } from "../../../../hooks/useDebounce";
+import { Warehouses } from "../../../../components";
 
 import './styles/PostOfficeAddress.scss'
-import { Warehouses } from "../../../../components";
 
 const WAREHOUSE_SECTION = 'warehouseSection';
 

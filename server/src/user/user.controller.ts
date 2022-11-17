@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from '../database/entities';
-import { FindOneOptions } from 'typeorm';
 import { UpdateRoleDto, UpdateUserDto } from './dto';
 import { RoleGuard } from '../auth/guards/role.guard';
 import { Roles } from '../auth/decorators/role.decorator';
@@ -27,10 +26,7 @@ export class UserController {
 
   @Get(':id')
   getUser(@Param('id') userId: string): Promise<User> {
-    const options: FindOneOptions = {
-      where: { id: userId },
-    };
-    return this.userService.getUser(options);
+    return this.userService.getUser({ id: userId });
   }
 
   @Patch('/roles/:id')
@@ -43,7 +39,7 @@ export class UserController {
     return this.userService.changeRole(userId, updateRoleDto);
   }
 
-  @Put('/validate-email')
+  @Post('/validate-email')
   validateEmail(@Body('email') email: string): Promise<boolean> {
     return this.userService.checkIsAvailable(email);
   }

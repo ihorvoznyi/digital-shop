@@ -18,7 +18,7 @@ class ShippingStore {
     const response: IWarehouses  = (await axios.post(this.ENTRY_POINT, {
       apiKey: this.API_KEY,
       modelName: 'Address',
-      calledMethod: "getWarehouses",
+      calledMethod: 'getWarehouses',
       methodProperties: {
         CityName: city,
       }
@@ -26,6 +26,8 @@ class ShippingStore {
 
     const data = response.data.map((item) => item.Description);
     this.warehouses = [...data];
+
+    console.log(data);
 
     return data;
   }

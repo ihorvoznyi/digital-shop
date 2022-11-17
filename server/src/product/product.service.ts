@@ -146,7 +146,7 @@ export class ProductService {
     };
     const product = await this.productRepository.findOne(options);
 
-    const user = await this.userService.getUser({ where: { id: userId } });
+    const user = await this.userService.getUser({ id: userId });
 
     if (!product) {
       throw new HttpException('Product does not exist', HttpStatus.BAD_REQUEST);

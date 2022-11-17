@@ -6,7 +6,7 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, Repository } from 'typeorm';
+import { FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
 
 import { Address, User } from '../database/entities';
 
@@ -32,7 +32,12 @@ export class UserService {
     return this.userRepository.find({ relations: ['address'] });
   }
 
-  public async getUser(options: FindOneOptions): Promise<User> {
+  public async getUser(findWhere: FindOptionsWhere<User>): Promise<User> {
+    const options: FindOneOptions = {
+      where: findWhere,
+      relations: ['address'],
+    };
+
     const user = await this.userRepository.findOne(options);
 
     if (!user) {
@@ -92,7 +97,6 @@ export class UserService {
     }
   }
 
-  // FINISH Function
   public async updateAddress(address: IAddress): Promise<IAddress> {
     const { id, city, postOffice, home } = address;
     const userAddress = await this.addressRepository.findOneBy({ id });
@@ -135,31 +139,40 @@ export class UserService {
     if (user.name !== name) user.name = name;
     if (user.phoneNumber !== phoneNumber) user.phoneNumber = phoneNumber;
 
-    const userAddressValues = Object.values(user.address);
-    const updateAddressValues = Object.values(address);
+    const isChangedCity = user.address.city !== address.city;
+    const isChangedHome = user.address.home !== address.home;
+    const isChangedPostOffice = user.address.postOffice !== address.postOffice;
 
-    if (
-      updateAddressValues.every((value) => userAddressValues.includes(value))
-    ) {
+    if (isChangedCity || isChangedHome || isChangedPostOffice) {
       user.address = await this.updateAddress({
         ...address,
         id: user.address.id,
       });
     }
 
+    user.address = await this.updateAddress({
+      ...address,
+      id: user.address.id,
+    });
+
     const savedUser = await this.userRepository.save(user);
 
     return { user: UserService.userForClient(savedUser), token };
   }
 
-  static userForClient(user): IClientUser {
+  static userForClient(user: User): IClientUser {
+    const { city, home, postOffice } = user.address;
     return {
       id: user.id,
       name: user.name,
       role: user.role,
       email: user.email,
       phoneNumber: user.phoneNumber,
-      address: user.address,
+      address: {
+        city,
+        home,
+        postOffice,
+      },
     };
   }
 }

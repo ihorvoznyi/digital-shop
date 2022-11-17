@@ -6,5 +6,12 @@ export interface IUser {
   role: string;
   email: string;
   phoneNumber: string;
-  addresses: IAddress;
+  address: IAddress;
+}
+
+export interface IUpdateUser {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  address: IAddress;
 }

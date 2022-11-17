@@ -11,7 +11,7 @@ const CabinetSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation().pathname;
 
-  const { phoneNumber, email } = userStore.user;
+  const { id, phoneNumber, email, name } = userStore.user;
 
   return (
     <div className='cabinet-sidebar'>
@@ -22,7 +22,7 @@ const CabinetSidebar = () => {
               <FaUserAstronaut color='aliceblue'/>
             </div>
 
-            <p>Ігор Возний</p>
+            <p>{name ? name : id.slice(0, 12) + '...'}</p>
           </div>
 
           <div className='cabinet-sidebar__email'>

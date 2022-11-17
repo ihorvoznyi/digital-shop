@@ -62,10 +62,10 @@
 
   &__buy-btn {
     margin-right: 2rem;
-    background-color: #C42A2C;
+    background-color: $red-color;
 
     &:hover {
-      background-color: #8a1d1f;
+      background-color: $red-hover;
       cursor: pointer;
     }
   }

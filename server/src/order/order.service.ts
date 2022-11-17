@@ -19,11 +19,11 @@ export class OrderService {
 
   async getOrders(userId: string) {
     const user = await this.userService.getUser({
-      where: { id: userId },
+      id: userId,
     });
 
     if (!user) {
-      throw new HttpException("User: doesn't exist", HttpStatus.BAD_REQUEST);
+      throw new HttpException('User: does not exist', HttpStatus.BAD_REQUEST);
     }
 
     return this.userOrderRepository.find({
@@ -38,7 +38,7 @@ export class OrderService {
 
     if (!product) {
       throw new HttpException(
-        "Order: product doesn't exist",
+        'Order: product does not exist',
         HttpStatus.BAD_REQUEST
       );
     }
@@ -63,7 +63,7 @@ export class OrderService {
     }
 
     const user = await this.userService.getUser({
-      where: { id: userId },
+      id: userId,
     });
 
     const orderTotal: number = products.reduce(
@@ -107,7 +107,7 @@ export class OrderService {
     });
 
     if (!order) {
-      throw new HttpException("Order: doesn't exist", HttpStatus.BAD_REQUEST);
+      throw new HttpException('Order: does not exist', HttpStatus.BAD_REQUEST);
     }
 
     order.orderStatus = status;

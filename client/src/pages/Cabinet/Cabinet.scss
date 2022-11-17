@@ -11,5 +11,8 @@
 
   &__content {
     margin-top: 1rem;
+    flex: 1;
+
+    max-width: 450px;
   }
 }

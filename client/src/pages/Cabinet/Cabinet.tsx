@@ -12,7 +12,7 @@ interface PropsType {
 const Cabinet: FC<PropsType> = ({ children }) => {
   return (
     <div className='cabinet'>
-      <div className='cabinet__container container'>
+      <div className='cabinet__container'>
         <CabinetSidebar />
 
         <div className='cabinet__content'>
