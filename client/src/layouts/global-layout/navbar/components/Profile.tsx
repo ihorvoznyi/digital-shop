@@ -1,13 +1,15 @@
 import React from 'react';
 import { FaUserCircle } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { userStore } from "../../../../store";
 
 import './styles/Profile.scss';
+import { observer } from "mobx-react-lite";
 
-const Profile = () => {
+const Profile = observer(() => {
   const navigate = useNavigate();
 
-  const isAuth = true;
+  const isAuth: boolean = userStore.isAuth;
 
   const path = isAuth ? '/cabinet' : '/login';
 
@@ -30,6 +32,6 @@ const Profile = () => {
         )}
     </div>
   );
-};
+});
 
 export default Profile;

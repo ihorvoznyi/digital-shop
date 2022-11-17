@@ -1,7 +1,8 @@
-import React from 'react';
-import { Cart, NavLinks, Profile, Search } from './components';
 import './Navbar.scss';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { observer } from "mobx-react-lite";
+import { Cart, NavLinks, Profile, Search } from './components';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -26,4 +27,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default observer(Navbar);

@@ -20,6 +20,9 @@ export class Type {
   @Column()
   type: string;
 
+  @Column()
+  tag: string;
+
   @OneToMany(() => Feature, (feature) => feature.type, {
     cascade: true,
   })
