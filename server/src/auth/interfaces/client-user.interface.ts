@@ -1,8 +1,8 @@
+import { IAddress } from '../../address/interfaces';
+
 type addressType = {
-  id: string;
-  method: string;
-  city: string;
-  address: string;
+  homeDelivery: IAddress[];
+  warehouseDelivery: IAddress[];
 };
 
 export interface IClientUser {
@@ -11,5 +11,5 @@ export interface IClientUser {
   role: string;
   email: string;
   phoneNumber: string;
-  addresses: addressType[];
+  addresses: addressType;
 }

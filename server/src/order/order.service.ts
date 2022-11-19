@@ -17,7 +17,7 @@ export class OrderService {
     private productService: ProductService
   ) {}
 
-  async getOrders(userId: string) {
+  public async getOrders(userId: string) {
     const user = await this.userService.getUser({
       id: userId,
     });
@@ -31,32 +31,8 @@ export class OrderService {
     });
   }
 
-  async createOrderLine(orderLineDto: CreateOrderLineDto): Promise<OrderLine> {
-    const product = await this.productService.getProduct({
-      where: { id: orderLineDto.productId },
-    });
-
-    if (!product) {
-      throw new HttpException(
-        'Order: product does not exist',
-        HttpStatus.BAD_REQUEST
-      );
-    }
-
-    const { quantity, price, order } = orderLineDto;
-
-    const newOrder = this.orderLineRepository.create({
-      quantity,
-      price,
-      order,
-      product,
-    });
-
-    return this.orderLineRepository.save(newOrder);
-  }
-
-  async createOrder(orderDto: CreateOrderDto) {
-    const { userId, products } = orderDto;
+  public async createOrder(dto: CreateOrderDto) {
+    const { userId, products, shipping, contact } = dto;
 
     if (!products.length) {
       throw new HttpException('Order: no products', HttpStatus.BAD_REQUEST);
@@ -75,7 +51,8 @@ export class OrderService {
       orderDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
       orderTotal,
       orderStatus: 'pending',
-      shippingAddress: user.address,
+      shippingAddress: shipping,
+      contactInfo: contact,
       user,
     });
 
@@ -113,5 +90,31 @@ export class OrderService {
     order.orderStatus = status;
 
     return this.userOrderRepository.save(order);
+  }
+
+  private async createOrderLine(
+    orderLineDto: CreateOrderLineDto
+  ): Promise<OrderLine> {
+    const product = await this.productService.getProduct({
+      where: { id: orderLineDto.productId },
+    });
+
+    if (!product) {
+      throw new HttpException(
+        'Order: product does not exist',
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    const { quantity, price, order } = orderLineDto;
+
+    const newOrder = this.orderLineRepository.create({
+      quantity,
+      price,
+      order,
+      product,
+    });
+
+    return this.orderLineRepository.save(newOrder);
   }
 }

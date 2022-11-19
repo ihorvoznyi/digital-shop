@@ -10,6 +10,7 @@ import {
 import { User } from '../user/user.entity';
 import { OrderLine } from './order-line.entity';
 import { OrderAddress } from './order-address.entity';
+import { UserContact } from '../user/user-contact.entity';
 
 @Entity({ name: 'orders' })
 export class UserOrder {
@@ -37,4 +38,8 @@ export class UserOrder {
   @ManyToOne(() => OrderAddress)
   @JoinTable()
   shippingAddress: OrderAddress;
+
+  @ManyToOne(() => UserContact)
+  @JoinTable()
+  contactInfo: UserContact;
 }

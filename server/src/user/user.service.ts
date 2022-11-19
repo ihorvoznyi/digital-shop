@@ -128,13 +128,31 @@ export class UserService {
   }
 
   static userForClient(user: User): IClientUser {
+    const { userAddresses } = user;
+
+    const homeDelivery = [];
+    const warehouseDelivery = [];
+
+    if (userAddresses.length) {
+      userAddresses.forEach((address) => {
+        if (address.method === 'homeDelivery') {
+          homeDelivery.push(address);
+        } else {
+          warehouseDelivery.push(address);
+        }
+      });
+    }
+
     return {
       id: user.id,
       name: user.name,
       role: user.role,
       email: user.email,
       phoneNumber: user.phoneNumber,
-      addresses: user.userAddresses,
+      addresses: {
+        homeDelivery: homeDelivery,
+        warehouseDelivery: warehouseDelivery,
+      },
     };
   }
 }
