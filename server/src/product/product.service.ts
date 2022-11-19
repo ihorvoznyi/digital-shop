@@ -20,7 +20,7 @@ import { IFeature } from '../feature/interfaces';
 import { IProduct, IReview } from './interfaces';
 import { FeatureValue, Product, Review } from '../database/entities';
 import { UserService } from '../user/user.service';
-import { RELATIONS } from '../constants/product.constant';
+import { PRODUCT_RELATIONS } from './constants/product.constant';
 import { NumberService } from '../utils/number.service';
 import { IFilterQuery } from './interfaces/product-filter.interface';
 
@@ -63,7 +63,7 @@ export class ProductService {
 
   async getInitialProducts(): Promise<IProduct[]> {
     const options: FindManyOptions = {
-      relations: RELATIONS,
+      relations: PRODUCT_RELATIONS,
       take: 8,
       order: {
         comments: {
@@ -91,7 +91,7 @@ export class ProductService {
 
   async getProductForClient(productId: string): Promise<IProduct> {
     const options: FindOneOptions = {
-      relations: RELATIONS,
+      relations: PRODUCT_RELATIONS,
       where: { id: productId },
     };
 
@@ -174,7 +174,7 @@ export class ProductService {
   ): Promise<IProduct> {
     const options: FindOneOptions = {
       where: { id: productId },
-      relations: RELATIONS,
+      relations: PRODUCT_RELATIONS,
     };
     const product = await this.productRepository.findOne(options);
 
@@ -282,7 +282,7 @@ export class ProductService {
     const { priceRange, brands } = filters;
 
     const options: FindManyOptions = {
-      relations: RELATIONS,
+      relations: PRODUCT_RELATIONS,
       where: {
         type: { id: typeId },
       },

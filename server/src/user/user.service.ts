@@ -8,34 +8,32 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, FindOptionsWhere, Repository } from 'typeorm';
 
-import { Address, User } from '../database/entities';
+import { User } from '../database/entities';
 
 import { AuthService } from '../auth/auth.service';
 
-import { CreateUserDto, UpdateRoleDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdateRoleDto, UpdateUserDto } from './dtos';
 
 import { IClientUser } from '../auth/interfaces/client-user.interface';
-import { IAddress } from './interfaces';
+import { ADDRESS_RELATION } from './constants/user.constant';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(Address)
-    private addressRepository: Repository<Address>,
     @Inject(forwardRef(() => AuthService))
     private authService: AuthService
   ) {}
 
   public async getUsers(): Promise<User[]> {
-    return this.userRepository.find({ relations: ['address'] });
+    return this.userRepository.find({ relations: ADDRESS_RELATION });
   }
 
   public async getUser(findWhere: FindOptionsWhere<User>): Promise<User> {
     const options: FindOneOptions = {
       where: findWhere,
-      relations: ['address'],
+      relations: ADDRESS_RELATION,
     };
 
     const user = await this.userRepository.findOne(options);
@@ -85,11 +83,8 @@ export class UserService {
     }
 
     try {
-      let addressInfo = this.addressRepository.create();
-      addressInfo = await this.addressRepository.save(addressInfo);
-
       const newUser = this.userRepository.create(createUserDto);
-      newUser.address = addressInfo;
+      newUser.userAddresses = null;
 
       return this.userRepository.save(newUser);
     } catch {
@@ -97,23 +92,11 @@ export class UserService {
     }
   }
 
-  public async updateAddress(address: IAddress): Promise<IAddress> {
-    const { id, city, postOffice, home } = address;
-    const userAddress = await this.addressRepository.findOneBy({ id });
-
-    userAddress.city = city;
-    userAddress.home = home;
-    userAddress.postOffice = postOffice;
-
-    return this.addressRepository.save(userAddress);
-  }
-
   public async updateUser(userId: string, dto: UpdateUserDto) {
-    const { name, email, phoneNumber, address } = dto;
+    const { name, email, phoneNumber } = dto;
 
     const user = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ['address'],
     });
 
     if (!user) {
@@ -139,40 +122,19 @@ export class UserService {
     if (user.name !== name) user.name = name;
     if (user.phoneNumber !== phoneNumber) user.phoneNumber = phoneNumber;
 
-    const isChangedCity = user.address.city !== address.city;
-    const isChangedHome = user.address.home !== address.home;
-    const isChangedPostOffice = user.address.postOffice !== address.postOffice;
-
-    if (isChangedCity || isChangedHome || isChangedPostOffice) {
-      user.address = await this.updateAddress({
-        ...address,
-        id: user.address.id,
-      });
-    }
-
-    user.address = await this.updateAddress({
-      ...address,
-      id: user.address.id,
-    });
-
     const savedUser = await this.userRepository.save(user);
 
     return { user: UserService.userForClient(savedUser), token };
   }
 
   static userForClient(user: User): IClientUser {
-    const { city, home, postOffice } = user.address;
     return {
       id: user.id,
       name: user.name,
       role: user.role,
       email: user.email,
       phoneNumber: user.phoneNumber,
-      address: {
-        city,
-        home,
-        postOffice,
-      },
+      addresses: user.userAddresses,
     };
   }
 }

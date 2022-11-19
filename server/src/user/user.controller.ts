@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from '../database/entities';
-import { UpdateRoleDto, UpdateUserDto } from './dto';
+import { UpdateRoleDto, UpdateUserDto } from './dtos';
 import { RoleGuard } from '../auth/guards/role.guard';
 import { Roles } from '../auth/decorators/role.decorator';
 import { RoleEnum } from '../auth/enums/role.enum';
@@ -31,7 +31,7 @@ export class UserController {
 
   @Patch('/roles/:id')
   @UseGuards(RoleGuard)
-  @Roles(RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   changeRole(
     @Param('id') userId: string,
     @Body() updateRoleDto: UpdateRoleDto

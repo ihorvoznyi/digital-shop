@@ -2,6 +2,7 @@
 export * from './user/user.entity';
 export * from './user/user-address.entity';
 export * from './user/user-review.entity';
+export * from './user/user-contact.entity';
 
 // Product
 export * from './product/product.entity';

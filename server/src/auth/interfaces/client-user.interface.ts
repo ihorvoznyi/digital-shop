@@ -1,7 +1,8 @@
 type addressType = {
+  id: string;
+  method: string;
   city: string;
-  home: string;
-  postOffice: string;
+  address: string;
 };
 
 export interface IClientUser {
@@ -10,5 +11,5 @@ export interface IClientUser {
   role: string;
   email: string;
   phoneNumber: string;
-  address: addressType;
+  addresses: addressType[];
 }

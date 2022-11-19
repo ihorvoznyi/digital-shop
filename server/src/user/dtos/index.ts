@@ -1,4 +1,3 @@
-export * from './set-address.dto';
 export * from './update-user.dto';
 export * from './update-role.dto';
 export * from './create-user.dto';

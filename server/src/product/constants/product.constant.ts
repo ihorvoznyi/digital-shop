@@ -1,4 +1,4 @@
-export const RELATIONS = [
+export const PRODUCT_RELATIONS = [
   'type',
   'brand',
   'features',
