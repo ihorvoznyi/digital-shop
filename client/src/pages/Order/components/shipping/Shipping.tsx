@@ -1,11 +1,15 @@
-import './styles/Shipping.scss'
 import React, { useState } from 'react';
 import { observer } from "mobx-react-lite";
+
 import { ShippingMethodEnum } from "./enums/ShippingMethodEnum";
+
 import PostOfficeAddress from "./PostOfficeAddress";
 import HomeAddress from "./HomeAddress";
+
 import { generalStore } from "../../../../store";
 import { orderStore } from "../../../../store/order/Order";
+
+import './styles/Shipping.scss'
 
 const METHOD_SECTION = 'methodSection';
 

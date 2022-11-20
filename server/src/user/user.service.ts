@@ -95,13 +95,7 @@ export class UserService {
   public async updateUser(userId: string, dto: UpdateUserDto) {
     const { name, email, phoneNumber } = dto;
 
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-    });
-
-    if (!user) {
-      throw new HttpException('User does not exist', HttpStatus.BAD_REQUEST);
-    }
+    const user = await this.getUser({ id: userId });
 
     let token = null;
 

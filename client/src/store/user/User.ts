@@ -1,6 +1,7 @@
-import { ILogin, IRegistration, IUser, IUpdateUser } from "./interfaces";
+import { ILogin, IRegistration, IUser, IUpdateUser, INewAddress } from "./interfaces";
 import { makeAutoObservable } from "mobx";
 import axios from "axios";
+import { AddressEnum } from "../shipping/enums";
 
 const AUTH_URL = 'http://localhost:8080/auth';
 const USER_URL = 'http://localhost:8080/users';
@@ -12,10 +13,9 @@ const initialState = {
     role: '',
     email: '',
     phoneNumber: '',
-    address: {
-      city: '',
-      home: '',
-      postOffice: '',
+    addresses: {
+      homeDelivery: [],
+      warehouseDelivery: [],
     }
   },
 }
@@ -124,6 +124,17 @@ export class UserStore {
       return true;
     } catch {
       return false;
+    }
+  }
+
+  async createAddress(newAddress: INewAddress) {
+    const url = `http://localhost:8080/address/${this.user.id}`;
+    try {
+      const response = await axios.post(url, newAddress);
+
+      this.user.addresses = response.data;
+    } catch {
+      //
     }
   }
 

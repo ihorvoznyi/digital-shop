@@ -4,7 +4,6 @@ import { observer } from "mobx-react-lite";
 import { generalStore, shippingStore } from "../../../../store";
 
 import { useDebounce } from "../../../../hooks/useDebounce";
-import { Warehouses } from "../../../../components";
 
 import './styles/PostOfficeAddress.scss'
 
@@ -28,7 +27,7 @@ const PostOfficeAddress = () => {
     setSearchPlace(city);
 
     if (city) {
-      shippingStore.fetchWarehouses(city).then(() => {});
+      shippingStore.fetchWarehouses(city).then(() => { });
     }
   }
 
@@ -47,6 +46,7 @@ const PostOfficeAddress = () => {
 
   const handleSelect = (warehouse: string) => {
     setSelectedWarehouse(warehouse);
+    generalStore.setOpenSection(null);
   }
 
   const debounceCitySearch = useCallback(useDebounce(handleSearchCity, 500), []);
@@ -75,12 +75,24 @@ const PostOfficeAddress = () => {
           required
         />
 
-        <Warehouses
-          warehouses={activeWarehouses}
-          section={WAREHOUSE_SECTION}
-          onSelect={handleSelect}
-          className='order-page__shipping-warehouses'
-        />
+        <ul
+          className={`order-page__shipping-warehouses custom-dropdown 
+          ${generalStore.openSection === WAREHOUSE_SECTION
+              ? 'open'
+              : 'hide'}`}
+        >
+          {!activeWarehouses.length
+            ? <li><div>Складів не знайдено</div></li>
+            : activeWarehouses.map((warehouse) => (
+              <li
+                key={warehouse}
+                className='shipping-warehouse'
+                onClick={() => handleSelect(warehouse)}
+              >
+                {warehouse}
+              </li>
+            ))}
+        </ul>
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
-import React from 'react';
-import './Cabinet.scss';
+import React, { FC } from 'react';
+import { observer } from "mobx-react-lite";
 
 import { CabinetSidebar } from './components';
-import { FC } from 'react';
-import { observer } from "mobx-react-lite";
+
+import './Cabinet.scss';
 
 interface PropsType {
   children: React.ReactNode;

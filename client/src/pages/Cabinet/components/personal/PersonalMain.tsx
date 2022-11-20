@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
+import { observer } from 'mobx-react-lite';
 
 import { toPhoneNumber } from "../../../../utils/toPhoneNumber";
 import { IUser } from "../../../../store/user/interfaces";
@@ -10,8 +11,7 @@ interface PropsType {
 }
 
 const PersonalMain: FC<PropsType> = ({ userInfo }) => {
-  const { phoneNumber, email, name, address } = userInfo;
-  const { city, home, postOffice } = address;
+  const { phoneNumber, email, name, addresses } = userInfo;
 
   return (
     <div className='cabinet-personal__info'>
@@ -29,23 +29,8 @@ const PersonalMain: FC<PropsType> = ({ userInfo }) => {
         <p>E-mail:</p>
         <p>{email}</p>
       </div>
-
-      <div className='cabinet-personal__row'>
-        <p>Місто:</p>
-        <p>{city ? city : 'Не вказано'}</p>
-      </div>
-
-      <div className='cabinet-personal__row'>
-        <p>Дом. Адреса:</p>
-        <p>{home ? home : 'Не вказано'}</p>
-      </div>
-
-      <div className='cabinet-personal__row'>
-        <p>Склад Нової Пошти:</p>
-        <p>{postOffice ? postOffice : 'Не вказано'}</p>
-      </div>
     </div>
   );
 };
 
-export default PersonalMain;
+export default observer(PersonalMain);

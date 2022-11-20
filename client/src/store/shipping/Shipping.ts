@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import axios from "axios";
 import { IWarehouses } from "./interfaces/IWarehouses";
+import { IAddress } from "../user/interfaces";
 
 class ShippingStore {
   private readonly API_KEY = 'e17f15fb792d3d57c4d2d5dacfa92c15';

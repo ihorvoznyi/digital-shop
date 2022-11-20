@@ -10,5 +10,18 @@
     &.hide {
       display: none;
     }
+
+    div {
+      width: 100%;
+    }
+  }
+
+  &__warehouses-input {
+    max-width: 300px;
+  }
+
+  &__shipping-warehouse {
+    width: 100%;
+    max-width: 300px;
   }
 }

@@ -18,7 +18,11 @@ export const App = observer(() => {
   if (userStore.isLoading) return <Loader/>;
 
   return (
-    <div className='app container' onClick={() => generalStore.setOpenSection(null)}>
+    <div className='app container' onClick={() => {
+      if (generalStore.openSection !== null) {
+        generalStore.setOpenSection(null);
+      }
+    }}>
       <Routes>
         <Route path='*' element={<Home/>}/>
         <Route path='/order-page' element={<Order />} />

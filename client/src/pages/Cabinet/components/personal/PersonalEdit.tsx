@@ -1,12 +1,9 @@
 import { observer } from 'mobx-react-lite';
-import { FC, FormEvent, useCallback, useState, useEffect } from 'react';
-
-import { Warehouses } from '../../../../components';
-
+import { FC, useState, FormEvent, useCallback } from 'react';
 import { useDebounce } from '../../../../hooks/useDebounce';
-import { shippingStore, userStore, generalStore } from '../../../../store';
+import { userStore } from '../../../../store';
 
-import { IUser } from "../../../../store/user/interfaces";
+import { IAddress, IUser } from "../../../../store/user/interfaces";
 
 import { toPhoneNumber, Validator } from '../../../../utils';
 
@@ -17,74 +14,42 @@ interface PropsType {
   onChange: (property: string, value: string) => void;
 }
 
-const PERSONAL_SECTION = 'personalSection';
-
 const PersonalEdit: FC<PropsType> = ({ userInfo, onChange }) => {
 
-  const { email, phoneNumber, name, address } = userInfo;
-  const { home, city, postOffice } = address;
+  const { email, phoneNumber, name } = userInfo;
 
   const [newName, setNewName] = useState<string>(name ? name : '');
   const [newEmail, setNewEmail] = useState<string>(email);
-  const [newPhone, setNewPhone] = useState<string>(phoneNumber);
-  const [newCity, setNewCity] = useState<string>(city ? city : '');
-  const [newHome, setNewHome] = useState<string>(home ? home : '');
-  const [newPostOffice, setNewPostOffice] = useState<string>(postOffice ? postOffice : '');
+  const [newPhoneNumber, setNewPhoneNumber] = useState<string>(phoneNumber);
 
-  const [activeWarehouses, setActiveWarehouses] = useState(shippingStore.warehouses);
+  const handleChange = (e: FormEvent<EventTarget>) => {
+    const { value, name } = e.target as HTMLInputElement;
 
-  const handleSelect = (warehouse: string) => {
-    setNewPostOffice(warehouse);
-    onChange('postOffice', warehouse);
-  }
+    const property = name as keyof IAddress;
 
-  const handleOpen = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    generalStore.setOpenSection(PERSONAL_SECTION);
-  }
-
-  const handleChange = (property: string, e: FormEvent<EventTarget>) => {
-    const { value } = e.target as HTMLInputElement;
-    property = property as keyof IUser;
-
-    switch (property) {
+    switch(name) {
       case 'email': {
-        const isValid = Validator.validateEmail(value) && value !== email;
+        const isValid = Validator.validateEmail(value);
 
-        if (isValid) {
-          userStore.checkIsAvailable(value).then((isAvailable) => {
-            if (isAvailable) return onChange(property, value);
-            console.log('Email is not available');
-          });
-        }
+        if (value === email) return onChange(property, value);
 
-        break;
-      }
+        if (!isValid) return;
 
-      case 'phoneNumber': {
-        const isValid = Validator.validatePhone(value) && value !== phoneNumber;
-
-        if (isValid) onChange(property, value);
-        else console.log('phone number is invalid');
-
-        break;
-      }
-
-      case 'city': {
-        shippingStore.fetchWarehouses(value);
-        onChange(property, value);
-      }
-
-      case 'postOffice': {
-        const warehouses = shippingStore.getWarehouses();
-
-        const findWarehouse = warehouses.filter((warehouse) => {
-          return warehouse.toLowerCase().includes(value.toLowerCase());
+        userStore.checkIsAvailable(value).then((isAvailable) => {
+          if (isAvailable) return onChange(property, value);
+          else console.log(value, '-- Incorrect');  
         });
-    
-        setActiveWarehouses(findWarehouse);
+
+        break;
+      }
+      case 'phoneNumber': {
+        const isValid = Validator.validatePhone(value);
+
+        if (!isValid) return;
+
         onChange(property, value);
+
+        break;
       }
 
       default: {
@@ -92,13 +57,9 @@ const PersonalEdit: FC<PropsType> = ({ userInfo, onChange }) => {
         return;
       }
     }
-  };
+  }
 
-  const debounceChange = useCallback(useDebounce(handleChange, 200), []);
-
-  useEffect(() => {
-    shippingStore.fetchWarehouses(city);
-  }, []);
+  const debouceHandleChange = useCallback(useDebounce(handleChange, 200), []);
 
   return (
     <div className='cabinet-personal__edit'>
@@ -106,11 +67,13 @@ const PersonalEdit: FC<PropsType> = ({ userInfo, onChange }) => {
         <p>Ім'я та Прізвище:</p>
         <input
           type='text'
+          name='name'
           placeholder={"Ваше ім'я"}
           value={newName}
           onChange={(e: FormEvent<EventTarget>) => {
-            setNewName((e.target as HTMLInputElement).value);
-            debounceChange('name', e);
+            const { value } = e.target as HTMLInputElement;
+            setNewName(value);
+            debouceHandleChange(e);
           }}
         />
       </div>
@@ -119,11 +82,13 @@ const PersonalEdit: FC<PropsType> = ({ userInfo, onChange }) => {
         <p>Номер телефону:</p>
         <input
           type='number'
+          name='phoneNumber'
           placeholder={toPhoneNumber(phoneNumber)}
-          value={newPhone}
+          value={newPhoneNumber}
           onChange={(e: FormEvent<EventTarget>) => {
-            setNewPhone((e.target as HTMLInputElement).value);
-            debounceChange('phoneNumber', e)
+            const { value } = e.target as HTMLInputElement;
+            setNewPhoneNumber(value);
+            debouceHandleChange(e);
           }}
         />
       </div>
@@ -132,67 +97,17 @@ const PersonalEdit: FC<PropsType> = ({ userInfo, onChange }) => {
         <p>E-mail:</p>
         <input
           type='text'
+          name='email'
           placeholder={email}
           value={newEmail}
           onChange={(e: FormEvent<EventTarget>) => {
-            setNewEmail((e.target as HTMLInputElement).value);
-            debounceChange('email', e);
-          }}
-        />
-      </div>
-
-      <div className='cabinet-personal__row'>
-        <p>Місто:</p>
-        <input
-          type='text'
-          placeholder={'Ваше місто'}
-          value={newCity}
-          onChange={(e: FormEvent<EventTarget>) => {
-            setNewCity((e.target as HTMLInputElement).value);
-            debounceChange('city', e);
-          }}
-        />
-      </div>
-
-      <div className='cabinet-personal__row'>
-        <p>Дом. Адреса:</p>
-        <input
-          type='text'
-          placeholder={'Ваша адреса'}
-          value={newHome}
-          onChange={(e: FormEvent<EventTarget>) => {
             const { value } = e.target as HTMLInputElement;
-            setNewHome(value);
-            debounceChange('home', e);
+            setNewEmail(value);
+            debouceHandleChange(e);
           }}
         />
       </div>
-
-      <div className='cabinet-personal__row'>
-        <p>Нова Пошта:</p>
-        <div className="cabinet-personal__warehouse-input">
-          <input
-            type='text'
-            placeholder={'Адреса нової пошти'}
-            value={newPostOffice}
-            onClick={(e: any) => handleOpen(e)}
-            onChange={(e: FormEvent<EventTarget>) => {
-              const { value } = e.target as HTMLInputElement;
-
-              setNewPostOffice(value);
-              debounceChange('postOffice', e);
-            }}
-          />
-
-          <Warehouses
-            warehouses={activeWarehouses}
-            section={PERSONAL_SECTION}
-            onSelect={handleSelect}
-            className='cabinet-personal__warehouses'
-          />
-        </div>
-      </div>
-    </div>
+    </div >
   );
 };
 
