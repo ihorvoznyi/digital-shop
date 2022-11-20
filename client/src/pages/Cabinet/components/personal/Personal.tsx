@@ -7,6 +7,8 @@ import { userStore } from "../../../../store";
 import { IPersonal } from "./interfaces/IPersonal";
 import { Validator } from "../../../../utils";
 
+import { updateUser } from "../../../../store/user/services/UserService";
+
 import './styles/Personal.scss';
 
 const Personal = () => {
@@ -22,7 +24,7 @@ const Personal = () => {
 
     if (!isValid) return;
 
-    userStore.updateUser(personal).then(() => setIsEditing(false));
+    updateUser(personal).then(() => setIsEditing(false));
   }
 
   const [personal, setPersonal] = useState<IPersonal>({

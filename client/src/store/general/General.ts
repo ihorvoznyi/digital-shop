@@ -20,20 +20,6 @@ class GeneralStore {
   setOpenSection(section: string | null) {
     this.openSection = section;
   }
-
-  async fetchTypes() {
-    try {
-      this.isLoading = true;
-
-      const response = await axios.get('http://localhost:8080/types');
-
-      this.types = response.data;
-    } catch {
-      throw new Error('Global Error');
-    } finally {
-      this.isLoading = false;
-    }
-  }
 }
 
 export const generalStore = new GeneralStore();

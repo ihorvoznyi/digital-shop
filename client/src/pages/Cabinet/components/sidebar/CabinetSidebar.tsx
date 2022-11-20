@@ -6,6 +6,7 @@ import { RiLogoutBoxRLine } from 'react-icons/ri';
 import './CabinetSidebar.scss';
 import { userStore } from "../../../../store";
 import { toPhoneNumber } from "../../../../utils/toPhoneNumber";
+import { observer } from 'mobx-react-lite';
 
 const CabinetSidebar = () => {
   const navigate = useNavigate();
@@ -66,4 +67,4 @@ const CabinetSidebar = () => {
   );
 };
 
-export default CabinetSidebar;
+export default observer(CabinetSidebar);

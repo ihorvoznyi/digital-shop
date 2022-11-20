@@ -6,6 +6,7 @@ import { generalStore, shippingStore } from "../../../../store";
 import { useDebounce } from "../../../../hooks/useDebounce";
 
 import './styles/PostOfficeAddress.scss'
+import { fetchWarehouses } from '../../../../store/shipping/services/ShippingService';
 
 const WAREHOUSE_SECTION = 'warehouseSection';
 
@@ -27,7 +28,7 @@ const PostOfficeAddress = () => {
     setSearchPlace(city);
 
     if (city) {
-      shippingStore.fetchWarehouses(city).then(() => { });
+      fetchWarehouses(city).then(() => { });
     }
   }
 

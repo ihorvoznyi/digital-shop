@@ -84,7 +84,7 @@ export class UserService {
 
     try {
       const newUser = this.userRepository.create(createUserDto);
-      newUser.userAddresses = null;
+      newUser.userAddresses = [];
 
       return this.userRepository.save(newUser);
     } catch {

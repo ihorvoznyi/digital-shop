@@ -4,6 +4,7 @@ import { useDebounce } from '../../../../hooks/useDebounce';
 import { userStore } from '../../../../store';
 
 import { IAddress, IUser } from "../../../../store/user/interfaces";
+import { checkIsAvailable } from '../../../../store/user/services/UserService';
 
 import { toPhoneNumber, Validator } from '../../../../utils';
 
@@ -35,7 +36,7 @@ const PersonalEdit: FC<PropsType> = ({ userInfo, onChange }) => {
 
         if (!isValid) return;
 
-        userStore.checkIsAvailable(value).then((isAvailable) => {
+        checkIsAvailable(value).then((isAvailable) => {
           if (isAvailable) return onChange(property, value);
           else console.log(value, '-- Incorrect');  
         });

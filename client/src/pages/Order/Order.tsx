@@ -6,6 +6,7 @@ import { cartStore } from '../../store';
 import { Contact, OrderItem, Shipping } from './components';
 import Format from '../../utils/Format';
 import { orderStore } from '../../store/order/Order';
+import { createOrder } from '../../store/order/services/OrderService';
 
 const Order = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const Order = () => {
       };
     });
 
-    orderStore.createOrder(order)
+    createOrder(order)
               .then(() => cartStore.clear())
               .catch((status) => console.log(status));
   };

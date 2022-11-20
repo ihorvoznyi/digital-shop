@@ -1,10 +1,15 @@
 import React, { FC, useEffect } from 'react';
+import { observer } from "mobx-react-lite";
+import { useLocation } from "react-router-dom"
+;
 import { productStore } from "../../store";
-import { useLocation } from "react-router-dom";
+
 import { ProductList } from "./components";
 import { Loader } from "../../components";
+
+import { getProductsByType } from '../../store/product/services/ProductService';
+
 import './styles/Products.scss';
-import { observer } from "mobx-react-lite";
 
 interface PropsType {
   id: string;
@@ -16,7 +21,7 @@ const Products: FC<PropsType> = (link) => {
   const location = useLocation().pathname;
 
   useEffect(() => {
-    productStore.getProductsByType(link.id);
+    getProductsByType(link.id);
     console.log(link.name + ' loader:' + productStore.isLoading);
   }, [location]);
 

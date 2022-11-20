@@ -16,3 +16,12 @@ export const createAddress = async (newAddress: INewAddress) => {
     console.log(err);
   }
 }
+
+export const deleteAddress = async (addressId: string) => {
+  try {
+    const url = `${URL}/${addressId}`;
+    await axios.delete(url);
+  } catch (err) {
+    console.log(err);
+  }
+}

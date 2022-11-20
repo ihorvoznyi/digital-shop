@@ -6,6 +6,7 @@ import { observer } from "mobx-react-lite";
 import { IProduct } from "../../store/product/interfaces";
 import { Loader } from "../../components";
 import { Reviews, Details, Features } from "./components";
+import { getProduct } from '../../store/product/services/ProductService';
 
 const imageUrl = 'https://jabko.ua/image/cache/catalog/products/2022/09/072318/photo_2022-09-07_22-53-30-1397x1397.jpg.webp';
 
@@ -16,7 +17,7 @@ const Product = () => {
   const [product, setProduct] = useState<IProduct | null>(null);
 
   useEffect(() => {
-    productStore.getProduct(id as string).then((item) => setProduct(item));
+    getProduct(id as string).then((item) => setProduct(item));
   }, []);
 
   const handleBuyProduct = (product: IProduct) => {

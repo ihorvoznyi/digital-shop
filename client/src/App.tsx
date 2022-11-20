@@ -6,13 +6,14 @@ import { Fragment, useEffect } from "react";
 import { generalStore, userStore } from "./store";
 import { Loader } from "./components";
 import Product from "./pages/Products/Product";
+import { auth } from './store/user/services/AuthService';
 
 export const App = observer(() => {
 
   const isAuth = userStore.isAuth;
 
   useEffect(() => {
-    userStore.auth().then(() => console.log(userStore.isLoading));
+    auth().then(() => console.log(userStore.isLoading));
   }, []);
 
   if (userStore.isLoading) return <Loader/>;
