@@ -5,6 +5,7 @@ import {
   FindManyOptions,
   FindOneOptions,
   In,
+  Like,
   Repository,
 } from 'typeorm';
 import {
@@ -46,29 +47,66 @@ export class ProductService {
     private userService: UserService
   ) {}
 
-  async paginate(options: IPaginationOptions) {
-    const queryBuilder = this.productRepository.createQueryBuilder('product');
-    queryBuilder.select();
-    queryBuilder.leftJoinAndSelect('product.features', 'features');
-    queryBuilder.leftJoinAndSelect('features.feature', 'feature');
-    queryBuilder.leftJoinAndSelect('product.comments', 'comments');
-    queryBuilder.leftJoinAndSelect('comments.user', 'user');
-    queryBuilder.leftJoinAndSelect('product.type', 'type');
-    queryBuilder.leftJoinAndSelect('product.brand', 'brand');
+  // async paginate(options: IPaginationOptions) {
+  //   const queryBuilder = this.productRepository.createQueryBuilder('product');
+  //   queryBuilder.select();
+  //   queryBuilder.leftJoinAndSelect('product.features', 'features');
+  //   queryBuilder.leftJoinAndSelect('features.feature', 'feature');
+  //   queryBuilder.leftJoinAndSelect('product.comments', 'comments');
+  //   queryBuilder.leftJoinAndSelect('comments.user', 'user');
+  //   queryBuilder.leftJoinAndSelect('product.type', 'type');
+  //   queryBuilder.leftJoinAndSelect('product.brand', 'brand');
 
-    const { items, meta, links } = await paginate<Product>(
-      queryBuilder,
-      options
-    );
+  //   const { items, meta, links } = await paginate<Product>(
+  //     queryBuilder,
+  //     options
+  //   );
 
-    const products = items.map((product) => {
+  //   const products = items.map((product) => {
+  //     return ProductService.generateClientProduct(product);
+  //   });
+
+  //   return {
+  //     items: products,
+  //     meta,
+  //     links,
+  //   };
+  // }
+
+  async paginateTest(query) {
+    const { page, keyword, limit } = query;
+    const skip = page * limit;
+
+    const data = await this.productRepository.findAndCount({
+      where: { name: Like('%' + keyword + '%') },
+      relations: PRODUCT_RELATIONS,
+      order: { name: 'DESC' },
+      take: limit,
+      skip,
+    });
+
+    console.log(data);
+
+    const products = data[0].map((product) => {
       return ProductService.generateClientProduct(product);
     });
 
+    return this.paginateResponse([products, data[1]], page, limit);
+  }
+
+  paginateResponse(data, page, limit) {
+    const [result, total] = data;
+    const lastPage = Math.ceil(total / limit);
+    const nextPage = page + 1 > lastPage ? null : page + 1;
+    const prevPage = page - 1 < 1 ? null : page - 1;
     return {
-      items: products,
-      meta,
-      links,
+      statusCode: 'success',
+      data: [...result],
+      count: total,
+      currentPage: page,
+      nextPage: nextPage,
+      prevPage: prevPage,
+      lastPage: lastPage,
     };
   }
 

@@ -2,12 +2,12 @@ import axios from "axios";
 import { addReviewType, IProduct } from "../interfaces";
 import { productStore } from "../Product";
 
-export const fetchProducts = async() => {
-  const URL = `${productStore.URL}?limit=8&page=1`;
+export const fetchProducts = async(limit: number = 10, page: number = 0) => {
+  const URL = `${productStore.URL}?limit=${limit}&page=${page}`;
 
   try {
     productStore.isLoading = true;
-    productStore.products = (await axios.get(URL)).data.items;
+    productStore.products = (await axios.get(URL)).data.data;
   } catch {
     throw new Error('Error');
   } finally {

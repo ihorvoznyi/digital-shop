@@ -32,12 +32,13 @@ export class ProductController {
   @Get('')
   async index(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 8
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 8,
+    @Query('keyword') keyword = ''
   ) {
-    limit = limit > 100 ? 100 : limit;
-    return this.productService.paginate({
+    return this.productService.paginateTest({
       page,
       limit,
+      keyword,
       route: 'http://localhost:8081/products',
     });
   }
