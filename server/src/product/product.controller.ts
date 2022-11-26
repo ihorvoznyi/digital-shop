@@ -8,6 +8,8 @@ import {
   Put,
   Query,
   UseGuards,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dtos';
@@ -22,9 +24,22 @@ import { RoleEnum } from '../auth/enums/role.enum';
 export class ProductController {
   constructor(private productService: ProductService) {}
 
+  // @Get('')
+  // getInitialProducts(): Promise<IProduct[]> {
+  //   return this.productService.getInitialProducts();
+  // }
+
   @Get('')
-  getInitialProducts(): Promise<IProduct[]> {
-    return this.productService.getInitialProducts();
+  async index(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 8
+  ) {
+    limit = limit > 100 ? 100 : limit;
+    return this.productService.paginate({
+      page,
+      limit,
+      route: 'http://localhost:8081/products',
+    });
   }
 
   @Get('/type/:id')

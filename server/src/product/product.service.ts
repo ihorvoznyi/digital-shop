@@ -7,22 +7,31 @@ import {
   In,
   Repository,
 } from 'typeorm';
+import {
+  IPaginationOptions,
+  Pagination,
+  paginate,
+} from 'nestjs-typeorm-paginate';
+
 import { TypeService } from '../type/type.service';
 import { BrandService } from '../brand/services/brand.service';
 import { FeatureService } from '../feature/feature.service';
+
 import {
   CreateProductDto,
   UpdateProductDto,
   AddReviewDto,
   FilterDto,
 } from './dtos';
+
 import { IFeature } from '../feature/interfaces';
 import { IProduct, IReview } from './interfaces';
+import { IFilterQuery } from './interfaces/product-filter.interface';
+
 import { FeatureValue, Product, Review } from '../database/entities';
 import { UserService } from '../user/user.service';
 import { PRODUCT_RELATIONS } from './constants/product.constant';
 import { NumberService } from '../utils/number.service';
-import { IFilterQuery } from './interfaces/product-filter.interface';
 
 @Injectable()
 export class ProductService {
@@ -36,6 +45,32 @@ export class ProductService {
     private featureService: FeatureService,
     private userService: UserService
   ) {}
+
+  async paginate(options: IPaginationOptions) {
+    const queryBuilder = this.productRepository.createQueryBuilder('product');
+    queryBuilder.select();
+    queryBuilder.leftJoinAndSelect('product.features', 'features');
+    queryBuilder.leftJoinAndSelect('features.feature', 'feature');
+    queryBuilder.leftJoinAndSelect('product.comments', 'comments');
+    queryBuilder.leftJoinAndSelect('comments.user', 'user');
+    queryBuilder.leftJoinAndSelect('product.type', 'type');
+    queryBuilder.leftJoinAndSelect('product.brand', 'brand');
+
+    const { items, meta, links } = await paginate<Product>(
+      queryBuilder,
+      options
+    );
+
+    const products = items.map((product) => {
+      return ProductService.generateClientProduct(product);
+    });
+
+    return {
+      items: products,
+      meta,
+      links,
+    };
+  }
 
   async getProducts(typeId: string, filters: FilterDto): Promise<IProduct[]> {
     const options = ProductService.generateFilterOptions(typeId, filters);

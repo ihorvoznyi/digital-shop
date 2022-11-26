@@ -3,9 +3,11 @@ import { addReviewType, IProduct } from "../interfaces";
 import { productStore } from "../Product";
 
 export const fetchProducts = async() => {
+  const URL = `${productStore.URL}?limit=8&page=1`;
+
   try {
     productStore.isLoading = true;
-    productStore.products = (await axios.get(productStore.URL)).data;
+    productStore.products = (await axios.get(URL)).data.items;
   } catch {
     throw new Error('Error');
   } finally {
