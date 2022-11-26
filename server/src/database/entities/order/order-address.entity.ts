@@ -10,4 +10,7 @@ export class OrderAddress {
 
   @Column()
   address: string;
+
+  @Column()
+  method: string;
 }

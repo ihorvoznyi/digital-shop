@@ -1,16 +1,21 @@
-import React, { ChangeEvent, FormEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, FC, FormEvent, useCallback, useState } from 'react';
 import { observer } from "mobx-react-lite";
 
 import { generalStore, shippingStore } from "../../../../store";
 
 import { useDebounce } from "../../../../hooks/useDebounce";
 
-import './styles/PostOfficeAddress.scss'
 import { fetchWarehouses } from '../../../../store/shipping/services/ShippingService';
+
+import './styles/PostOfficeAddress.scss'
 
 const WAREHOUSE_SECTION = 'warehouseSection';
 
-const PostOfficeAddress = () => {
+interface PropsType {
+  onChange: (property: string, value: string) => void;
+}
+
+const PostOfficeAddress: FC<PropsType> = ({ onChange }) => {
   const [searchPlace, setSearchPlace] = useState('');
 
   const [selectedWarehouse, setSelectedWarehouse] = useState<string>('');
@@ -47,6 +52,7 @@ const PostOfficeAddress = () => {
 
   const handleSelect = (warehouse: string) => {
     setSelectedWarehouse(warehouse);
+    onChange('address', warehouse);
     generalStore.setOpenSection(null);
   }
 
@@ -58,7 +64,12 @@ const PostOfficeAddress = () => {
       <input
         type='text'
         placeholder='Місто'
-        onChange={(e: ChangeEvent<HTMLInputElement>) => debounceCitySearch(e)}
+        onChange={(e: ChangeEvent<HTMLInputElement>) => {
+          const { value: city } = e.target as HTMLInputElement;
+
+          onChange('city', city);
+          debounceCitySearch(e);
+        }}
         className='order-page__shipping-input custom-input'
         required
       />
@@ -70,7 +81,10 @@ const PostOfficeAddress = () => {
           value={selectedWarehouse}
           onClick={(e: any) => handleOpen(e)}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            setSelectedWarehouse((e.target as HTMLInputElement).value);
+            const { value: warehouse } = e.target as HTMLInputElement;
+            
+            onChange('address', warehouse);
+            setSelectedWarehouse(warehouse);
             debounceWarehouses(e);
           }}
           required

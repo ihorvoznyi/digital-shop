@@ -1,8 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { OrderLine, UserOrder } from '../database/entities';
-import { UserService } from '../user/user.service';
+import {
+  OrderAddress,
+  OrderLine,
+  User,
+  UserContact,
+  UserOrder,
+} from '../database/entities';
 import { ProductService } from '../product/product.service';
 import { CreateOrderDto, CreateOrderLineDto, SetOrderStatusDto } from './dtos';
 
@@ -11,23 +16,34 @@ export class OrderService {
   constructor(
     @InjectRepository(OrderLine)
     private orderLineRepository: Repository<OrderLine>,
+    @InjectRepository(OrderAddress)
+    private orderAddressRepository: Repository<OrderAddress>,
     @InjectRepository(UserOrder)
     private userOrderRepository: Repository<UserOrder>,
-    private userService: UserService,
+    @InjectRepository(UserContact)
+    private userContactRepository: Repository<UserContact>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
     private productService: ProductService
   ) {}
 
   public async getOrders(userId: string) {
-    const user = await this.userService.getUser({
-      id: userId,
+    const user = await this.userRepository.findOneBy({ id: userId });
+
+    if (!user) return [];
+
+    const orders = await this.userOrderRepository.find({
+      where: { user },
+      relations: [
+        'products',
+        'products.product',
+        'shippingAddress',
+        'contactInfo',
+      ],
     });
 
-    if (!user) {
-      throw new HttpException('User: does not exist', HttpStatus.BAD_REQUEST);
-    }
-
-    return this.userOrderRepository.find({
-      where: { user },
+    return orders.map((order) => {
+      return OrderService.generateClientOrder(order);
     });
   }
 
@@ -38,22 +54,38 @@ export class OrderService {
       throw new HttpException('Order: no products', HttpStatus.BAD_REQUEST);
     }
 
-    const user = await this.userService.getUser({
-      id: userId,
-    });
-
     const orderTotal: number = products.reduce(
       (cur, prev) => cur + prev.quantity * prev.price,
       0
     );
 
+    let user = null;
+
+    try {
+      user = await this.userRepository.findOne({ where: { id: userId } });
+      if (!user) user = null;
+    } catch {
+      user = null;
+    }
+
+    const shippingAddress = this.orderAddressRepository.create(shipping);
+
+    const contactInfo = this.userContactRepository.create(contact);
+
+    const saveShipping = await this.orderAddressRepository.save(
+      shippingAddress
+    );
+    const saveContact = await this.userContactRepository.save(contactInfo);
+
+    const date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
     const newOrder = this.userOrderRepository.create({
-      orderDate: new Date().toISOString().slice(0, 19).replace('T', ' '),
+      orderDate: date.toString(),
       orderTotal,
       orderStatus: 'pending',
-      shippingAddress: shipping,
-      contactInfo: contact,
-      user,
+      shippingAddress: saveShipping,
+      contactInfo: saveContact,
+      user: user ? user : null,
     });
 
     const savedOrder = await this.userOrderRepository.save(newOrder);
@@ -116,5 +148,27 @@ export class OrderService {
     });
 
     return this.orderLineRepository.save(newOrder);
+  }
+
+  private static generateClientOrder(order: UserOrder) {
+    const products = order.products.map((product) => product.product);
+
+    return {
+      id: order.id,
+      date: order.orderDate,
+      total: order.orderTotal,
+      status: order.orderStatus,
+      products,
+      contact: {
+        name: order.contactInfo.name,
+        email: order.contactInfo.email,
+        phoneNumber: order.contactInfo.phoneNumber,
+      },
+      shipping: {
+        method: order.shippingAddress.method,
+        city: order.shippingAddress.city,
+        address: order.shippingAddress.address,
+      },
+    };
   }
 }

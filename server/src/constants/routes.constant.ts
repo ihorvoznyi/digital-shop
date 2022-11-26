@@ -18,7 +18,7 @@ const PRODUCT_ROUTES = [
   { path: '/products/type/:id', method: RequestMethod.GET },
 ];
 
-const ORDER_ROUTES = [];
+const ORDER_ROUTES = [{ path: '/orders', method: RequestMethod.POST }];
 
 const BRAND_ROUTES = [
   { path: '/brands', method: RequestMethod.GET },
@@ -35,6 +35,7 @@ export const AVAILABLE_ROUTES = [
   ...BRAND_ROUTES,
   ...TYPE_ROUTES,
   ...PRODUCT_ROUTES,
+  ...ORDER_ROUTES,
 ];
 
 export const PROTECTED_ROUTES = [

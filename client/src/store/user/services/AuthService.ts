@@ -1,4 +1,6 @@
 import axios from "axios";
+import { orderStore } from "../../order/Order";
+import { getOrders } from "../../order/services/OrderService";
 import { ILogin, IRegistration, IUser } from "../interfaces";
 import { userStore } from "../User";
 
@@ -14,6 +16,8 @@ export const auth = async() => {
 
     const { user } = response.data;
 
+    getOrders(user.id);
+    
     userStore.user = user as IUser;
     userStore.isAuth = true;
   } catch {

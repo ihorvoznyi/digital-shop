@@ -26,20 +26,22 @@ export class UserOrder {
   @Column()
   orderStatus: string;
 
-  @ManyToOne(() => User, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => User)
   @JoinColumn()
   user: User;
 
   @OneToMany(() => OrderLine, (orderLine) => orderLine.order)
   products: OrderLine[];
 
-  @ManyToOne(() => OrderAddress)
+  @ManyToOne(() => OrderAddress, {
+    cascade: true,
+  })
   @JoinTable()
   shippingAddress: OrderAddress;
 
-  @ManyToOne(() => UserContact)
+  @ManyToOne(() => UserContact, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   contactInfo: UserContact;
 }

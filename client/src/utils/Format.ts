@@ -38,16 +38,16 @@ class Format {
     return Math.ceil(price / 40)
   }
 
-  toUserObj (personal: IPersonal): IUpdateUser {
-    return {
-      ...personal,
-      address: {
-        city: personal.city,
-        home: personal.home,
-        postOffice: personal.postOffice,
-      }
-    }
-  }
+  // toUserObj (personal: IPersonal): IUpdateUser {
+  //   return {
+  //     ...personal,
+  //     address: {
+  //       city: personal.city,
+  //       home: personal.home,
+  //       postOffice: personal.postOffice,
+  //     }
+  //   }
+  // }
 }
 
 export default new Format();
