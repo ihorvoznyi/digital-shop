@@ -5,15 +5,15 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
-import { FindOneOptions } from 'typeorm';
 
 import { User } from '../database/entities';
 
 import { UserService } from './user.service';
 
-import { SetAddressDto, UpdateRoleDto } from './dto';
+import { UpdateRoleDto, UpdateUserDto } from './dtos';
 
 import { RoleGuard } from '../auth/guards/role.guard';
 import { Roles } from '../auth/decorators/role.decorator';
@@ -30,27 +30,26 @@ export class UserController {
 
   @Get(':id')
   getUser(@Param('id') userId: string): Promise<User> {
-    const options: FindOneOptions = {
-      where: { id: userId },
-    };
-    return this.userService.getUser(options);
-  }
-
-  @Post('/address/:id')
-  setAddress(
-    @Param('id') userId: string,
-    @Body() addressDto: SetAddressDto,
-  ): Promise<User> {
-    return this.userService.setAddress(userId, addressDto);
+    return this.userService.getUser({ id: userId });
   }
 
   @Patch('/roles/:id')
   @UseGuards(RoleGuard)
-  @Roles(RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   changeRole(
     @Param('id') userId: string,
-    @Body() updateRoleDto: UpdateRoleDto,
+    @Body() updateRoleDto: UpdateRoleDto
   ) {
     return this.userService.changeRole(userId, updateRoleDto);
+  }
+
+  @Post('/validate-email')
+  validateEmail(@Body('email') email: string): Promise<boolean> {
+    return this.userService.checkIsAvailable(email);
+  }
+
+  @Put(':id')
+  updateUser(@Param('id') userId: string, @Body() dto: UpdateUserDto) {
+    return this.userService.updateUser(userId, dto);
   }
 }

@@ -34,7 +34,7 @@ export class ProductController {
   @Get('/type/:id')
   getProducts(
     @Param('id') typeId: string,
-    @Query() filters,
+    @Query() filters
   ): Promise<IProduct[]> {
     if (Object.keys(filters).length) {
       const modifyFilters = ProductService.representFilters(filters);
@@ -69,7 +69,7 @@ export class ProductController {
   @Roles(RoleEnum.ADMIN)
   updateProduct(
     @Param('id') productId: string,
-    @Body() updateDto: UpdateProductDto,
+    @Body() updateDto: UpdateProductDto
   ): Promise<IProduct> {
     return this.productService.updateProduct(productId, updateDto);
   }

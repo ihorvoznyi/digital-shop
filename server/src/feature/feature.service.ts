@@ -14,7 +14,7 @@ export class FeatureService {
     @InjectRepository(Feature)
     private featureRepository: Repository<Feature>,
     @InjectRepository(FeatureValue)
-    private featureValueRepository: Repository<FeatureValue>,
+    private featureValueRepository: Repository<FeatureValue>
   ) {}
 
   async createTypeFeature({ type, name }: IFeatureType): Promise<Feature> {
@@ -42,7 +42,7 @@ export class FeatureService {
     for await (const featureItem of features) {
       // Find Feature Entity by id from features
       const featureEntity = type.features.find(
-        (feature) => feature.id === featureItem.featureId,
+        (feature) => feature.id === featureItem.featureId
       );
 
       try {
@@ -53,14 +53,14 @@ export class FeatureService {
         });
 
         const savedProductFeature = await this.featureValueRepository.save(
-          productFeature,
+          productFeature
         );
 
         productFeatures.push(savedProductFeature);
       } catch {
         throw new HttpException(
           'Feature: Wrong options',
-          HttpStatus.BAD_REQUEST,
+          HttpStatus.BAD_REQUEST
         );
       }
     }

@@ -5,6 +5,7 @@ import { productStore } from '../../store';
 import { ProductList } from "../Products/components";
 import './Home.scss';
 import { Loader } from "../../components";
+import { fetchProducts } from '../../store/product/services/ProductService';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const Home = () => {
   useEffect(() => navigate('/'), []);
 
   useEffect(() => {
-    productStore.fetchProducts();
+    fetchProducts();
   }, []);
 
   if (productStore.isLoading) return <Loader/>

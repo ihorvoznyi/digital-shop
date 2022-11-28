@@ -1,7 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from './user.entity';
 
-@Entity({ name: 'addresses' })
-export class Address {
+@Entity({ name: 'user_addresses' })
+export class UserAddress {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -10,4 +11,10 @@ export class Address {
 
   @Column()
   address: string;
+
+  @Column()
+  method: string;
+
+  @ManyToOne(() => User, (user) => user.userAddresses)
+  user: User;
 }

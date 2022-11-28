@@ -5,6 +5,7 @@ import { addReviewType, commentType } from "../../../store/product/interfaces";
 import { productStore, userStore } from "../../../store";
 import { useLocation } from "react-router-dom";
 import { Rating } from "../../../components";
+import { addReview } from '../../../store/product/services/ProductService';
 
 interface PropsType {
   reviews: commentType[];
@@ -24,7 +25,7 @@ const Reviews: FC<PropsType> = ({ reviews }) => {
     event.preventDefault();
     if (newReview.estimate === 0) return;
 
-    productStore.addReview(newReview).then(() => window.location.reload());
+    addReview(newReview).then(() => window.location.reload());
   }
 
   const handleClickEstimate = (estimate: number) => {

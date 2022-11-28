@@ -22,8 +22,6 @@ export class OrderController {
   }
 
   @Post()
-  @UseGuards(RoleGuard)
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   createOrder(@Body() createOrderDto: CreateOrderDto) {
     return this.orderService.createOrder(createOrderDto);
   }

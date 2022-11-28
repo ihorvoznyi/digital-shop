@@ -5,6 +5,7 @@ import './Layout.scss';
 import { observer } from "mobx-react-lite";
 import { generalStore } from "../../store";
 import { Loader } from "../../components";
+import { fetchTypes } from '../../store/general/services/TypeService';
 
 interface ILayout {
   children: React.ReactNode;
@@ -13,7 +14,7 @@ interface ILayout {
 const Layout: FC<ILayout> = ({ children }) => {
 
   useEffect(() => {
-    generalStore.fetchTypes();
+    fetchTypes();
   }, []);
 
   if (generalStore.isLoading) return <Loader />;

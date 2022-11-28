@@ -1,7 +1,12 @@
 export interface IAddress {
   id: string;
+  method: string;
   city: string;
-  street: string;
-  unitNumber: string;
-  postalCode: string;
+  address: string;
+}
+
+export interface INewAddress {
+  method: string;
+  city: string;
+  address: string;
 }
