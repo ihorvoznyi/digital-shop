@@ -26,8 +26,7 @@ import {
 } from './dtos';
 
 import { IFeature } from '../feature/interfaces';
-import { IProduct, IReview } from './interfaces';
-import { IFilterQuery } from './interfaces/product-filter.interface';
+import { IProduct, IReview, IFilterQuery, IPaginate } from './interfaces';
 
 import { FeatureValue, Product, Review } from '../database/entities';
 import { UserService } from '../user/user.service';
@@ -47,33 +46,7 @@ export class ProductService {
     private userService: UserService
   ) {}
 
-  // async paginate(options: IPaginationOptions) {
-  //   const queryBuilder = this.productRepository.createQueryBuilder('product');
-  //   queryBuilder.select();
-  //   queryBuilder.leftJoinAndSelect('product.features', 'features');
-  //   queryBuilder.leftJoinAndSelect('features.feature', 'feature');
-  //   queryBuilder.leftJoinAndSelect('product.comments', 'comments');
-  //   queryBuilder.leftJoinAndSelect('comments.user', 'user');
-  //   queryBuilder.leftJoinAndSelect('product.type', 'type');
-  //   queryBuilder.leftJoinAndSelect('product.brand', 'brand');
-
-  //   const { items, meta, links } = await paginate<Product>(
-  //     queryBuilder,
-  //     options
-  //   );
-
-  //   const products = items.map((product) => {
-  //     return ProductService.generateClientProduct(product);
-  //   });
-
-  //   return {
-  //     items: products,
-  //     meta,
-  //     links,
-  //   };
-  // }
-
-  async paginateTest(query) {
+  async paginateTest(query: IPaginate) {
     const { page, keyword, limit } = query;
     const skip = page * limit;
 
@@ -84,8 +57,6 @@ export class ProductService {
       take: limit,
       skip,
     });
-
-    console.log(data);
 
     const products = data[0].map((product) => {
       return ProductService.generateClientProduct(product);

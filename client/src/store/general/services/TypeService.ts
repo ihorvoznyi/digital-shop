@@ -8,6 +8,8 @@ export const fetchTypes = async() => {
     const response = await axios.get('http://localhost:8080/types');
 
     generalStore.types = response.data;
+
+    return response.data;
   } catch {
     throw new Error('Global Error');
   } finally {

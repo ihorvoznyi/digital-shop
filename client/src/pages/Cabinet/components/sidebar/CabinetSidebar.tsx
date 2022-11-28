@@ -20,7 +20,7 @@ const CabinetSidebar = () => {
         <div className='cabinet-sidebar__user-info'>
           <div className='cabinet-sidebar__username'>
             <div className='cabinet-sidebar__username-icon'>
-              <FaUserAstronaut color='aliceblue'/>
+              <FaUserAstronaut color='aliceblue' />
             </div>
 
             <p>{name ? name : id.slice(0, 12) + '...'}</p>
@@ -40,7 +40,7 @@ const CabinetSidebar = () => {
             className={`cabinet-sidebar__link ${location === '/cabinet/orders' ? 'active' : ''}`}
             onClick={() => navigate('/cabinet/orders')}
           >
-            <FaClipboardList className='cabinet-sidebar__link-icon'/>
+            <FaClipboardList className='cabinet-sidebar__link-icon' />
 
             <span>
               Мої Змовлення
@@ -51,13 +51,24 @@ const CabinetSidebar = () => {
             className={`cabinet-sidebar__link ${location === '/cabinet' ? 'active' : ''}`}
             onClick={() => navigate('/cabinet')}
           >
-            <AiOutlineUser className='cabinet-sidebar__link-icon'/>
+            <AiOutlineUser className='cabinet-sidebar__link-icon' />
 
             <span>Особиста Інформація</span>
           </div>
 
+          {userStore.user.role === 'Admin' && (
+            <div
+              className={`cabinet-sidebar__link ${location === '/cabinet/control-panel' ? 'active' : ''}`}
+              onClick={() => navigate('/control-panel/types')}
+            >
+              <AiOutlineUser className='cabinet-sidebar__link-icon' />
+
+              <span>Керування</span>
+            </div>
+          )}
+
           <div className='cabinet-sidebar__link' onClick={() => userStore.logout()}>
-            <RiLogoutBoxRLine className='cabinet-sidebar__link-icon'/>
+            <RiLogoutBoxRLine className='cabinet-sidebar__link-icon' />
 
             <span>Вийти</span>
           </div>

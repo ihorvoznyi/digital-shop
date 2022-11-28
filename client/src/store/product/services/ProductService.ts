@@ -6,8 +6,11 @@ export const fetchProducts = async(limit: number = 10, page: number = 0) => {
   const URL = `${productStore.URL}?limit=${limit}&page=${page}`;
 
   try {
+    const response = (await axios.get(URL));
     productStore.isLoading = true;
-    productStore.products = (await axios.get(URL)).data.data;
+    productStore.products = response.data.data;
+
+    return response.data.data;
   } catch {
     throw new Error('Error');
   } finally {
