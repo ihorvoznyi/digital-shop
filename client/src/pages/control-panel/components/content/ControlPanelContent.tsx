@@ -1,4 +1,3 @@
-import { breadcrumbsClasses } from '@mui/material';
 import { useEffect, useState, FC } from 'react';
 import { fetchBrands, fetchTypes } from '../../../../store/general/services';
 import { fetchProducts } from '../../../../store/product/services/ProductService';
@@ -13,14 +12,9 @@ const ControlPanelContent: FC<PropsType> = ({ typeName }) => {
 
   const [data, setData] = useState([]);
 
-  useEffect(() => {
-    switch (typeName) {
-      case 'types': fetchTypes().then((data) => setData(data)); break;
-      case 'brands': fetchBrands().then((data) => setData(data)); break;
-      case 'products': fetchProducts().then((data) => setData(data)); break;
-    }
+  console.log(typeName);
 
-  }, []);
+
   return (
     <div className="control-panel__content">
       <div className="control-panel__content-container">

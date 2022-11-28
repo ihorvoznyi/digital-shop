@@ -80,7 +80,7 @@ export class OrderService {
     const date = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const newOrder = this.userOrderRepository.create({
-      orderDate: date.toString(),
+      orderDate: date,
       orderTotal,
       orderStatus: 'pending',
       shippingAddress: saveShipping,
