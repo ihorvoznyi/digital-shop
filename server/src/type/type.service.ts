@@ -1,9 +1,16 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Feature, Type } from '../database/entities';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+
+import { Feature, Type } from '../database/entities';
 import { CreateTypeDto } from './dtos';
 import { FeatureService } from '../feature/feature.service';
+import { UpdateTypeDto } from './interfaces';
 
 @Injectable()
 export class TypeService {
@@ -19,6 +26,13 @@ export class TypeService {
     if (!types.length) return types;
 
     return types.map((type) => TypeService.generateClientType(type));
+  }
+
+  async getTableTypes() {
+    return (await this.typeRepository.find()).map((type) => ({
+      id: type.id,
+      name: type.type,
+    }));
   }
 
   async getType(options: FindOneOptions): Promise<Type> {
@@ -50,7 +64,7 @@ export class TypeService {
 
     for await (const item of featureList) {
       const featureName = item.toLowerCase();
-      const typeFeature = await this.featureService.createTypeFeature({
+      const typeFeature = await this.featureService.createFeature({
         name: featureName,
         type: savedType,
       });
@@ -71,6 +85,56 @@ export class TypeService {
     }
 
     return this.typeRepository.remove(type);
+  }
+
+  async updateType(typeId: string, dto: UpdateTypeDto) {
+    const type = await this.typeRepository.findOne({
+      where: { id: typeId },
+      relations: ['features'],
+    });
+
+    if (!type) {
+      throw new NotFoundException(`Type #${typeId} not found`);
+    }
+
+    const { name, tag, updateFeatures, deleteFeatures, newFeatures } = dto;
+
+    if (name) type.type = name;
+    if (type.tag) type.tag = tag;
+
+    // If deleteFeatures is not empty => then delete features
+    if (deleteFeatures.length) {
+      const deleted = await this.featureService.deleteFeatures(deleteFeatures);
+
+      type.features = type.features.filter(
+        (feature) => !deleted.includes(feature.id)
+      );
+
+      await this.typeRepository.save(type);
+    }
+
+    if (updateFeatures.length) {
+      const updatedFeatures = await this.featureService.updateFeatures(
+        updateFeatures
+      );
+
+      type.features = [...updatedFeatures, ...type.features];
+    }
+
+    // If newFeatures is not empty => then update features
+    if (newFeatures.length) {
+      const createdFeatures = await this.featureService.createFeatures(
+        type,
+        newFeatures
+      );
+
+      type.features = [...type.features, ...createdFeatures];
+    }
+
+    // Ending
+    const savedType = await this.typeRepository.save(type);
+
+    return TypeService.generateClientType(savedType);
   }
 
   static generateClientType(type: Type) {

@@ -21,14 +21,19 @@ import { RoleEnum } from '../../auth/enums/role.enum';
 export class BrandController {
   constructor(private brandService: BrandService) {}
 
+  @Get('')
+  getBrands(): Promise<Brand[]> {
+    return this.brandService.getBrands({});
+  }
+
+  @Get('/for-table')
+  getTableBrands() {
+    return this.brandService.getTableBrands();
+  }
+
   @Get(':id')
   getBrand(@Param('id') brandId: string): Promise<Brand> {
     return this.brandService.getBrand(brandId);
-  }
-
-  @Get()
-  getBrands(): Promise<Brand[]> {
-    return this.brandService.getBrands({});
   }
 
   @Post()

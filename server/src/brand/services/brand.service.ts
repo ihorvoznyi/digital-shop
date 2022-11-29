@@ -36,6 +36,13 @@ export class BrandService {
     return brand;
   }
 
+  async getTableBrands() {
+    return (await this.brandRepository.find()).map((brand) => ({
+      id: brand.id,
+      name: brand.brand,
+    }));
+  }
+
   async createBrand(brandName: string): Promise<Brand> {
     const brand = await this.brandRepository.findOneBy({ brand: brandName });
 

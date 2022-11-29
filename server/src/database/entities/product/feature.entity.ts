@@ -13,7 +13,7 @@ export class Feature {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ default: '' })
   featureName: string;
 
   @ManyToOne(() => Type, (type) => type.features, {

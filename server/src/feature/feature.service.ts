@@ -1,7 +1,13 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  NotFoundException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Feature, FeatureValue } from '../database/entities';
+
+import { Feature, FeatureValue, Type } from '../database/entities';
 import { IFeatureType, IProductFeature } from './interfaces';
 import { toCamelCase } from '../utils/general.service';
 
@@ -14,7 +20,7 @@ export class FeatureService {
     private featureValueRepository: Repository<FeatureValue>
   ) {}
 
-  async createTypeFeature({ type, name }: IFeatureType): Promise<Feature> {
+  async createFeature({ type, name }: IFeatureType): Promise<Feature> {
     const tag = toCamelCase(name);
 
     const newFeature = this.featureRepository.create({
@@ -24,6 +30,25 @@ export class FeatureService {
     });
 
     return this.featureRepository.save(newFeature);
+  }
+
+  async createFeatures(type: Type, names: string[]) {
+    const createdFeatures: Feature[] = [];
+
+    for await (const name of names) {
+      const tag = toCamelCase(name);
+      const newFeature = this.featureRepository.create({
+        type,
+        featureName: name,
+        tag,
+      });
+
+      const savedFeature = await this.featureRepository.save(newFeature);
+
+      createdFeatures.push(savedFeature);
+    }
+
+    return createdFeatures;
   }
 
   async createProductFeatureList({
@@ -61,14 +86,56 @@ export class FeatureService {
     return productFeatures;
   }
 
-  async updateFeatureValue({ featureId, value }): Promise<FeatureValue> {
+  async deleteFeatures(ids: string[]): Promise<string[]> {
+    const deletedFeatures: string[] = [];
+
+    for await (const id of ids) {
+      try {
+        const feature = await this.featureRepository.findOne({ where: { id } });
+
+        await this.featureRepository.remove(feature);
+        deletedFeatures.push(id);
+      } catch {
+        throw new NotFoundException(`Feature #${id} not found`);
+      }
+    }
+
+    return deletedFeatures;
+  }
+
+  async updateFeatures(features): Promise<Feature[]> {
+    const updatedFeatures: Feature[] = [];
+
+    for await (const { id, name } of features) {
+      try {
+        const feature = await this.featureRepository.findOne({ where: { id } });
+        const tag = toCamelCase(name);
+
+        feature.featureName = name;
+        feature.tag = tag;
+
+        const savedFeature = await this.featureRepository.save(feature);
+
+        updatedFeatures.push(savedFeature);
+      } catch {
+        throw new NotFoundException(`Feature #${id} not found`);
+      }
+    }
+
+    return updatedFeatures;
+  }
+
+  async updateFeatureValue({ id, value }): Promise<FeatureValue> {
     const feature = await this.featureValueRepository.findOne({
-      where: { id: featureId },
+      where: { id: id },
       relations: ['feature'],
     });
 
     if (!feature) {
-      throw new HttpException("Feature: doesn't exist", HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Feature: does not exist',
+        HttpStatus.BAD_REQUEST
+      );
     }
 
     feature.value = value;

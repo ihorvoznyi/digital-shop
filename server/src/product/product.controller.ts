@@ -24,18 +24,13 @@ import { RoleEnum } from '../auth/enums/role.enum';
 export class ProductController {
   constructor(private productService: ProductService) {}
 
-  // @Get('')
-  // getInitialProducts(): Promise<IProduct[]> {
-  //   return this.productService.getInitialProducts();
-  // }
-
   @Get('')
   async index(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 8,
     @Query('keyword') keyword = ''
   ) {
-    return this.productService.paginateTest({
+    return this.productService.paginate({
       page,
       limit,
       keyword,
@@ -55,6 +50,11 @@ export class ProductController {
     }
 
     return this.productService.getProducts(typeId, {});
+  }
+
+  @Get('/for-table')
+  getTableProducts() {
+    return this.productService.getTableProducts();
   }
 
   @Get(':id')

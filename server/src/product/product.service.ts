@@ -8,11 +8,6 @@ import {
   Like,
   Repository,
 } from 'typeorm';
-import {
-  IPaginationOptions,
-  Pagination,
-  paginate,
-} from 'nestjs-typeorm-paginate';
 
 import { TypeService } from '../type/type.service';
 import { BrandService } from '../brand/services/brand.service';
@@ -26,12 +21,13 @@ import {
 } from './dtos';
 
 import { IFeature } from '../feature/interfaces';
-import { IProduct, IReview, IFilterQuery, IPaginate } from './interfaces';
+import { IProduct, IReview, IFilterQuery, IPaginateProps } from './interfaces';
 
 import { FeatureValue, Product, Review } from '../database/entities';
 import { UserService } from '../user/user.service';
 import { PRODUCT_RELATIONS } from './constants/product.constant';
 import { NumberService } from '../utils/number.service';
+import { ProductPaginateDto } from './dtos/product-paginate.dto';
 
 @Injectable()
 export class ProductService {
@@ -46,7 +42,7 @@ export class ProductService {
     private userService: UserService
   ) {}
 
-  async paginateTest(query: IPaginate) {
+  async paginate(query: ProductPaginateDto) {
     const { page, keyword, limit } = query;
     const skip = page * limit;
 
@@ -62,14 +58,21 @@ export class ProductService {
       return ProductService.generateClientProduct(product);
     });
 
-    return this.paginateResponse([products, data[1]], page, limit);
+    return this.paginateResponse({
+      data: [products, data[1]],
+      page,
+      limit,
+    });
   }
 
-  paginateResponse(data, page, limit) {
+  paginateResponse(props: IPaginateProps) {
+    const { data, page, limit } = props;
+
     const [result, total] = data;
     const lastPage = Math.ceil(total / limit);
     const nextPage = page + 1 > lastPage ? null : page + 1;
     const prevPage = page - 1 < 1 ? null : page - 1;
+
     return {
       statusCode: 'success',
       data: [...result],
@@ -121,6 +124,13 @@ export class ProductService {
     return products.map((product) =>
       ProductService.generateClientProduct(product)
     );
+  }
+
+  async getTableProducts() {
+    return (await this.productRepository.find()).map((product) => ({
+      id: product.id,
+      name: product.name,
+    }));
   }
 
   async getProduct(options: FindOneOptions): Promise<Product> {
@@ -237,7 +247,7 @@ export class ProductService {
 
       const updatedFeature: FeatureValue =
         await this.featureService.updateFeatureValue({
-          featureId: item.id,
+          id: item.id,
           value: featureValue,
         });
 

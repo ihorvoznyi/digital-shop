@@ -12,7 +12,7 @@ export class FeatureValue {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ default: 'f' })
   value: string;
 
   @ManyToOne(() => Feature, {
