@@ -1,6 +1,4 @@
 import {
-  HttpException,
-  HttpStatus,
   Injectable,
   NestMiddleware,
   UnauthorizedException,
@@ -8,6 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Request, Response, NextFunction } from 'express';
+
 import { IAuth } from '../interfaces/auth.interface';
 
 @Injectable()

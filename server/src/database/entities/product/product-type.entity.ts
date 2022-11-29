@@ -1,4 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
 import { Feature } from './feature.entity';
 
 @Entity({ name: 'types' })

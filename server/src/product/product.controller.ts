@@ -7,12 +7,19 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ProductService } from './product.service';
 import { FindManyOptions, FindOneOptions } from 'typeorm';
-import { CreateProductDto } from './dtos';
-import { IProduct } from './interfaces';
-import { UpdateProductDto } from './dtos/update-product.dto';
+
+import { ProductService } from './product.service';
+
 import { Product } from '../database/entities';
+
+import { CreateProductDto } from './dtos';
+import { UpdateProductDto } from './dtos/update-product.dto';
+import { AddReviewDto } from './dtos/add-review.dto';
+
+import { IProduct } from './interfaces';
+
+import { RELATIONS } from '../constants/product.constant';
 
 @Controller('products')
 export class ProductController {
@@ -21,7 +28,7 @@ export class ProductController {
   @Get()
   getProducts(): Promise<IProduct[]> {
     const options: FindManyOptions = {
-      relations: ['features', 'features.feature', 'brand', 'type'],
+      relations: RELATIONS,
     };
 
     return this.productService.getProducts(options);
@@ -31,7 +38,7 @@ export class ProductController {
   getProduct(@Param('id') productId: string): Promise<IProduct> {
     const options: FindOneOptions = {
       where: { id: productId },
-      relations: ['features', 'features.feature', 'brand', 'type'],
+      relations: RELATIONS,
     };
 
     return this.productService.getProductForClient(options);
@@ -40,6 +47,11 @@ export class ProductController {
   @Post()
   createProduct(@Body() createProductDto: CreateProductDto): Promise<IProduct> {
     return this.productService.createProduct(createProductDto);
+  }
+
+  @Post('/reviews')
+  addReview(@Body() reviewDto: AddReviewDto) {
+    return this.productService.addReview(reviewDto);
   }
 
   @Put(':id')

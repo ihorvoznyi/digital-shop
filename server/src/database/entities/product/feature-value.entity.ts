@@ -5,6 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
 import { Feature, Product } from '../';
 
 @Entity({ name: 'feature_values' })

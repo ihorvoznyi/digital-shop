@@ -5,6 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
 import { User } from './user.entity';
 import { Product } from '../product/product.entity';
 
@@ -25,8 +26,9 @@ export class Review {
   @JoinColumn()
   user: User;
 
-  @ManyToOne(() => Product, {
+  @ManyToOne(() => Product, (product) => product.comments, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   product: Product;
 }
