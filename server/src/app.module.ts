@@ -20,6 +20,11 @@ import { ValidTokenMiddleware } from './auth/middlewares/valid-token.middleware'
 
 import config from '../typeorm.config';
 
+import {
+  AVAILABLE_ROUTES,
+  PROTECTED_ROUTES,
+} from './constants/routes.constant';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot(config),
@@ -38,13 +43,16 @@ import config from '../typeorm.config';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
+    // AUTH
     consumer.apply(ValidTokenMiddleware).forRoutes({
       path: '/auth/auth',
       method: RequestMethod.GET,
     });
-    consumer.apply(ValidTokenMiddleware).forRoutes({
-      path: '/orders',
-      method: RequestMethod.GET,
-    });
+
+    // OTHER
+    consumer
+      .apply(ValidTokenMiddleware)
+      .exclude(...AVAILABLE_ROUTES)
+      .forRoutes(...PROTECTED_ROUTES);
   }
 }

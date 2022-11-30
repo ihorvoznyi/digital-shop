@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 
 import { Feature, FeatureValue } from '../database/entities';
 
+import { toCamelCase } from '../utils/general.service';
+
 import { IFeatureType, IProductFeature } from './interfaces';
 
 @Injectable()
@@ -16,9 +18,12 @@ export class FeatureService {
   ) {}
 
   async createTypeFeature({ type, name }: IFeatureType): Promise<Feature> {
+    const tag = toCamelCase(name);
+
     const newFeature = this.featureRepository.create({
       type,
       featureName: name,
+      tag,
     });
 
     return this.featureRepository.save(newFeature);
