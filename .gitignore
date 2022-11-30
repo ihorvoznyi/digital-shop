@@ -3,10 +3,13 @@ node_modules/
 
 # IDE
 /.idea
+./idea/
 /.awcache
 /.vscode
 /.devcontainer
 *.code-workspace
+.history/
+.vscode/
 
 # bundle
 packages/**/*.d.ts
@@ -38,3 +41,4 @@ build/config\.gypi
 dist
 .env
 diagram
+build

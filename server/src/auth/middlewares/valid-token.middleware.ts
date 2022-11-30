@@ -15,9 +15,9 @@ export class ValidTokenMiddleware implements NestMiddleware {
 
   constructor(
     private readonly jwtService: JwtService,
-    private readonly config: ConfigService,
+    private readonly configService: ConfigService
   ) {
-    this.secret = this.config.get<string>('JWT_SECRET_KEY');
+    this.secret = this.configService.get<string>('JWT_SECRET_KEY');
   }
 
   async use(req: Request, res: Response, next: NextFunction) {

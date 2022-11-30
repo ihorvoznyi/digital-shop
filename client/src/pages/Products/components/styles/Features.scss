@@ -1,0 +1,35 @@
+@import '../../../../assets/scss/variables';
+@import '../../../../assets/scss/mixins';
+
+.product-features {
+  margin: 4rem 0 2rem 0;
+
+  &__title {
+    color: aliceblue;
+    font-size: 24px;
+    text-align: center;
+  }
+
+  &__list {
+    margin: 1rem 0;
+  }
+
+  &__row {
+    display: flex;
+
+    padding: 16px 16px;
+
+    span {
+      flex: 1;
+      color: $gray-text;
+
+      &:nth-child(1) {
+        font-weight: 600;
+      }
+    }
+
+    &_gray {
+      background-color: #333333;
+    }
+  }
+}

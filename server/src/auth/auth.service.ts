@@ -1,6 +1,8 @@
 import {
+  forwardRef,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -17,16 +19,19 @@ import { LoginDto } from './dtos/login.dto';
 
 import { IAuthReturn } from './interfaces/auth.interface';
 
+import { IClientUser } from './interfaces/client-user.interface';
+
 @Injectable()
 export class AuthService {
   readonly secret: string;
 
   constructor(
-    private jwtService: JwtService,
-    private config: ConfigService,
+    @Inject(forwardRef(() => UserService))
     private userService: UserService,
+    private jwtService: JwtService,
+    private configService: ConfigService
   ) {
-    this.secret = this.config.get<string>('JWT_SECRET_KEY');
+    this.secret = this.configService.get<string>('JWT_SECRET_KEY');
   }
 
   // Checks if email is available
@@ -45,7 +50,9 @@ export class AuthService {
     // Generate JWT Token
     const token: string = await this.signToken(newUser);
 
-    return { token, user: newUser };
+    const clientUser = UserService.userForClient(newUser);
+
+    return { token, user: clientUser };
   }
 
   async login(dto: LoginDto): Promise<IAuthReturn> {
@@ -55,24 +62,26 @@ export class AuthService {
     });
     const token: string = await this.signToken(user);
 
-    return { token, user };
+    const clientUser = UserService.userForClient(user);
+
+    return { token, user: clientUser };
   }
 
   // Function which let user avoid extra authorization
   // *When reload the page etc.*
   async auth(email: string): Promise<IAuthReturn> {
-    const user = await this.userService.getUser({
-      where: { email },
-      relations: ['address'],
-    });
+    const user = await this.userService.getUser({ email });
+
     if (!user) throw new UnauthorizedException('Invalid token');
     const token: string = await this.signToken(user);
 
-    return { token, user };
+    const clientUser = UserService.userForClient(user);
+
+    return { token, user: clientUser };
   }
 
   // Create JWT Token using user data (email, userId)
-  private async signToken(user: User): Promise<string> {
+  public async signToken(user: User): Promise<string> {
     const payload = {
       sub: user.id,
       email: user.email,
@@ -87,10 +96,7 @@ export class AuthService {
 
   // Checking if login parameters is correct
   private async validateUser({ email, password }): Promise<User> {
-    const user = await this.userService.getUser({
-      where: { email },
-      relations: ['address'],
-    });
+    const user = await this.userService.getUser({ email });
 
     if (!user) {
       throw new HttpException('User is not exists.', HttpStatus.BAD_REQUEST);
@@ -98,7 +104,7 @@ export class AuthService {
 
     const isPasswordEquals: boolean = await bcrypt.compare(
       password,
-      user.password,
+      user.password
     );
 
     if (!isPasswordEquals) {

@@ -1,0 +1,21 @@
+@import '../../assets/scss/variables';
+@import '../../assets/scss/responsive';
+
+.cabinet {
+  margin: 1rem 2rem;
+  background-color: $black-color;
+  padding: 1rem;
+
+  &__container {
+    display: flex;
+
+    @include _992 {
+      flex-direction: column;
+    }
+  }
+
+  &__content {
+    margin-top: 1rem;
+    flex: 1;
+  }
+}

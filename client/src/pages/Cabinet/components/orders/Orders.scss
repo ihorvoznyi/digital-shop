@@ -1,0 +1,156 @@
+@import "../../../../assets/scss/variables";
+@import "../../../../assets/scss/responsive";
+
+.cabinet-orders {
+  @include _992 {
+    margin-top: 2rem;
+  };
+
+  &__title {
+    color: aliceblue;
+    margin-bottom: 1rem;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    max-height: 450px;
+
+    overflow-y: auto;
+
+    padding-right: 1rem;
+
+    @include _992 {
+      overflow-y: visible;
+      max-height: 100%;
+    }
+  }
+
+  &__order {
+    display: flex;
+    flex-direction: column;
+
+    background-color: $black-color;
+    border-radius: 10px 5px 5px 10px;
+    border-left: 8px solid $light-blue;
+
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.1);
+
+    color: $gray-text;
+
+    position: relative;
+
+    &-header {
+      display: flex;
+      gap: 3rem;
+
+      width: 100%;
+      
+      padding: 1rem 2rem;
+
+      border-bottom: 1px solid $light-blue;
+
+      @include _992 {
+        flex-direction: column;
+        gap: 2rem;
+      }
+
+      &-total {
+        p {
+          color: $gray-text;
+          font-weight: 500;
+          margin-bottom: 0.5rem;
+        }
+
+        span {
+          font-weight: 600;
+          color: aliceblue;
+        }
+      }
+    }
+
+    &-id {
+      span {
+        &:nth-child(1) {
+          font-weight: 600;
+          color: rgb(59, 58, 58);
+        }
+      }
+    }
+
+    &-body {
+      display: flex;
+      gap: 2rem;
+
+      padding: 1rem 2rem;
+    }
+
+    &-customer {
+      flex: 1;
+      max-width: 400px;
+      margin-right: 200px;
+      gap: 2rem;
+
+      @include _1200 {
+        margin-right: 100px;
+      }
+
+      @include _992 {
+        margin-right: 20px;
+      }
+    }
+
+    &-shipping {
+      span {
+        font-size: 16px;
+        color: aliceblue;
+
+        font-weight: 500;
+      }
+    }
+
+    &-address {
+      margin-top: 1rem;
+      span {
+        font-size: 16px;
+        color: aliceblue;
+      }
+    }
+
+    &-contact {
+      display: flex;
+      margin-top: 1rem;
+
+      div {
+        display: flex;
+        flex-direction: column;
+        margin-left: 8px;
+
+        span {
+          color: aliceblue;
+          font-weight: 500;
+        }
+      }
+    }
+
+    &-status {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+
+      width: 10px;
+      height: 10px;
+
+      border-radius: 50%;
+
+      margin-top: 0.5rem;
+      font-weight: 600;
+
+      &.pending {
+        background-color: rgb(236, 222, 32);
+      }
+    }
+  }
+}

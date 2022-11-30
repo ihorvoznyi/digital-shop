@@ -11,7 +11,7 @@ import {
 import { FeatureValue, Product, Review } from '../database/entities';
 
 import { TypeService } from '../type/type.service';
-import { BrandService } from '../brand/brand.service';
+import { BrandService } from '../brand/services/brand.service';
 import { FeatureService } from '../feature/feature.service';
 import { NumberService } from '../utils/number.service';
 import { UserService } from '../user/user.service';
@@ -25,9 +25,10 @@ import {
 
 import { IFeature } from '../feature/interfaces';
 import { IProduct, IReview } from './interfaces';
-import { IFilterQuery } from './interfaces/product-filter.interface';
 
-import { RELATIONS } from '../constants/product.constant';
+import { PRODUCT_RELATIONS } from './constants/product.constant';
+
+import { IFilterQuery } from './interfaces/product-filter.interface';
 
 @Injectable()
 export class ProductService {
@@ -39,7 +40,7 @@ export class ProductService {
     private typeService: TypeService,
     private brandService: BrandService,
     private featureService: FeatureService,
-    private userService: UserService,
+    private userService: UserService
   ) {}
 
   async getProducts(typeId: string, filters: FilterDto): Promise<IProduct[]> {
@@ -51,7 +52,7 @@ export class ProductService {
         // Check if product includes all filter characteristic
         return filters.features.every((tag) => {
           const feature = product.features.find(
-            (item) => item.feature.tag === tag.name,
+            (item) => item.feature.tag === tag.name
           );
 
           if (!feature) return false;
@@ -61,16 +62,34 @@ export class ProductService {
       });
     }
 
-    return products.map((product) => {
-      return ProductService.generateClientProduct(product);
-    });
+    return products.map((product) =>
+      ProductService.generateClientProduct(product)
+    );
+  }
+
+  async getInitialProducts(): Promise<IProduct[]> {
+    const options: FindManyOptions = {
+      relations: PRODUCT_RELATIONS,
+      take: 8,
+      order: {
+        comments: {
+          estimate: 'ASC',
+        },
+      },
+    };
+
+    const products = await this.productRepository.find(options);
+
+    return products.map((product) =>
+      ProductService.generateClientProduct(product)
+    );
   }
 
   async getProduct(options: FindOneOptions): Promise<Product> {
     const product = await this.productRepository.findOne(options);
 
     if (!product) {
-      throw new HttpException("Product doesn't exist", HttpStatus.BAD_REQUEST);
+      throw new HttpException('Product does not exist', HttpStatus.BAD_REQUEST);
     }
 
     return product;
@@ -78,7 +97,7 @@ export class ProductService {
 
   async getProductForClient(productId: string): Promise<IProduct> {
     const options: FindOneOptions = {
-      relations: RELATIONS,
+      relations: PRODUCT_RELATIONS,
       where: { id: productId },
     };
 
@@ -90,9 +109,7 @@ export class ProductService {
   async createProduct(dto: CreateProductDto): Promise<IProduct> {
     const productType = await this.typeService.getType(dto.type);
 
-    const productBrand = await this.brandService.getBrand({
-      where: { id: dto.brand },
-    });
+    const productBrand = await this.brandService.getBrand(dto.brand);
 
     const newProduct = this.productRepository.create({
       name: dto.name,
@@ -132,10 +149,10 @@ export class ProductService {
     };
     const product = await this.productRepository.findOne(options);
 
-    const user = await this.userService.getUser({ where: { id: userId } });
+    const user = await this.userService.getUser({ id: userId });
 
     if (!product) {
-      throw new HttpException("Product doesn't exist", HttpStatus.BAD_REQUEST);
+      throw new HttpException('Product does not exist', HttpStatus.BAD_REQUEST);
     }
 
     const newReview = this.reviewRepository.create({
@@ -156,16 +173,16 @@ export class ProductService {
   // PUT Methods
   async updateProduct(
     productId: string,
-    dto: UpdateProductDto,
+    dto: UpdateProductDto
   ): Promise<IProduct> {
     const options: FindOneOptions = {
       where: { id: productId },
-      relations: RELATIONS,
+      relations: PRODUCT_RELATIONS,
     };
     const product = await this.productRepository.findOne(options);
 
     if (!product) {
-      throw new HttpException("Product doesn't exist", HttpStatus.BAD_REQUEST);
+      throw new HttpException('Product does not exist', HttpStatus.BAD_REQUEST);
     }
 
     const { name, description, price, image, features } = dto;
@@ -174,7 +191,7 @@ export class ProductService {
 
     for (const item of product.features) {
       const featureValue = features.find(
-        (feature) => feature.featureId === item.feature.id,
+        (feature) => feature.featureId === item.feature.id
       ).value;
 
       const updatedFeature: FeatureValue =
@@ -206,7 +223,7 @@ export class ProductService {
     const product = await this.productRepository.findOneBy({ id: productId });
 
     if (!product) {
-      throw new HttpException("Product doesn't exist", HttpStatus.BAD_REQUEST);
+      throw new HttpException('Product does not exist', HttpStatus.BAD_REQUEST);
     }
 
     return this.productRepository.remove(product);
@@ -250,7 +267,10 @@ export class ProductService {
       name: product.name,
       description: product.description,
       image: product.image,
-      type: product.type.type,
+      type: {
+        typeName: product.type.type,
+        typeTag: product.type.tag,
+      },
       brand: product.brand.brand,
       price: product.price,
       rating,
@@ -264,7 +284,7 @@ export class ProductService {
     const { priceRange, brands } = filters;
 
     const options: FindManyOptions = {
-      relations: RELATIONS,
+      relations: PRODUCT_RELATIONS,
       where: {
         type: { id: typeId },
       },

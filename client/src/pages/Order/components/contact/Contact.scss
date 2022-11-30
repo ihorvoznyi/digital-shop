@@ -1,0 +1,13 @@
+@import '../../../../assets/scss/responsive';
+
+.order-page {
+  &__contact {
+    @include _992 {
+      margin-right: 1rem;
+    }
+
+    @include _768 {
+      width: 100%;
+    }
+  }
+}

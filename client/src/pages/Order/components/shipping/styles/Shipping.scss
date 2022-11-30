@@ -1,0 +1,46 @@
+@import '../../../../../assets/scss/responsive';
+
+.order-page {
+  &__shipping-method {
+    margin-top: 2rem;
+
+    @include _992 {
+      margin-top: 0;
+    }
+  }
+
+  &__shipping-method {
+    .order-page__shipping-input {
+      &:nth-child(2) {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  &__shipping-title {
+    font-size: 20px;
+    margin-bottom: 1.5rem;
+  }
+
+  &__select-method {
+    position: relative;
+    margin-bottom: 1rem;
+  }
+
+  &__methods {
+    max-width: 300px;
+    max-height: 150px;
+    width: 100%;
+
+    z-index: 10;
+
+    &.hide {
+      display: none;
+    }
+
+    &.open {
+      display: block;
+    }
+  }
+}
+
