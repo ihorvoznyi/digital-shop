@@ -22,7 +22,10 @@ export class Type {
   @Column()
   tag: string;
 
-  @OneToMany(() => Feature, (feature) => feature.type)
+  @OneToMany(() => Feature, (feature) => feature.type, {
+    eager: true,
+    cascade: true,
+  })
   features: Feature[];
 
   @OneToMany(() => Product, (product) => product.type)

@@ -25,7 +25,7 @@ export class FeatureService {
 
     const newFeature = this.featureRepository.create({
       type,
-      featureName: name,
+      name,
       tag,
     });
 
@@ -39,7 +39,7 @@ export class FeatureService {
       const tag = toCamelCase(name);
       const newFeature = this.featureRepository.create({
         type,
-        featureName: name,
+        name,
         tag,
       });
 
@@ -60,7 +60,7 @@ export class FeatureService {
 
     for await (const featureItem of features) {
       const featureEntity = type.features.find(
-        (feature) => feature.id === featureItem.featureId
+        (feature) => feature.id === featureItem.id
       );
 
       try {
@@ -111,7 +111,7 @@ export class FeatureService {
         const feature = await this.featureRepository.findOne({ where: { id } });
         const tag = toCamelCase(name);
 
-        feature.featureName = name;
+        feature.name = name;
         feature.tag = tag;
 
         const savedFeature = await this.featureRepository.save(feature);
@@ -125,6 +125,15 @@ export class FeatureService {
     return updatedFeatures;
   }
 
+  async deleteInvalidFeatures() {
+    const invalids = await this.featureRepository.find({
+      where: { type: null },
+    });
+
+    await this.featureRepository.remove(invalids);
+  }
+
+  // Update product feature
   async updateFeatureValue({ id, value }): Promise<FeatureValue> {
     const feature = await this.featureValueRepository.findOne({
       where: { id: id },

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import { userStore } from '../../../../store';
-import { getOrders } from '../../../../store/order/services/OrderService';
+import { getOrders } from '../../../../store/order/OrderService';
 import { Format } from '../../../../utils';
-import { IOrder } from './interfaces/IOrder';
+import { IOrder } from './IOrder';
 
 import './Orders.scss';
 
@@ -11,7 +11,9 @@ const Orders = () => {
   const [orders, setOrders] = useState<IOrder[]>([]);
 
   useEffect(() => {
-    getOrders(userStore.user.id).then((data) => setOrders(data));
+    getOrders(userStore.user.id).then((data) => {
+      setOrders(data);
+    });
   }, []);
 
   return (
@@ -51,11 +53,11 @@ const Orders = () => {
                   <div className="cabinet-orders__order-body">
                     <div className="cabinet-orders__order-customer">
                       <div className="cabinet-orders__order-shipping">
-                        <div>Доставка: <span>{order.shipping.method}</span></div>
+                        <div>Доставка: <span> {order.shipping.method}</span></div>
                         <div className="cabinet-orders__order-address">
-                          Адреса:
-                          <span>
-                            {order.shipping.city}, {order.shipping.address}
+                          Адреса: <span>
+                            {order.shipping.city},
+                            {order.shipping.address}
                           </span>
                         </div>
                       </div>
@@ -74,12 +76,12 @@ const Orders = () => {
                       <h2>Ви замовили:</h2>
 
                       <div className="cabinet-orders__order-products-list">
-                        {order.products.map((product) => (
+                        {order.products.map((item) => (
                           <div className="cabinet-order__order-product">
                             <img src={''} alt={''} />
                             <div className="cabinet-order__order-product-details">
-                              <p>{product.name}</p>
-                              <span>{Format.format(product.price)} грн.</span>
+                              <p>{item.product.name} ({item.quantity})</p>
+                              <span>{Format.format(item.product.price)} грн.</span>
                             </div>
                           </div>
                         ))}

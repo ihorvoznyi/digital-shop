@@ -1,0 +1,26 @@
+@import '../../assets/scss/variables';
+@import '../../assets/scss/responsive';
+
+.control-panel {
+  margin-top: 2rem;
+  height: 80vh;
+  background-color: $black-color;
+  border-radius: 3px;
+
+  &__container {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    gap: 2rem;
+  }
+
+  &__content {
+    width: 100%;
+    height: 100%;
+
+    margin-right: 2rem;
+
+    padding: 2rem;
+  }
+}

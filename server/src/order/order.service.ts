@@ -151,7 +151,12 @@ export class OrderService {
   }
 
   private static generateClientOrder(order: UserOrder) {
-    const products = order.products.map((product) => product.product);
+    const products = order.products.map((product) => {
+      return {
+        product: product.product,
+        quantity: product.quantity,
+      };
+    });
 
     return {
       id: order.id,

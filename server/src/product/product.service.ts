@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 
 import { TypeService } from '../type/type.service';
-import { BrandService } from '../brand/services/brand.service';
+import { BrandService } from '../brand/brand.service';
 import { FeatureService } from '../feature/feature.service';
 
 import {
@@ -42,7 +42,7 @@ export class ProductService {
     private userService: UserService
   ) {}
 
-  async paginate(query: ProductPaginateDto) {
+  public async paginate(query: ProductPaginateDto) {
     const { page, keyword, limit } = query;
     const skip = page * limit;
 
@@ -65,7 +65,7 @@ export class ProductService {
     });
   }
 
-  paginateResponse(props: IPaginateProps) {
+  private paginateResponse(props: IPaginateProps) {
     const { data, page, limit } = props;
 
     const [result, total] = data;
@@ -84,7 +84,10 @@ export class ProductService {
     };
   }
 
-  async getProducts(typeId: string, filters: FilterDto): Promise<IProduct[]> {
+  public async getProducts(
+    typeId: string,
+    filters: FilterDto
+  ): Promise<IProduct[]> {
     const options = ProductService.generateFilterOptions(typeId, filters);
     let products = await this.productRepository.find(options);
 
@@ -108,8 +111,9 @@ export class ProductService {
     );
   }
 
-  async getInitialProducts(): Promise<IProduct[]> {
+  public async getInitialProducts(): Promise<IProduct[]> {
     const options: FindManyOptions = {
+      where: { isActive: true },
       relations: PRODUCT_RELATIONS,
       take: 8,
       order: {
@@ -126,14 +130,14 @@ export class ProductService {
     );
   }
 
-  async getTableProducts() {
+  public async getTableProducts() {
     return (await this.productRepository.find()).map((product) => ({
       id: product.id,
       name: product.name,
     }));
   }
 
-  async getProduct(options: FindOneOptions): Promise<Product> {
+  public async getProduct(options: FindOneOptions): Promise<Product> {
     const product = await this.productRepository.findOne(options);
 
     if (!product) {
@@ -143,7 +147,7 @@ export class ProductService {
     return product;
   }
 
-  async getProductForClient(productId: string): Promise<IProduct> {
+  public async getProductForClient(productId: string): Promise<IProduct> {
     const options: FindOneOptions = {
       relations: PRODUCT_RELATIONS,
       where: { id: productId },
@@ -154,13 +158,16 @@ export class ProductService {
   }
 
   // POST methods
-  async createProduct(dto: CreateProductDto): Promise<IProduct> {
-    const productType = await this.typeService.getType({
-      where: { id: dto.type },
-      relations: ['features'],
-    });
+  public async createProduct(dto: CreateProductDto): Promise<IProduct> {
+    const productType = await this.typeService.getType(dto.type);
 
     const productBrand = await this.brandService.getBrand(dto.brand);
+
+    const isValid = await this.validateProduct(dto.name);
+
+    if (!isValid) {
+      throw new HttpException('Validation Error', HttpStatus.BAD_REQUEST);
+    }
 
     const newProduct = this.productRepository.create({
       name: dto.name,
@@ -191,7 +198,7 @@ export class ProductService {
     }
   }
 
-  async addReview(addReviewDto: AddReviewDto) {
+  public async addReview(addReviewDto: AddReviewDto) {
     const { productId, userId, comment, estimate } = addReviewDto;
 
     const options: FindOneOptions = {
@@ -222,7 +229,7 @@ export class ProductService {
   }
 
   // PUT Methods
-  async updateProduct(
+  public async updateProduct(
     productId: string,
     dto: UpdateProductDto
   ): Promise<IProduct> {
@@ -236,13 +243,30 @@ export class ProductService {
       throw new HttpException('Product does not exist', HttpStatus.BAD_REQUEST);
     }
 
-    const { name, description, price, image, features } = dto;
+    const {
+      name,
+      description,
+      price,
+      image,
+      brand: brandId,
+      features,
+      isActive,
+    } = dto;
+
+    const isValidName =
+      product.name === name || (await this.validateProduct(name));
+
+    if (!isValidName) {
+      throw new HttpException('Validation Error', HttpStatus.BAD_REQUEST);
+    }
+
+    const brand = await this.brandService.getBrand(brandId);
 
     const updatedFeatures: FeatureValue[] = [];
 
     for (const item of product.features) {
       const featureValue = features.find(
-        (feature) => feature.featureId === item.feature.id
+        (feature) => feature.id === item.id
       ).value;
 
       const updatedFeature: FeatureValue =
@@ -261,6 +285,8 @@ export class ProductService {
         description,
         image,
         price,
+        brand,
+        isActive: Boolean(isActive),
         features: updatedFeatures,
       });
 
@@ -270,7 +296,7 @@ export class ProductService {
     }
   }
 
-  async deleteProduct(productId): Promise<Product> {
+  public async deleteProduct(productId: string): Promise<Product> {
     const product = await this.productRepository.findOneBy({ id: productId });
 
     if (!product) {
@@ -278,6 +304,31 @@ export class ProductService {
     }
 
     return this.productRepository.remove(product);
+  }
+
+  public async deleteProducts(ids: string[]): Promise<Product[]> {
+    const deletedList: Product[] = [];
+
+    for await (const id of ids) {
+      const product = await this.deleteProduct(id);
+
+      deletedList.push(product);
+    }
+
+    return deletedList;
+  }
+
+  public async validateProduct(name: string): Promise<boolean> {
+    const candidate = await this.productRepository.findOneBy({ name });
+
+    if (candidate) {
+      throw new HttpException(
+        `Product #${name} is already exists`,
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    return true;
   }
 
   static updateRate(product: Product): number {
@@ -292,7 +343,8 @@ export class ProductService {
   static generateClientProduct(product: Product): IProduct {
     const productFeatures: IFeature[] = product.features.map((feature) => {
       return {
-        feature: feature.feature.featureName,
+        id: feature.id,
+        feature: feature.feature.name,
         value: feature.value,
       };
     });
@@ -318,11 +370,16 @@ export class ProductService {
       name: product.name,
       description: product.description,
       image: product.image,
+      isActive: product.isActive,
       type: {
-        typeName: product.type.type,
-        typeTag: product.type.tag,
+        id: product.type.id,
+        name: product.type.type,
+        tag: product.type.tag,
       },
-      brand: product.brand.brand,
+      brand: {
+        id: product.brand.id,
+        name: product.brand.brand,
+      },
       price: product.price,
       rating,
       features: productFeatures,
@@ -339,6 +396,9 @@ export class ProductService {
       relations: PRODUCT_RELATIONS,
       where: {
         type: { id: typeId },
+      },
+      order: {
+        isActive: 'DESC',
       },
     };
 

@@ -1,16 +1,16 @@
 import { FC } from 'react';
-import { IProduct } from "../../../store/product/interfaces";
+import { IProduct } from '../../../store/product/interfaces';
 import { Rating } from "../../../components";
 
-import Format from "../../../utils/Format";
+import Format from '../../../utils/Format';
 import './styles/ProductItem.scss';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 interface PropsType {
   product: IProduct,
 }
 
-const imageUrl = 'https://jabko.ua/image/cache/catalog/products/2022/09/072253/photo_2022-09-07_22-53-30-300x300.jpg.webp';
+const imageUrl = 'https://jabko.ua/image/cache/catalog/products/2022/09/072318/photo_2022-09-07_22-53-30-1397x1397.jpg.webp';
 
 const ProductItem: FC<PropsType> = ({ product }) => {
   const navigate = useNavigate();
@@ -18,29 +18,29 @@ const ProductItem: FC<PropsType> = ({ product }) => {
   const { format, convertToDollar } = Format;
 
   const handleClick = (id: string) => {
-    const path = `/${product.type.typeTag}/${id}`;
+    const path = `/${product.type.tag}/${id}`;
     navigate(path);
   }
 
   return (
-    <div className='product-item' onClick={() => handleClick(product.id)}>
-      <div className="product-item__container">
-        <div className="product-item__image">
-          <img src={imageUrl} alt={'Product'}/>
+    <div className={`product-item ${!product.isActive ? 'disabled' : ''}`} onClick={() => handleClick(product.id)}>
+      <div className='product-item__container'>
+        <div className='product-item__image'>
+          <img src={product.image ? product.image : imageUrl} alt={'Product'}/>
         </div>
 
-        <div className="product-item__details">
-          <div className="product-item__rating">
+        <div className='product-item__details'>
+          <div className='product-item__rating'>
             <Rating rating={product.rating} fontSize={'24px'}/>
           </div>
 
-          <div className="product-item__title">
+          <div className='product-item__title'>
             <span>{product.name}</span>
           </div>
 
-          <div className="divider"/>
+          <div className='divider'/>
 
-          <div className="product-item__price">
+          <div className='product-item__price'>
             <span>
               {format(convertToDollar(product.price))} $
             </span>

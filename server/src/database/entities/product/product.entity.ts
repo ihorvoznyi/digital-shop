@@ -28,6 +28,9 @@ export class Product {
   @Column()
   price: number;
 
+  @Column({ default: true })
+  isActive: boolean;
+
   @OneToMany(() => Review, (review) => review.product, {
     cascade: true,
   })

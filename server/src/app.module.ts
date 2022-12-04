@@ -6,16 +6,21 @@ import {
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
+import { MulterModule } from '@nestjs/platform-express';
+
 import { ConfigModule } from '@nestjs/config';
+import config from '../typeorm.config';
+
+import { ValidTokenMiddleware } from './auth/middlewares/valid-token.middleware';
+
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { ValidTokenMiddleware } from './auth/middlewares/valid-token.middleware';
 import { ProductModule } from './product/product.module';
 import { BrandModule } from './brand/brand.module';
 import { TypeModule } from './type/type.module';
 import { FeatureModule } from './feature/feature.module';
 import { OrderModule } from './order/order.module';
-import config from '../typeorm.config';
+
 import {
   AVAILABLE_ROUTES,
   PROTECTED_ROUTES,
@@ -27,6 +32,9 @@ import { AddressModule } from './address/address.module';
     TypeOrmModule.forRoot(config),
     ConfigModule.forRoot({ isGlobal: true }),
     JwtModule.register({}),
+    MulterModule.register({
+      dest: './uploads',
+    }),
     UserModule,
     AuthModule,
     ProductModule,

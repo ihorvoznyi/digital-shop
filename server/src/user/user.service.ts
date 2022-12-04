@@ -58,6 +58,7 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+  // Check if email is available
   public async checkIsAvailable(email: string): Promise<boolean> {
     const candidate = await this.userRepository.findOneBy({ email });
 

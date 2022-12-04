@@ -1,20 +1,20 @@
+import { Fragment, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
+
 import { Login, Registration, Cabinet, Home, Products, Order } from './pages';
 import { ControlPanel, Orders, Personal } from './pages/Cabinet/components';
-import { observer } from "mobx-react-lite";
-import { Fragment, useEffect } from "react";
-import { generalStore, userStore } from "./store";
-import { Loader } from "./components";
-import Product from "./pages/Products/Product";
+import { generalStore, userStore } from './store';
+import { Loader } from './components';
+import Product from './pages/Products/Product';
 import { auth } from './store/user/services/AuthService';
-import ControlPanelContent from './pages/control-panel/components/content/ControlPanelContent';
 
 export const App = observer(() => {
 
   const isAuth = userStore.isAuth;
 
   useEffect(() => {
-    auth().then(() => console.log(userStore.isLoading));
+    auth();
   }, []);
 
   if (userStore.isLoading) return <Loader />;
@@ -49,24 +49,15 @@ export const App = observer(() => {
               <>
                 <Route
                   path='/control-panel/types'
-                  element={
-                    <ControlPanel>
-                      <ControlPanelContent typeName='types' />
-                    </ControlPanel>}
+                  element={<ControlPanel />}
                 />
                 <Route
                   path='/control-panel/brands'
-                  element={
-                    <ControlPanel>
-                      <ControlPanelContent typeName='brands' />
-                    </ControlPanel>}
+                  element={<ControlPanel />}
                 />
                 <Route
                   path='/control-panel/products'
-                  element={
-                    <ControlPanel>
-                      <ControlPanelContent typeName='products' />
-                    </ControlPanel>}
+                  element={<ControlPanel />}
                 />
               </>
             )}

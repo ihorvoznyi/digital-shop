@@ -10,10 +10,10 @@ export const createAddress = async (newAddress: INewAddress) => {
     const url = `${URL}/${userStore.user.id}`;
     const response = await axios.post(url, newAddress);
 
-    console.log(response.data);
+    return response.data;
     
   } catch (err) {
-    console.log(err);
+    throw new Error('Create Address: Error');
   }
 }
 
@@ -22,6 +22,6 @@ export const deleteAddress = async (addressId: string) => {
     const url = `${URL}/${addressId}`;
     await axios.delete(url);
   } catch (err) {
-    console.log(err);
+    throw new Error('Delete Address: Error');
   }
 }

@@ -1,6 +1,6 @@
 import { ChangeEvent, FC } from 'react';
-import { IInputProps } from './input.interface';
-import './input.style.scss';
+import { IInputProps } from './IInput';
+import './InputStyle.scss';
 
 const Input: FC<IInputProps> = (props) => {
   return (

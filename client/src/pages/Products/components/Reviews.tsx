@@ -5,7 +5,7 @@ import { addReviewType, commentType } from "../../../store/product/interfaces";
 import { productStore, userStore } from "../../../store";
 import { useLocation } from "react-router-dom";
 import { Rating } from "../../../components";
-import { addReview } from '../../../store/product/services/ProductService';
+import { addReview } from '../../../store/product/ProductService';
 
 interface PropsType {
   reviews: commentType[];

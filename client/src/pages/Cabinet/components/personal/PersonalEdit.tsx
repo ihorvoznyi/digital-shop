@@ -1,12 +1,10 @@
 import { observer } from 'mobx-react-lite';
-import { FC, useState, FormEvent, useCallback } from 'react';
-import { useDebounce } from '../../../../hooks/useDebounce';
-import { userStore } from '../../../../store';
+import { FC, useState, FormEvent, useCallback, useRef } from 'react';
 
 import { IAddress, IUser } from "../../../../store/user/interfaces";
 import { checkIsAvailable } from '../../../../store/user/services/UserService';
 
-import { toPhoneNumber, Validator } from '../../../../utils';
+import { Format, Validator, debounce } from '../../../../utils';
 
 import './styles/PersonalEdit.scss';
 
@@ -23,6 +21,8 @@ const PersonalEdit: FC<PropsType> = ({ userInfo, onChange }) => {
   const [newEmail, setNewEmail] = useState<string>(email);
   const [newPhoneNumber, setNewPhoneNumber] = useState<string>(phoneNumber);
 
+  const emailRef = useRef<HTMLInputElement>(null);
+
   const handleChange = (e: FormEvent<EventTarget>) => {
     const { value, name } = e.target as HTMLInputElement;
 
@@ -37,12 +37,17 @@ const PersonalEdit: FC<PropsType> = ({ userInfo, onChange }) => {
         if (!isValid) return;
 
         checkIsAvailable(value).then((isAvailable) => {
-          if (isAvailable) return onChange(property, value);
-          else console.log(value, '-- Incorrect');  
+          if (isAvailable) {
+            emailRef.current?.classList.remove('error');
+
+            return onChange(property, value);
+          }
+          else emailRef.current?.classList.add('error');
         });
 
         break;
       }
+      
       case 'phoneNumber': {
         const isValid = Validator.validatePhone(value);
 
@@ -60,7 +65,7 @@ const PersonalEdit: FC<PropsType> = ({ userInfo, onChange }) => {
     }
   }
 
-  const debouceHandleChange = useCallback(useDebounce(handleChange, 200), []);
+  const debouceHandleChange = useCallback(debounce(handleChange, 200), []);
 
   return (
     <div className='cabinet-personal__edit'>
@@ -84,7 +89,7 @@ const PersonalEdit: FC<PropsType> = ({ userInfo, onChange }) => {
         <input
           type='number'
           name='phoneNumber'
-          placeholder={toPhoneNumber(phoneNumber)}
+          placeholder={Format.toPhoneNumber(phoneNumber)}
           value={newPhoneNumber}
           onChange={(e: FormEvent<EventTarget>) => {
             const { value } = e.target as HTMLInputElement;
@@ -97,6 +102,7 @@ const PersonalEdit: FC<PropsType> = ({ userInfo, onChange }) => {
       <div className='cabinet-personal__row'>
         <p>E-mail:</p>
         <input
+          ref={emailRef}
           type='text'
           name='email'
           placeholder={email}

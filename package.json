@@ -5,9 +5,12 @@
     "@mui/icons-material": "^5.10.16",
     "@mui/material": "^5.10.16",
     "@mui/utils": "^5.10.16",
-    "@mui/x-data-grid": "^5.17.13"
+    "@mui/x-data-grid": "^5.17.13",
+    "react-horizontal-scrolling-menu": "^3.2.3",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/uuid": "^9.0.0",
     "eslint": "^8.28.0",
     "eslint-import-resolver-typescript": "^3.5.2"
   }

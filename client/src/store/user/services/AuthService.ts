@@ -1,6 +1,6 @@
 import axios from "axios";
 import { orderStore } from "../../order/Order";
-import { getOrders } from "../../order/services/OrderService";
+import { getOrders } from "../../order/OrderService";
 import { ILogin, IRegistration, IUser } from "../interfaces";
 import { userStore } from "../User";
 

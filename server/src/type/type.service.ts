@@ -5,12 +5,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 
 import { Feature, Type } from '../database/entities';
 import { CreateTypeDto } from './dtos';
 import { FeatureService } from '../feature/feature.service';
-import { UpdateTypeDto } from './interfaces';
+import { IClientType, UpdateTypeDto } from './interfaces';
 
 @Injectable()
 export class TypeService {
@@ -20,8 +20,10 @@ export class TypeService {
     private featureService: FeatureService
   ) {}
 
-  async getTypes(options: FindManyOptions) {
-    const types = await this.typeRepository.find(options);
+  async getTypes() {
+    const types = await this.typeRepository.find({
+      relations: ['features', 'products'],
+    });
 
     if (!types.length) return types;
 
@@ -35,14 +37,23 @@ export class TypeService {
     }));
   }
 
-  async getType(options: FindOneOptions): Promise<Type> {
-    const type = await this.typeRepository.findOne(options);
+  async getType(id: string): Promise<Type> {
+    const type = await this.typeRepository.findOne({
+      where: { id },
+      relations: ['features'],
+    });
 
     if (!type) {
       throw new HttpException('Type does not exist', HttpStatus.BAD_REQUEST);
     }
 
     return type;
+  }
+
+  async getClientType(id: string): Promise<IClientType> {
+    const type = await this.getType(id);
+
+    return TypeService.generateClientType(type);
   }
 
   async createType(dto: CreateTypeDto): Promise<Type> {
@@ -54,6 +65,12 @@ export class TypeService {
       throw new HttpException('Type already exists', HttpStatus.BAD_REQUEST);
     }
 
+    const isValid = this.validate({ tag }) && this.validate({ type: typeName });
+
+    if (!isValid) {
+      throw new HttpException('Validation Fail', HttpStatus.BAD_REQUEST);
+    }
+
     const newType = this.typeRepository.create({
       type: typeName,
       tag,
@@ -62,6 +79,7 @@ export class TypeService {
 
     const typeFeatures: Feature[] = [];
 
+    // Create features which belongs to the type
     for await (const item of featureList) {
       const featureName = item.toLowerCase();
       const typeFeature = await this.featureService.createFeature({
@@ -87,6 +105,18 @@ export class TypeService {
     return this.typeRepository.remove(type);
   }
 
+  async validate(options: FindOptionsWhere<Type>): Promise<boolean> {
+    const candidate = await this.typeRepository.findOne({ where: options });
+
+    if (candidate) {
+      throw new HttpException('Validate Fail', HttpStatus.BAD_REQUEST);
+    }
+
+    return true;
+  }
+
+  // Find type by id
+  // Then update values if they not empty
   async updateType(typeId: string, dto: UpdateTypeDto) {
     const type = await this.typeRepository.findOne({
       where: { id: typeId },
@@ -97,41 +127,57 @@ export class TypeService {
       throw new NotFoundException(`Type #${typeId} not found`);
     }
 
-    const { name, tag, updateFeatures, deleteFeatures, newFeatures } = dto;
+    const { name, tag, features } = dto;
 
-    if (name) type.type = name;
-    if (type.tag) type.tag = tag;
+    if (name) {
+      const isValid =
+        name === type.type || (await this.validate({ type: name }));
+
+      if (!isValid) {
+        throw new HttpException('Validation Error', HttpStatus.BAD_REQUEST);
+      }
+
+      type.type = name;
+    }
+    if (tag) {
+      const isValid = tag === type.tag || (await this.validate({ tag }));
+
+      if (!isValid) {
+        throw new HttpException('Validation Error', HttpStatus.BAD_REQUEST);
+      }
+
+      type.tag = tag;
+    }
 
     // If deleteFeatures is not empty => then delete features
-    if (deleteFeatures.length) {
-      const deleted = await this.featureService.deleteFeatures(deleteFeatures);
 
-      type.features = type.features.filter(
-        (feature) => !deleted.includes(feature.id)
-      );
+    const updatedFeatures = [];
 
-      await this.typeRepository.save(type);
+    for await (const feature of features) {
+      if (feature.flag === 'update') {
+        const toUpdate = type.features.find((item) => item.id === feature.id);
+
+        toUpdate.name = feature.name;
+
+        updatedFeatures.push(toUpdate);
+
+        continue;
+      } else if (feature.flag === 'new') {
+        const newFeature = await this.featureService.createFeature({
+          type,
+          name: feature.name,
+        });
+
+        updatedFeatures.push(newFeature);
+
+        continue;
+      }
     }
 
-    if (updateFeatures.length) {
-      const updatedFeatures = await this.featureService.updateFeatures(
-        updateFeatures
-      );
+    await this.featureService.deleteInvalidFeatures();
 
-      type.features = [...updatedFeatures, ...type.features];
-    }
+    type.features = [...updatedFeatures];
 
-    // If newFeatures is not empty => then update features
-    if (newFeatures.length) {
-      const createdFeatures = await this.featureService.createFeatures(
-        type,
-        newFeatures
-      );
-
-      type.features = [...type.features, ...createdFeatures];
-    }
-
-    // Ending
     const savedType = await this.typeRepository.save(type);
 
     return TypeService.generateClientType(savedType);
@@ -141,10 +187,19 @@ export class TypeService {
     // Capitalize
     const name = type.type.charAt(0).toUpperCase() + type.type.slice(1);
 
+    const features = type.features.map((feature) => {
+      return {
+        id: feature.id,
+        name: feature.name,
+      };
+    });
+
     return {
       id: type.id,
       name,
       tag: type.tag,
+      features,
+      products: type.products,
     };
   }
 }

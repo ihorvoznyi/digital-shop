@@ -1,12 +1,13 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
+
 import { AiOutlineUser } from 'react-icons/ai';
 import { FaClipboardList, FaUserAstronaut } from 'react-icons/fa';
 import { RiLogoutBoxRLine } from 'react-icons/ri';
 
 import './CabinetSidebar.scss';
-import { userStore } from "../../../../store";
-import { toPhoneNumber } from "../../../../utils/toPhoneNumber";
-import { observer } from 'mobx-react-lite';
+import { userStore } from '../../../../store';
+import { Format } from '../../../../utils';
 
 const CabinetSidebar = () => {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ const CabinetSidebar = () => {
           </div>
 
           <div className='cabinet-sidebar__phone'>
-            <p>{toPhoneNumber(phoneNumber)}</p>
+            <p>{Format.toPhoneNumber(phoneNumber)}</p>
           </div>
         </div>
 

@@ -7,7 +7,7 @@ import { productStore } from "../../store";
 import { ProductList } from "./components";
 import { Loader } from "../../components";
 
-import { getProductsByType } from '../../store/product/services/ProductService';
+import { getProductsByType } from '../../store/product/ProductService';
 
 import './styles/Products.scss';
 
@@ -22,7 +22,6 @@ const Products: FC<PropsType> = (link) => {
 
   useEffect(() => {
     getProductsByType(link.id);
-    console.log(link.name + ' loader:' + productStore.isLoading);
   }, [location]);
 
   if (productStore.isLoading) return <Loader />

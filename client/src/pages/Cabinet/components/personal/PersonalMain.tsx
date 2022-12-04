@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { observer } from 'mobx-react-lite';
 
-import { toPhoneNumber } from "../../../../utils/toPhoneNumber";
-import { IUser } from "../../../../store/user/interfaces";
+import { Format } from '../../../../utils';
+import { IUser } from '../../../../store/user/interfaces';
 
 import './styles/PersonalMain.scss';
 
@@ -11,7 +11,7 @@ interface PropsType {
 }
 
 const PersonalMain: FC<PropsType> = ({ userInfo }) => {
-  const { phoneNumber, email, name, addresses } = userInfo;
+  const { phoneNumber, email, name } = userInfo;
 
   return (
     <div className='cabinet-personal__info'>
@@ -22,7 +22,7 @@ const PersonalMain: FC<PropsType> = ({ userInfo }) => {
 
       <div className='cabinet-personal__row'>
         <p>Номер телефону:</p>
-        <p>{toPhoneNumber(phoneNumber)}</p>
+        <p>{Format.toPhoneNumber(phoneNumber)}</p>
       </div>
 
       <div className='cabinet-personal__row'>

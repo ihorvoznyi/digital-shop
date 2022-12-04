@@ -18,7 +18,7 @@ export class UserOrder {
   id: string;
 
   @Column()
-  orderDate: Date;
+  orderDate: string;
 
   @Column()
   orderTotal: number;

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { cartStore, generalStore, userStore } from '../../store';
 import { Contact, OrderItem, Shipping } from './components';
 import Format from '../../utils/Format';
-import { createOrder } from '../../store/order/services/OrderService';
+import { createOrder } from '../../store/order/OrderService';
 import { IContact, IShipping } from '../../store/order/interfaces';
 
 const Order = () => {

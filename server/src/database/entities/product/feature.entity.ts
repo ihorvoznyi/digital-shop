@@ -14,16 +14,17 @@ export class Feature {
   id: string;
 
   @Column({ default: '' })
-  featureName: string;
+  name: string;
+
+  @Column()
+  tag: string;
 
   @ManyToOne(() => Type, (type) => type.features, {
     onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   type: Type;
 
   @OneToMany(() => FeatureValue, (featureValue) => featureValue.feature)
   featureValues: FeatureValue[];
-
-  @Column()
-  tag: string;
 }

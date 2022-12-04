@@ -3,9 +3,9 @@ import { observer } from "mobx-react-lite";
 
 import { generalStore, shippingStore } from "../../../../store";
 
-import { useDebounce } from "../../../../hooks/useDebounce";
+import { debounce } from "../../../../utils/Debounce";
 
-import { fetchWarehouses } from '../../../../store/shipping/services/ShippingService';
+import { fetchWarehouses } from '../../../../store/shipping/ShippingService';
 
 import './styles/PostOfficeAddress.scss'
 
@@ -56,8 +56,8 @@ const PostOfficeAddress: FC<PropsType> = ({ onChange }) => {
     generalStore.setOpenSection(null);
   }
 
-  const debounceCitySearch = useCallback(useDebounce(handleSearchCity, 500), []);
-  const debounceWarehouses = useCallback(useDebounce(handleSearchWarehouse, 200), []);
+  const debounceCitySearch = useCallback(debounce(handleSearchCity, 500), []);
+  const debounceWarehouses = useCallback(debounce(handleSearchWarehouse, 200), []);
 
   return (
     <div className='order-page__post-office'>

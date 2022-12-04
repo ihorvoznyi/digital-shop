@@ -1,12 +1,13 @@
 import { Product, Type } from '../../database/entities';
 
 export interface IFeature {
+  id: string;
   feature: string;
   value: string | number | boolean;
 }
 
 export interface IFeatureValue {
-  featureId: string;
+  id: string;
   value: string;
 }
 

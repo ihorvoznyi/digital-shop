@@ -1,5 +1,8 @@
 .cabinet-personal {
   &__row {
+
+    position: relative;
+
     input {
       border-bottom: 1px solid #999999;
 
@@ -9,6 +12,12 @@
 
       color: aliceblue;
       font-size: 16px;
+
+      position: relative;
+
+      &.error {
+        border-color: red;
+      }
 
       &::placeholder {
         color: #888888;

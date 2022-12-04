@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useState } from 'react';
 
-import { PersonalMain, PersonalEdit } from "../index";
+import { PersonalMain, PersonalEdit } from '../index';
 
-import { userStore } from "../../../../store";
+import { userStore } from '../../../../store';
 
-import { IPersonal } from "./interfaces/IPersonal";
-import { Validator } from "../../../../utils";
+import { IPersonal } from './IPersonal';
+import { Validator } from '../../../../utils';
 
-import { updateUser } from "../../../../store/user/services/UserService";
+import { updateUser } from '../../../../store/user/services/UserService';
 
 import './styles/Personal.scss';
 

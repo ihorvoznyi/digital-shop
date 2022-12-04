@@ -1,12 +1,12 @@
-import { makeAutoObservable } from "mobx";
-import axios from "axios";
-import { ITypes } from "./interfaces/ITypes";
-import { ShippingMethodEnum } from "../../pages/Order/components/shipping/enums/ShippingMethodEnum";
+import { makeAutoObservable } from 'mobx';
+import { IType } from './interfaces/ITypes';
+import { ShippingMethodEnum } from '../../pages/Order/components/shipping/enums/ShippingMethodEnum';
 
 class GeneralStore {
   isLoading = true;
   openSection: null | string = null;
-  types: ITypes[] = [];
+  types: IType[] = [];
+  tableValues = [];
   shippingMethod: ShippingMethodEnum = ShippingMethodEnum.POST_OFFICE;
 
   constructor() {
@@ -21,6 +21,16 @@ class GeneralStore {
 
   setOpenSection(section: string | null) {
     this.openSection = section;
+  }
+
+  setTypes(types: IType[]) {
+    this.types = types;
+
+    console.log(types);
+  }
+
+  getTypes() {
+    return [...this.types];
   }
 }
 

@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { productStore } from '../../store';
-import { ProductList } from "../Products/components";
+import { ProductList } from '../Products/components';
+import { Loader } from '../../components';
+import { getInitial } from '../../store/product/ProductService';
 import './Home.scss';
-import { Loader } from "../../components";
-import { fetchProducts } from '../../store/product/services/ProductService';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -13,8 +13,9 @@ const Home = () => {
   // Redirect
   useEffect(() => navigate('/'), []);
 
+  // Fetch initial Products
   useEffect(() => {
-    fetchProducts();
+    getInitial();
   }, []);
 
   if (productStore.isLoading) return <Loader/>

@@ -10,12 +10,11 @@ import {
 } from '@nestjs/common';
 import { TypeService } from './type.service';
 import { Type } from '../database/entities';
-import { CreateTypeDto } from './dtos';
-import { FindOneOptions } from 'typeorm';
+import { CreateTypeDto, ValidateTypeDto } from './dtos';
 import { RoleGuard } from '../auth/guards/role.guard';
 import { Roles } from '../auth/decorators/role.decorator';
 import { RoleEnum } from '../auth/enums/role.enum';
-import { UpdateTypeDto } from './interfaces';
+import { IClientType, UpdateTypeDto } from './interfaces';
 
 @Controller('types')
 export class TypeController {
@@ -23,7 +22,7 @@ export class TypeController {
 
   @Get()
   getTypes() {
-    return this.typeService.getTypes({ relations: ['features'] });
+    return this.typeService.getTypes();
   }
 
   @Get('/for-table')
@@ -32,13 +31,8 @@ export class TypeController {
   }
 
   @Get(':id')
-  getType(@Param('id') typeId: string): Promise<Type> {
-    const options: FindOneOptions = {
-      where: { id: typeId },
-      relations: ['features'],
-    };
-
-    return this.typeService.getType(options);
+  getType(@Param('id') typeId: string): Promise<IClientType> {
+    return this.typeService.getClientType(typeId);
   }
 
   @Post()
@@ -57,6 +51,14 @@ export class TypeController {
     });
   }
 
+  @Post('/validate')
+  validate(@Body() dto: ValidateTypeDto): Promise<boolean> {
+    const value = dto.value.toLocaleLowerCase();
+
+    if (dto.option === 'tag') return this.typeService.validate({ tag: value });
+    else return this.typeService.validate({ type: value });
+  }
+
   @Delete(':id')
   @UseGuards(RoleGuard)
   @Roles(RoleEnum.ADMIN)
@@ -67,7 +69,7 @@ export class TypeController {
   @Put(':id')
   @UseGuards(RoleGuard)
   @Roles(RoleEnum.ADMIN)
-  updateType(@Param('id') typeId: string, @Body() dto: UpdateTypeDto) {
-    return this.typeService.updateType(typeId, dto);
+  updateType(@Param('id') id: string, @Body() dto: UpdateTypeDto) {
+    return this.typeService.updateType(id, dto);
   }
 }

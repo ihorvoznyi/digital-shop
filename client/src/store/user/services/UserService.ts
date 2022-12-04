@@ -20,7 +20,7 @@ export const updateUser = async (updateInfo: IUpdateUser) => {
   
       userStore.user = user;
     } catch (err) {
-      console.log(err);
+      throw new Error('Update User: Error');
     }
 }
 

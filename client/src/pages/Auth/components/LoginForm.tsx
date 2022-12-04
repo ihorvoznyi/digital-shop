@@ -20,7 +20,7 @@ const LoginForm = () => {
     event.preventDefault();
     if (!email || !password) return;
 
-    login({ email, password }).then(() => console.log('Auth Status:', userStore.isAuth));
+    login({ email, password });
   };
 
   return (
@@ -28,23 +28,6 @@ const LoginForm = () => {
       <div className='login__header'>
         <p>Sign in</p>
         <p>or <span onClick={() => navigate('/registration')}>create an account</span></p>
-      </div>
-      <div className='login__services'>
-        <div className='login__services__google'>
-          <FcGoogle className='login__services__icon'/>
-          <p>Sign in with Google</p>
-        </div>
-
-        <div className='login__services__apple'>
-          <AiFillApple className='login__services__icon'/>
-          <p>Sign in with Apple</p>
-        </div>
-      </div>
-
-      <div className='login__divider'>
-        <div/>
-        <p>or</p>
-        <div/>
       </div>
 
       <form className='login__form' onSubmit={handleSubmit}>
