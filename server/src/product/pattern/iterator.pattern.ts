@@ -17,11 +17,6 @@ interface Iterator<T> {
   rewind(): void;
 }
 
-export interface Aggregator {
-  getIterator(collection: Product[]): Iterator<Product>;
-  // getReverseIterator(): Iterator<Product>;
-}
-
 export class TypeProductIterator implements Iterator<Product> {
   private collection: Product[];
   private position = 0;

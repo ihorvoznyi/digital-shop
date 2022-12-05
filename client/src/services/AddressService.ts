@@ -1,7 +1,7 @@
-import axios from "axios";
-import { userStore } from "../store";
+import axios from 'axios';
+import { userStore } from '../store';
 
-import { INewAddress } from "../store/user/interfaces";
+import { INewAddress } from '../store/user/interfaces';
 
 const URL = 'http://localhost:8080/address';
 

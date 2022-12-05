@@ -34,11 +34,7 @@ const AddTypeModal = () => {
   const [isNewFeatureError, setIsNewFeatureError] = useState<boolean>(false);
 
   const handleSubmit = () => {
-    console.log('tag', tag);
-    console.log('name', name);
     if (tag && name) {
-      console.log('called');
-
       updateType({
         id: type.id,
         tag,
