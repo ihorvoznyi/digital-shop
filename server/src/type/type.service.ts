@@ -1,6 +1,8 @@
 import {
+  forwardRef,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -11,13 +13,16 @@ import { Feature, Type } from '../database/entities';
 import { CreateTypeDto } from './dtos';
 import { FeatureService } from '../feature/feature.service';
 import { IClientType, UpdateTypeDto } from './interfaces';
+import { ProductService } from 'src/product/product.service';
 
 @Injectable()
 export class TypeService {
   constructor(
     @InjectRepository(Type)
     private typeRepository: Repository<Type>,
-    private featureService: FeatureService
+    private featureService: FeatureService,
+    @Inject(forwardRef(() => ProductService))
+    private productService: ProductService
   ) {}
 
   async getTypes() {
@@ -120,7 +125,7 @@ export class TypeService {
   async updateType(typeId: string, dto: UpdateTypeDto) {
     const type = await this.typeRepository.findOne({
       where: { id: typeId },
-      relations: ['features'],
+      relations: ['features', 'products', 'products.features'],
     });
 
     if (!type) {
@@ -149,8 +154,6 @@ export class TypeService {
       type.tag = tag;
     }
 
-    // If deleteFeatures is not empty => then delete features
-
     const updatedFeatures = [];
 
     for await (const feature of features) {
@@ -178,7 +181,14 @@ export class TypeService {
 
     const savedType = await this.typeRepository.save(type);
 
+    await this.updateProducts(savedType);
+
     return TypeService.generateClientType(savedType);
+  }
+
+  private async updateProducts(type: Type) {
+    console.log(type.products[0]);
+    console.log(type.features);
   }
 
   static generateClientType(type: Type) {

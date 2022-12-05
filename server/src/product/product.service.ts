@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Between,
@@ -42,6 +48,7 @@ export class ProductService {
     private productRepository: Repository<Product>,
     @InjectRepository(Review)
     private reviewRepository: Repository<Review>,
+    @Inject(forwardRef(() => TypeService))
     private typeService: TypeService,
     private brandService: BrandService,
     private featureService: FeatureService,
