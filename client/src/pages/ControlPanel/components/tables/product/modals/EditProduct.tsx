@@ -95,16 +95,16 @@ const EditProductModal = () => {
     setProduct((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSelect = (select: string, id: string) => {
+  const handleSelect = (select: string, value: string) => {
     if (select === 'brand') setProduct((prev) => ({
       ...prev, brand: {
         ...prev.brand,
-        id,
+        id: value,
       }
     }));
     else if (select === 'type'){
-      setProduct((prev) => ({ ...prev, type: id }));
-      fetchType(id).then((data: IType) => {
+      setProduct((prev) => ({ ...prev, type: value }));
+      fetchType(value).then((data: IType) => {
         const featuresWithValue = data.features.map((feature) => ({ id: feature.id, value: '' }));
 
         setProductFeatures(featuresWithValue);
@@ -112,7 +112,7 @@ const EditProductModal = () => {
     } else {
       let status: boolean;
 
-      if (select === 'active') status = true;
+      if (value === 'active') status = true;
       else status = false;
 
       setProduct((prev) => ({ ...prev, isActive: status }));
