@@ -16,7 +16,7 @@ import { Product } from '../database/entities';
 
 import { ProductService } from './product.service';
 
-import { CreateProductDto } from './dtos';
+import { CreateProductDto, SearchProductDto } from './dtos';
 import { UpdateProductDto, AddReviewDto } from './dtos';
 
 import { IProduct } from './interfaces';
@@ -46,6 +46,11 @@ export class ProductController {
       keyword,
       route: 'http://localhost:8081/products',
     });
+  }
+
+  @Get('/search')
+  search(@Query() query: SearchProductDto) {
+    return this.productService.searchProduct(query);
   }
 
   @Get('/type/:id')
@@ -100,35 +105,6 @@ export class ProductController {
   ): Promise<IProduct> {
     return this.productService.updateProduct(productId, updateDto);
   }
-
-  // @Post('/upload/:id')
-  // @UseGuards(RoleGuard)
-  // @Roles(RoleEnum.ADMIN)
-  // @UseInterceptors(
-  //   FileInterceptor('file', {
-  //     storage: diskStorage({
-  //       destination: './static',
-  //       filename: (req, file, callback) => {
-  //         if (!file) return;
-
-  //         const suffix = Date.now() + '-' + 'filename';
-  //         // const id = req.url.split('/').slice(-1)[0];
-
-  //         const ext = extname(file.originalname);
-  //         const filename = `${suffix}${ext}`;
-
-  //         callback(null, filename);
-  //       },
-  //     }),
-  //   })
-  // )
-  // uploadFile(@UploadedFile() file: Express.Multer.File) {
-  //   if (!file) return;
-
-  //   const path = 'C:/Cloud/Programming/Projects/digital-shop/server/static/';
-
-  //   return 'file:///' + path + file.filename;
-  // }
 
   @Delete(':id')
   @UseGuards(RoleGuard)

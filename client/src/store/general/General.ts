@@ -6,6 +6,7 @@ class GeneralStore {
   isLoading = true;
   openSection: null | string = null;
   types: IType[] = [];
+  currentTypeId: string = '';
   tableValues = [];
   shippingMethod: ShippingMethodEnum = ShippingMethodEnum.POST_OFFICE;
 
@@ -25,8 +26,10 @@ class GeneralStore {
 
   setTypes(types: IType[]) {
     this.types = types;
+  }
 
-    console.log(types);
+  setCurrentType(id: string) {
+    this.currentTypeId = id;
   }
 
   getTypes() {

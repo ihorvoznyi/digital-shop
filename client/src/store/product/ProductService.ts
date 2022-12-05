@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
 import { storage } from '../../FirebaseConfig';
+import { generalStore } from '../general/General';
 
 import { addReviewType, IProduct, INewProduct, IUpdateProduct } from './interfaces';
 
@@ -30,7 +31,7 @@ export const getInitial = async () => {
 
     const response = await axios.get(URL);
 
-    productStore.products = response.data;
+    productStore.setProducts(response.data);
   } catch {
     throw new Error('GET Initial Product: Error');
   } finally {
@@ -158,6 +159,20 @@ export const validateProduct = async (name: string) => {
     return false;
   }
 };
+
+export const searchProduct = async (keyword: string) => {
+  const typeId = generalStore.types.find((type) => type.tag === generalStore.currentTypeId)?.id;
+
+  const url = `${URL}/search?&keyword=${keyword}&typeId=${typeId ? typeId : ''}`;
+
+  try {
+    const response = await axios.get(url);
+
+    return response.data;
+  } catch {
+    throw new Error('Search Product: Error');
+  }
+}
 
 const createImageURL = async (image: any) => {
   const name = image.name.split('.').slice(0, -1)[0];

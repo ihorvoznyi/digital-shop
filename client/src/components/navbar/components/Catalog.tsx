@@ -17,6 +17,13 @@ const Catalog = () => {
 
   const [isCatalog, setIsCatalog] = useState<boolean>(false);
 
+  const handleNavigate = (type: IType) => {
+    const id = type.id;
+    const path = type.tag;
+
+    generalStore.setCurrentType(id);
+    navigate(path);
+  };
 
   useEffect(() => {
     setTypes([...generalStore.getTypes()]);
@@ -39,22 +46,10 @@ const Catalog = () => {
 
           {types.map((type) => {
             const products = type.products;
-            const isSubmenu = products.length ? true : false;
 
             return (
-              <li className='catalog__field'>
+              <li className='catalog__field' onClick={() => handleNavigate(type)}>
                 <span>{type.name}</span>
-                {isSubmenu
-                  ? (
-                    <ul className='catalog__submenu'>
-                      {products.map((product) => (
-                        <li className='catalog__field'>
-                          {product.name}
-                        </li>
-                      ))}
-                    </ul>
-                  )
-                  : ''}
               </li>
             )
           })}

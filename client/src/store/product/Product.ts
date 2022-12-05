@@ -9,6 +9,10 @@ class ProductStore {
   constructor() {
     makeAutoObservable(this, {}, { autoBind: true });
   }
+
+  setProducts(products: IProduct[]) {
+    this.products = products;
+  }
 }
 
 export const productStore = new ProductStore();

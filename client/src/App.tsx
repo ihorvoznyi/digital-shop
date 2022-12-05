@@ -1,5 +1,5 @@
 import { Fragment, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
 import { Login, Registration, Cabinet, Home, Products, Order } from './pages';
@@ -8,14 +8,23 @@ import { generalStore, userStore } from './store';
 import { Loader } from './components';
 import Product from './pages/Products/Product';
 import { auth } from './store/user/services/AuthService';
+import { ControlPanelSidebar } from './pages/ControlPanel/components';
 
 export const App = observer(() => {
 
   const isAuth = userStore.isAuth;
 
+  const location = useLocation();
+
   useEffect(() => {
     auth();
   }, []);
+
+  useEffect(() => {
+    const tag = location.pathname.split('/').slice(-1)[0];
+
+    generalStore.setCurrentType(tag);
+  }, [location]);
 
   if (userStore.isLoading) return <Loader />;
 

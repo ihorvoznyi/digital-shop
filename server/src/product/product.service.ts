@@ -4,9 +4,13 @@ import {
   Between,
   FindManyOptions,
   FindOneOptions,
+  FindOptionsWhere,
   In,
   Like,
   Repository,
+  IsNull,
+  Not,
+  ILike,
 } from 'typeorm';
 
 import { TypeService } from '../type/type.service';
@@ -18,12 +22,13 @@ import {
   UpdateProductDto,
   AddReviewDto,
   FilterDto,
+  SearchProductDto,
 } from './dtos';
 
 import { IFeature } from '../feature/interfaces';
 import { IProduct, IReview, IFilterQuery, IPaginateProps } from './interfaces';
 
-import { FeatureValue, Product, Review } from '../database/entities';
+import { FeatureValue, Product, Review, Type } from '../database/entities';
 import { UserService } from '../user/user.service';
 import { PRODUCT_RELATIONS } from './constants/product.constant';
 import { NumberService } from '../utils/number.service';
@@ -329,6 +334,30 @@ export class ProductService {
     }
 
     return true;
+  }
+
+  public async searchProduct(dto: SearchProductDto) {
+    const { typeId, keyword } = dto;
+
+    let type: Type;
+
+    if (typeId) {
+      type = await this.typeService.getType(typeId);
+    }
+
+    const options: FindOptionsWhere<Product> = {
+      name: ILike('%' + keyword + '%'),
+      type: type ? type : Not(IsNull()),
+    };
+
+    const products = await this.productRepository.find({
+      where: options,
+      relations: PRODUCT_RELATIONS,
+    });
+
+    return products.map((product) => {
+      return ProductService.generateClientProduct(product);
+    });
   }
 
   static updateRate(product: Product): number {
