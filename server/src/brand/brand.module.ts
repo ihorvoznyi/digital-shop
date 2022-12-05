@@ -5,9 +5,9 @@ import { Brand } from '../database/entities';
 
 import { UserModule } from '../user/user.module';
 
-import { BrandService } from './brand.service';
+import { BrandService } from './services/brand.service';
 
-import { BrandController } from './brand.controller';
+import { BrandController } from './controllers/brand.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Brand]), UserModule],

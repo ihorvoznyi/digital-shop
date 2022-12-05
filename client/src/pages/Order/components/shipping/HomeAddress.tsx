@@ -10,7 +10,7 @@ const HomeAddress: FC<PropsType> = ({ onChange }) => {
     <div className='order-page__post-office'>
       <input
         type='text'
-        placeholder='Місто'
+        placeholder='Львів'
         className='order-page__shipping-input custom-input'
         onChange={(e: FormEvent<EventTarget>) => {
           const { value } = e.target as HTMLInputElement;
@@ -19,7 +19,7 @@ const HomeAddress: FC<PropsType> = ({ onChange }) => {
       />
       <input
         type='text'
-        placeholder='Адрес доставки'
+        placeholder='Городоцька 276А'
         className='order-page__shipping-input custom-input'
         onChange={(e: FormEvent<EventTarget>) => {
           const { value } = e.target as HTMLInputElement;

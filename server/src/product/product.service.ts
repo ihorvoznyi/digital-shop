@@ -14,7 +14,7 @@ import {
 } from 'typeorm';
 
 import { TypeService } from '../type/type.service';
-import { BrandService } from '../brand/brand.service';
+import { BrandService } from '../brand/services/brand.service';
 import { FeatureService } from '../feature/feature.service';
 
 import {
@@ -33,6 +33,7 @@ import { UserService } from '../user/user.service';
 import { PRODUCT_RELATIONS } from './constants/product.constant';
 import { NumberService } from '../utils/number.service';
 import { ProductPaginateDto } from './dtos/product-paginate.dto';
+import { TypeProductIterator } from './pattern/iterator.pattern';
 
 @Injectable()
 export class ProductService {
@@ -111,9 +112,19 @@ export class ProductService {
       });
     }
 
-    return products.map((product) =>
-      ProductService.generateClientProduct(product)
-    );
+    const iterator = this.getIterator(products);
+
+    const clientProducts: IProduct[] = [];
+
+    while (!iterator.hasNext()) {
+      const clientProduct = ProductService.generateClientProduct(
+        iterator.next()
+      );
+
+      clientProducts.push(clientProduct);
+    }
+
+    return clientProducts;
   }
 
   public async getInitialProducts(): Promise<IProduct[]> {
@@ -358,6 +369,14 @@ export class ProductService {
     return products.map((product) => {
       return ProductService.generateClientProduct(product);
     });
+  }
+
+  private getIterator(collection: Product[]): any {
+    return new TypeProductIterator(collection);
+  }
+
+  private getReverseIterator(collection: Product[]): any {
+    return new TypeProductIterator(collection, true);
   }
 
   static updateRate(product: Product): number {

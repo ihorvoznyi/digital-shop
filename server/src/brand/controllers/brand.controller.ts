@@ -8,16 +8,16 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { Brand } from '../database/entities';
+import { Brand } from '../../database/entities';
 
-import { BrandService } from './brand.service';
+import { BrandService } from '../services/brand.service';
 
-import { CreateBrandDto } from './dtos';
+import { CreateBrandDto } from '../dtos';
 
-import { RoleGuard } from '../auth/guards/role.guard';
-import { Roles } from '../auth/decorators/role.decorator';
-import { RoleEnum } from '../auth/enums/role.enum';
-import { IClientBrand } from './interfaces';
+import { RoleGuard } from '../../auth/guards/role.guard';
+import { Roles } from '../../auth/decorators/role.decorator';
+import { RoleEnum } from '../../auth/enums/role.enum';
+import { IClientBrand } from '../interfaces';
 
 @Controller('brands')
 export class BrandController {

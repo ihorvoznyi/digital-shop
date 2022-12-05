@@ -8,8 +8,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
 
-import { Brand } from '../database/entities';
-import { IClientBrand } from './interfaces';
+import { Brand } from '../../database/entities';
+import { IClientBrand } from '../interfaces';
 
 @Injectable()
 export class BrandService {

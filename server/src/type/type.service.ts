@@ -174,8 +174,6 @@ export class TypeService {
       }
     }
 
-    await this.featureService.deleteInvalidFeatures();
-
     type.features = [...updatedFeatures];
 
     const savedType = await this.typeRepository.save(type);
