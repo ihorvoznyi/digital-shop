@@ -8,7 +8,7 @@ import { Loader } from '../../components';
 import { Reviews, Details, Features } from './components';
 import { getProduct } from '../../store/product/ProductService';
 
-const imageUrl = 'https://jabko.ua/image/cache/catalog/products/2022/09/072318/photo_2022-09-07_22-53-30-1397x1397.jpg.webp';
+const defaultImg = 'https://jabko.ua/image/cache/catalog/products/2022/09/072318/photo_2022-09-07_22-53-30-1397x1397.jpg.webp';
 
 const Product = () => {
   const navigate = useNavigate();
@@ -16,14 +16,22 @@ const Product = () => {
 
   const [product, setProduct] = useState<IProduct | null>(null);
 
-  useEffect(() => {
-    getProduct(id as string).then((item) => setProduct(item));
-  }, []);
+  const [isImgError, setIsImgError] = useState(false);
+
+  const imgUrl = !isImgError ? product?.image : defaultImg;
 
   const handleBuyProduct = (product: IProduct) => {
     cartStore.addToCart(product);
     navigate('/order-page');
   }
+
+  const onImageError = () => {
+    setIsImgError(true);
+  };
+
+  useEffect(() => {
+    getProduct(id as string).then((item) => setProduct(item));
+  }, []);
 
   if (productStore.isLoading) return <Loader />
   if (!product) {
@@ -36,7 +44,8 @@ const Product = () => {
       <div className='product-page__container'>
         <div className='product-page__product'>
           <div className='product-page__image'>
-            <img src={product.image ? product.image : imageUrl} alt={''}  />
+            {/* <img src={product.image ? product.image : imageUrl} alt={''}  /> */}
+            <img src={imgUrl} alt={'Product'} onError={onImageError} />
           </div>
 
           <div className='product-page__right-side'>
@@ -53,7 +62,7 @@ const Product = () => {
                     Додати в Кошик
                   </div>
                 </div>
-              ): <div className='product-page__disabled'>Немає в наявності</div>}
+              ) : <div className='product-page__disabled'>Немає в наявності</div>}
 
             </div>
           </div>

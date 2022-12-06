@@ -15,7 +15,9 @@ export class FeatureValue {
   @Column({ default: 'f' })
   value: string;
 
-  @ManyToOne(() => Feature)
+  @ManyToOne(() => Feature, {
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   feature: Feature;
 

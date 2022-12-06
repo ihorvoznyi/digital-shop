@@ -90,9 +90,9 @@ export const createProduct = async (product: INewProduct) => {
   let iconUrl: string = 'https://jabko.ua/image/cache/catalog/products/2022/09/072318/photo_2022-09-07_22-53-30-1397x1397.jpg.webp';
 
   try {
-    if (product.image) {
-      iconUrl = await createImageURL(product.image);
-    }
+    // if (product.image) {
+    //   iconUrl = await createImageURL(product.image);
+    // }
 
     const response = await axios.post(URL, {
       ...product,

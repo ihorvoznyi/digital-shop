@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { IProduct } from '../../../store/product/interfaces';
 import { Rating } from "../../../components";
 
@@ -10,23 +10,32 @@ interface PropsType {
   product: IProduct,
 }
 
-const imageUrl = 'https://jabko.ua/image/cache/catalog/products/2022/09/072318/photo_2022-09-07_22-53-30-1397x1397.jpg.webp';
+const defaultImg = 'https://jabko.ua/image/cache/catalog/products/2022/09/072318/photo_2022-09-07_22-53-30-1397x1397.jpg.webp';
 
 const ProductItem: FC<PropsType> = ({ product }) => {
   const navigate = useNavigate();
 
   const { format, convertToDollar } = Format;
 
+  const [isImgError, setIsImgError] = useState(false);
+
+  const imgUrl = !isImgError ? product.image : defaultImg;
+
   const handleClick = (id: string) => {
     const path = `/${product.type.tag}/${id}`;
     navigate(path);
   }
 
+  const onImageError = () => {
+    setIsImgError(true);
+  };
+
   return (
     <div className={`product-item ${!product.isActive ? 'disabled' : ''}`} onClick={() => handleClick(product.id)}>
       <div className='product-item__container'>
         <div className='product-item__image'>
-          <img src={product.image ? product.image : imageUrl} alt={'Product'} />
+          {/* <img src={product.image ? product.image : imageUrl} alt={'Product'} /> */}
+          <img src={imgUrl} alt={'Product'} onError={onImageError}/>
         </div>
 
         <div className='product-item__details'>

@@ -1,9 +1,9 @@
-@import '../../../../assets/scss/variables';
+@import "../../../../assets/scss/variables";
 
 .product-item {
   display: flex;
   flex-direction: column;
-  background-color: #1D1D1D;
+  background-color: #1d1d1d;
 
   max-width: 262px;
   overflow: hidden;
@@ -45,7 +45,9 @@
     padding: 0 8px 16px 8px;
   }
 
-  &__rating, &__title, &__price {
+  &__rating,
+  &__title,
+  &__price {
     text-align: center;
   }
 
@@ -65,7 +67,7 @@
     justify-content: space-between;
 
     span {
-      color: #FF5C43;
+      color: #ff5c43;
       font-size: 16px;
       font-weight: 500;
 

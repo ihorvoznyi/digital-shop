@@ -198,36 +198,23 @@ export class TypeService {
       .filter((feature) => ids.includes(feature.feature.id))
       .map((item) => item.feature.id);
 
-    if (notNewIdList.length === 0) {
-      const newFeatures = ids.map((id) => ({ id, value: '' }));
-
-      await this.featureService.createProductFeatureList({
-        type,
-        product: testProduct,
-        features: newFeatures,
-      });
-
-      return;
-    }
-
     const toDeleteList = testProduct.features
       .filter((feature) => !ids.includes(feature.feature.id))
       .map((item) => item.feature.id);
 
-    // await this.featureService.deleteFeatures(toDeleteList);
+    await this.featureService.deleteFeatures(toDeleteList);
 
-    console.log(ids);
-    console.log(toDeleteList);
+    const newProductFeatures: IFeatureValue[] = ids
+      .filter((id) => !notNewIdList.includes(id))
+      .map((id) => ({ id, value: '' }));
 
-    // const newProductFeatures: IFeatureValue[] = ids
-    //   .filter((id) => !notNewIdList.includes(id))
-    //   .map((id) => ({ id, value: '' }));
-
-    // await this.featureService.createProductFeatureList({
-    //   type,
-    //   product: testProduct,
-    //   features: newProductFeatures,
-    // });
+    for await (const product of type.products) {
+      await this.featureService.createProductFeatureList({
+        type,
+        product: product,
+        features: newProductFeatures,
+      });
+    }
   }
 
   static generateClientType(type: Type) {

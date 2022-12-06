@@ -214,8 +214,6 @@ export class ProductService {
 
       savedProduct = await this.productRepository.save(savedProduct);
 
-      console.log(savedProduct.features);
-
       return ProductService.generateClientProduct(savedProduct);
     } catch (err) {
       await this.productRepository.remove(savedProduct);
