@@ -89,8 +89,8 @@ export const getFilterElements = async(id: string) => {
     const response = await axios.get(url);
 
     return response.data;
-  } catch (err) {
-    console.log(err);
+  } catch (err: any) {
+    throw new Error(err);
   }
 };
 

@@ -22,8 +22,6 @@ const Personal = () => {
 
     const isValid = isValidEmail && isValidPhone;
 
-    console.log(personal.email);
-
     if (!isValid) return;
 
     updateUser(personal).then(() => setIsEditing(false));
