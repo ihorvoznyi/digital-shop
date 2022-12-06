@@ -1,12 +1,12 @@
 import React, { useState, FC } from 'react';
-import { observer } from "mobx-react-lite";
+import { observer } from 'mobx-react-lite';
 
-import { ShippingMethodEnum } from "./enums/ShippingMethodEnum";
+import { ShippingMethodEnum } from './enums/ShippingMethodEnum';
 
-import PostOfficeAddress from "./PostOfficeAddress";
-import HomeAddress from "./HomeAddress";
+import PostOfficeAddress from './PostOfficeAddress';
+import HomeAddress from './HomeAddress';
 
-import { generalStore } from "../../../../store";
+import { generalStore } from '../../../../store';
 
 import './styles/Shipping.scss'
 
@@ -37,7 +37,7 @@ const Shipping: FC<PropsType> = ({ onChange }) => {
     <div className='order-page__shipping-method'>
       <p className='order-page__shipping-title'>Доставка</p>
 
-      <div className="order-page__select-method">
+      <div className='order-page__select-method'>
         <input
           type='text'
           placeholder='Метод доставки'

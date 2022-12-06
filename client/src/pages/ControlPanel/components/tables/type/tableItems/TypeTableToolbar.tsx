@@ -107,7 +107,7 @@ const TypeTableToolbar = (props: EnhancedTableToolbarProps) => {
         }}
       >
         <Fade in={isDeleteModal}>
-          <Box sx={customization.modalBox}>
+          <Box sx={{ ...customization.modalBox, maxWidth: '400px' }}>
             <Typography id="transition-modal-title" variant="h6" component="h2" color="aliceblue">
               Ви впевнені?
             </Typography>

@@ -46,8 +46,8 @@ export const createBrand = async(brandName: string) => {
     });
 
     return response.data;
-  } catch {
-    return false;
+  } catch(err: any) {
+    throw new Error(err);
   }
 };
 

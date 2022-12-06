@@ -58,11 +58,7 @@ export class BrandService {
       );
     }
 
-    const isValid = await this.validateBrand(brandName);
-
-    if (!isValid) {
-      throw new HttpException('Validation Error', HttpStatus.BAD_REQUEST);
-    }
+    await this.validateBrand(brandName);
 
     try {
       const newBrand = this.brandRepository.create({ brand: brandName });
@@ -89,6 +85,8 @@ export class BrandService {
     if (!brand) {
       throw new NotFoundException(`Brand #${id} not found`);
     }
+
+    await this.validateBrand(name);
 
     brand.brand = name;
 

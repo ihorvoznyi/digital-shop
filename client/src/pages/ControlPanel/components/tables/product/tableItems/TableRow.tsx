@@ -76,9 +76,8 @@ const ProductTableRow: FC<PropsType> = (props) => {
       >
         {row.name}
         <Typography variant='body2' sx={{ fontSize: '12px' }}>({row.id})</Typography>
-      </TableCell>
 
-      {isEditShown &&
+        {isEditShown &&
         <IconButton
           sx={{
             position: 'absolute',
@@ -92,6 +91,7 @@ const ProductTableRow: FC<PropsType> = (props) => {
         >
           <EditIcon />
         </IconButton>}
+      </TableCell>
     </TableRow>
   )
 };

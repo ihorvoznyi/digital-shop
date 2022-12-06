@@ -1,12 +1,11 @@
-import React, { Fragment } from 'react';
 import { observer } from 'mobx-react-lite';
 import { BsCart3 } from 'react-icons/bs';
 import { cartStore } from '../../../store';
-import Format from '../../../utils/Format';
 
-import './styles/Cart.scss';
 import { useNavigate } from 'react-router-dom';
 import CartItem from './CartItem';
+
+import './styles/Cart.scss';
 
 const Cart = () => {
   const navigate = useNavigate();

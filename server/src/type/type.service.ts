@@ -11,7 +11,7 @@ import { Feature, Type } from '../database/entities';
 import { CreateTypeDto } from './dtos';
 import { FeatureService } from '../feature/feature.service';
 import { IClientType, UpdateTypeDto } from './interfaces';
-import { IFeatureValue, IProductFeature } from 'src/feature/interfaces';
+import { IFeatureValue } from 'src/feature/interfaces';
 
 @Injectable()
 export class TypeService {
@@ -73,7 +73,7 @@ export class TypeService {
     }
 
     const newType = this.typeRepository.create({
-      type: typeName,
+      type: typeName.toLowerCase(),
       tag,
     });
     const savedType = await this.typeRepository.save(newType);
@@ -135,22 +135,14 @@ export class TypeService {
 
     const { name, tag, features } = dto;
 
-    if (name) {
-      const isValid =
-        name === type.type || (await this.validate({ type: name }));
+    if (name.toLowerCase() !== type.type) {
+      await this.validate({ type: name.toLowerCase() });
 
-      if (!isValid) {
-        throw new HttpException('Validation Error', HttpStatus.BAD_REQUEST);
-      }
-
-      type.type = name;
+      type.type = name.toLowerCase();
     }
-    if (tag) {
-      const isValid = tag === type.tag || (await this.validate({ tag }));
 
-      if (!isValid) {
-        throw new HttpException('Validation Error', HttpStatus.BAD_REQUEST);
-      }
+    if (tag.toLocaleLowerCase() !== type.tag.toLocaleLowerCase()) {
+      await this.validate({ tag });
 
       type.tag = tag;
     }

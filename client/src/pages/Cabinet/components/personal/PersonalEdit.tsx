@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import { FC, useState, FormEvent, useCallback, useRef } from 'react';
+import { BsFillFileEarmarkSpreadsheetFill } from 'react-icons/bs';
 
 import { IAddress, IUser } from "../../../../store/user/interfaces";
 import { checkIsAvailable } from '../../../../store/user/services/UserService';
@@ -34,16 +35,18 @@ const PersonalEdit: FC<PropsType> = ({ userInfo, onChange }) => {
 
         if (value === email) return onChange(property, value);
 
-        if (!isValid) return;
-
-        checkIsAvailable(value).then((isAvailable) => {
-          if (isAvailable) {
-            emailRef.current?.classList.remove('error');
-
-            return onChange(property, value);
-          }
-          else emailRef.current?.classList.add('error');
-        });
+        if (isValid) {
+          checkIsAvailable(value).then((isAvailable) => {
+            if (isAvailable) {
+              emailRef.current?.classList.remove('error');
+  
+              return onChange(property, value);
+            }
+            else emailRef.current?.classList.add('error');
+          });
+        } else {
+          emailRef.current?.classList.add('error')
+        }
 
         break;
       }

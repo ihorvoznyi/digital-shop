@@ -7,6 +7,7 @@ import { Contact, OrderItem, Shipping } from './components';
 import Format from '../../utils/Format';
 import { createOrder } from '../../store/order/OrderService';
 import { IContact, IShipping } from '../../store/order/interfaces';
+import { AddressEnum } from '../../store/shipping/enums';
 
 const Order = () => {
   const navigate = useNavigate();
@@ -47,6 +48,9 @@ const Order = () => {
 
   const handleSubmit = (event: FormEvent<HTMLElement>) => {
     event.preventDefault();
+
+    if (!shipping.city || !shipping.address) return;
+
     const products = items.map((item) => {
       return {
         productId: item.product.id,

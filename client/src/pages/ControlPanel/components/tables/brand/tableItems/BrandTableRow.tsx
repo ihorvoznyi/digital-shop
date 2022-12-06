@@ -7,11 +7,11 @@ import {
   Checkbox,
   Typography,
 } from '@mui/material';
+import { observer } from 'mobx-react-lite';
 
 import EditIcon from '@mui/icons-material/Edit';
-import { observer } from 'mobx-react-lite';
+
 import { ITableData } from '../../../../../../store/general/interfaces';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { modalStore } from '../../../../../../store';
 
 interface PropsType {
@@ -21,9 +21,6 @@ interface PropsType {
 };
 
 const BrandTableRow: FC<PropsType> = (props) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-
   const { handleClick, row, isSelected } = props;
 
   const [isEditShown, setIsEditShown] = useState(false);
@@ -76,9 +73,8 @@ const BrandTableRow: FC<PropsType> = (props) => {
       >
         {row.name}
         <Typography variant='body2' sx={{ fontSize: '12px' }}>({row.id})</Typography>
-      </TableCell>
 
-      {isEditShown &&
+        {isEditShown &&
         <IconButton
           sx={{
             position: 'absolute',
@@ -92,6 +88,7 @@ const BrandTableRow: FC<PropsType> = (props) => {
         >
           <EditIcon />
         </IconButton>}
+      </TableCell>
     </TableRow>
   )
 };

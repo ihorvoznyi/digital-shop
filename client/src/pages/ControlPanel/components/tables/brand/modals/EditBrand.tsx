@@ -22,6 +22,8 @@ const AddBrandModal = () => {
   const handleUpdate = () => {
     if (brand.name === brand.oldName) return;
 
+    if (isBrandError) return;
+
     updateBrand(brand.id, brand.name).then((status) => {
       if (status) {
         setIsEditModal(false, '');

@@ -192,6 +192,8 @@ export class ProductService {
       throw new HttpException('Validation Error', HttpStatus.BAD_REQUEST);
     }
 
+    await this.validateProduct(dto.name);
+
     const newProduct = this.productRepository.create({
       name: dto.name,
       description: dto.description,
@@ -413,6 +415,7 @@ export class ProductService {
       rating = ProductService.updateRate(product);
       productComments = product.comments.map((review) => {
         return {
+          id: review.id,
           author: review.user.email,
           comment: review.comment,
           estimate: review.estimate,

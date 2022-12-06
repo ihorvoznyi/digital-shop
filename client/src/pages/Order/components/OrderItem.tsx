@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { IProduct } from '../../../store/product/interfaces';

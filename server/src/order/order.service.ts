@@ -40,6 +40,9 @@ export class OrderService {
         'shippingAddress',
         'contactInfo',
       ],
+      order: {
+        orderDate: 'DESC',
+      },
     });
 
     return orders.map((order) => {

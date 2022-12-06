@@ -34,7 +34,6 @@ const ProductItem: FC<PropsType> = ({ product }) => {
     <div className={`product-item ${!product.isActive ? 'disabled' : ''}`} onClick={() => handleClick(product.id)}>
       <div className='product-item__container'>
         <div className='product-item__image'>
-          {/* <img src={product.image ? product.image : imageUrl} alt={'Product'} /> */}
           <img src={imgUrl} alt={'Product'} onError={onImageError}/>
         </div>
 

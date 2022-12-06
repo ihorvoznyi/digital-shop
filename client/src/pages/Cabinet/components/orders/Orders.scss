@@ -4,7 +4,7 @@
 .cabinet-orders {
   @include _992 {
     margin-top: 2rem;
-  };
+  }
 
   &__title {
     color: aliceblue;
@@ -21,6 +21,25 @@
     overflow-y: auto;
 
     padding-right: 1rem;
+
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    /* Track */
+    &::-webkit-scrollbar-track {
+      background: #1d1d1d;
+    }
+
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: #888;
+    }
+
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
 
     @include _992 {
       overflow-y: visible;
@@ -59,7 +78,7 @@
       gap: 3rem;
 
       width: 100%;
-      
+
       padding: 1rem 2rem;
 
       border-bottom: 1px solid $light-blue;

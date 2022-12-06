@@ -38,7 +38,7 @@ const AddTypeModal = () => {
       updateType({
         id: type.id,
         tag,
-        name,
+        name: name.toLowerCase(),
         features,
       }).then((status: boolean) => {
         if (status) {
@@ -201,27 +201,5 @@ const AddTypeModal = () => {
     </Modal>
   )
 }
-
-{/* <Typography key={feature} variant='body2' component='p' sx={{
-  fontSize: '14px',
-  color: 'aliceblue',
-  mt: 2,
-  position: 'relative'
-}}>
-  {feature}
-
-  <IconButton
-    onClick={() => handleDelete(feature)}
-    sx={{
-      position: 'absolute',
-      right: 0,
-      top: '50%',
-      transform: 'translateY(-50%)',
-      color: 'aliceblue',
-    }}
-  >
-    <CancelOutlinedIcon />
-  </IconButton>
-</Typography> */}
 
 export default AddTypeModal;

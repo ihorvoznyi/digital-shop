@@ -1,4 +1,4 @@
-import React, { FC, FormEvent } from 'react';
+import { FC, FormEvent } from 'react';
 import { observer } from "mobx-react-lite";
 
 interface PropsType {
@@ -16,6 +16,7 @@ const HomeAddress: FC<PropsType> = ({ onChange }) => {
           const { value } = e.target as HTMLInputElement;
           onChange('city', value);
         }}
+        required
       />
       <input
         type='text'
@@ -25,6 +26,7 @@ const HomeAddress: FC<PropsType> = ({ onChange }) => {
           const { value } = e.target as HTMLInputElement;
           onChange('address', value);
         }}
+        required
       />
     </div>
   );

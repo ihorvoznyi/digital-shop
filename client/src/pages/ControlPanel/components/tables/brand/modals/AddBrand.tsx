@@ -14,6 +14,9 @@ const AddBrandModal = () => {
 
   const handleCreate = () => {
     if (brandName) {
+
+      if (brandError) return;
+
       createBrand(brandName).then(() => {
         setIsCreateModal(false);
         window.location.reload();

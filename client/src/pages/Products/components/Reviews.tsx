@@ -1,11 +1,13 @@
-import './styles/Reviews.scss';
 import { FC, FormEvent, useState } from 'react';
 import { observer } from 'mobx-react-lite';
+import { useLocation } from 'react-router-dom';
+
 import { addReviewType, commentType } from '../../../store/product/interfaces';
 import { userStore } from '../../../store';
-import { useLocation } from 'react-router-dom';
-import { Rating } from '../../../components';
 import { addReview } from '../../../store/product/ProductService';
+import { Rating } from '../../../components';
+
+import './styles/Reviews.scss';
 
 interface PropsType {
   reviews: commentType[];
@@ -39,7 +41,7 @@ const Reviews: FC<PropsType> = ({ reviews }) => {
       <div className='product-reviews__list'>
         {reviews.length
           ? reviews.map((review) => (
-            <div className='product-reviews__review'>
+            <div className='product-reviews__review' key={review.id}>
               <div className='product-reviews__review-author'>
                 {review.author}
               </div>

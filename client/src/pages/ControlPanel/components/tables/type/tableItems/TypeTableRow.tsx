@@ -73,22 +73,22 @@ const TypeTableRow: FC<PropsType> = (props) => {
       >
         {row.name}
         <Typography variant='body2' sx={{ fontSize: '12px' }}>({row.id})</Typography>
+
+        {isEditShown &&
+          <IconButton
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              right: 2,
+              transform: 'translateY(-50%)',
+              color: 'white'
+            }}
+
+            onClick={handleClickEdit}
+          >
+            <EditIcon />
+          </IconButton>}
       </TableCell>
-
-      {isEditShown &&
-        <IconButton
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            right: 2,
-            transform: 'translateY(-50%)',
-            color: 'white'
-          }}
-
-          onClick={handleClickEdit}
-        >
-          <EditIcon />
-        </IconButton>}
     </TableRow>
   )
 };

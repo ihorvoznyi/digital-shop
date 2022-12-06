@@ -1,9 +1,11 @@
-import { FC, useCallback, useMemo, useState } from 'react'
+import { ChangeEvent, FC, useCallback, useMemo, useState } from 'react'
 import { observer } from 'mobx-react-lite';
 import { Box, TextField, Typography } from '@mui/material'
 
 import { customization } from '../../../Styles';
 import { debounce } from '../../../../../../../../utils';
+import { productStore } from '../../../../../../../../store';
+import { Loader } from '../../../../../../../../components';
 
 type FeatureType = {
   id: string;
@@ -20,6 +22,16 @@ const FeatureEditItem: FC<PropsType> = (props) => {
   const { feature, onChange } = useMemo(() => props, []);
 
   const [state, setState] = useState(feature.value);
+  const [isError, setIsError] = useState(feature.value ? false : true);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+
+    if (!value) setIsError(true);
+    else setIsError(false);
+    
+    setState(value);
+  };
 
   const debounseChange = useCallback(debounce(onChange, 200), []);
 
@@ -41,8 +53,9 @@ const FeatureEditItem: FC<PropsType> = (props) => {
           InputLabelProps={{ style: { color: 'aliceblue' } }}
           sx={{ ...customization.inputFeature }}
           value={state}
-          onChange={(e: any) => {
-            setState(e.target.value);
+          error={isError}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            handleChange(e);
             debounseChange(feature.id, e.target.value);
           }}
         />

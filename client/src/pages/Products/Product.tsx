@@ -44,7 +44,6 @@ const Product = () => {
       <div className='product-page__container'>
         <div className='product-page__product'>
           <div className='product-page__image'>
-            {/* <img src={product.image ? product.image : imageUrl} alt={''}  /> */}
             <img src={imgUrl} alt={'Product'} onError={onImageError} />
           </div>
 

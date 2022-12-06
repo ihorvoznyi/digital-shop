@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import React, { FC, useState } from 'react';
+import { FC, useState } from 'react';
 import { cartStore } from '../../../store';
 import { IProduct } from '../../../store/product/interfaces';
 import { Format } from '../../../utils';

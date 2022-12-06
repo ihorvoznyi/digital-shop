@@ -48,7 +48,11 @@ const Catalog = () => {
             const products = type.products;
 
             return (
-              <li className='catalog__field' onClick={() => handleNavigate(type)}>
+              <li
+                key={type.id}
+                className='catalog__field'
+                onClick={() => handleNavigate(type)}
+              >
                 <span>{type.name}</span>
               </li>
             )

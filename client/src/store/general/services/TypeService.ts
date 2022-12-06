@@ -43,8 +43,8 @@ export const createType = async(params: INewType) => {
 
     return response.data;
 
-  } catch {
-    return false;
+  } catch (err: any) {
+    throw new Error(err);
   }
 };
 
@@ -77,8 +77,8 @@ export const updateType = async(type: IEditType) => {
     });
 
     return response.data;
-  } catch {
-    return false;
+  } catch (err: any) {
+    throw new Error(err);
   }
 };
 

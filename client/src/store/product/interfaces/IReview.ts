@@ -6,6 +6,7 @@ export interface addReviewType {
 }
 
 export type commentType = {
+  id: string;
   author: string;
   comment: string;
   estimate: number;

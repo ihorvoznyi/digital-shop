@@ -16,10 +16,7 @@ interface PropsType {
 }
 
 const PostOfficeAddress: FC<PropsType> = ({ onChange }) => {
-  const [searchPlace, setSearchPlace] = useState('');
-
   const [selectedWarehouse, setSelectedWarehouse] = useState<string>('');
-  const [searchWarehouse, setSearchWarehouse] = useState('');
   const [activeWarehouses, setActiveWarehouses] = useState(shippingStore.warehouses);
 
   const handleOpen = (e: React.MouseEvent<HTMLElement>) => {
@@ -30,16 +27,15 @@ const PostOfficeAddress: FC<PropsType> = ({ onChange }) => {
 
   const handleSearchCity = (e: FormEvent<EventTarget>) => {
     const { value: city } = e.target as HTMLInputElement;
-    setSearchPlace(city);
 
     if (city) {
-      fetchWarehouses(city).then(() => { });
+      setActiveWarehouses([]);
+      fetchWarehouses(city).then((data) => setActiveWarehouses(data));
     }
   }
 
   const handleSearchWarehouse = (e: FormEvent<EventTarget>) => {
     const { value } = e.target as HTMLInputElement;
-    setSearchWarehouse(value);
 
     const warehouses = shippingStore.getWarehouses();
 
@@ -56,7 +52,7 @@ const PostOfficeAddress: FC<PropsType> = ({ onChange }) => {
     generalStore.setOpenSection(null);
   }
 
-  const debounceCitySearch = useCallback(debounce(handleSearchCity, 500), []);
+  const debounceCitySearch = useCallback(debounce(handleSearchCity, 300), []);
   const debounceWarehouses = useCallback(debounce(handleSearchWarehouse, 200), []);
 
   return (

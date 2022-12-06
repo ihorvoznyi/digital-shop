@@ -34,7 +34,7 @@ const AddProductModal = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleCreate = () => {
-    const { name, description, image, type, brand, price } = product;
+    const { name, description, type, brand, price } = product;
 
     if (!name || !description || !type || !brand || !price) return;
 
