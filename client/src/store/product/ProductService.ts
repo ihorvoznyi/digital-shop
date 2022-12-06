@@ -39,15 +39,15 @@ export const getInitial = async () => {
   }
 }
 
-export const getProductsByType = async (typeId: string) => {
+export const getProductsByType = async (id: string, query: string = '') => {
+  const url = `${URL}/type/${id}${query}`;
+
   try {
-    productStore.isLoading = true;
-    const url = `${URL}/type/${typeId}`;
-    productStore.products = (await axios.get(url)).data;
+    const response = await axios.get(url);
+
+    return response.data;
   } catch {
     throw new Error('GET by Type: Error');
-  } finally {
-    productStore.isLoading = false;
   }
 };
 

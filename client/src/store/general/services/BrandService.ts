@@ -1,5 +1,4 @@
-import axios from "axios";
-import { IBrand } from "../interfaces";
+import axios from 'axios';
 
 const URL = 'http://localhost:8080/brands';
 

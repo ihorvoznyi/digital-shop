@@ -82,6 +82,18 @@ export const updateType = async(type: IEditType) => {
   }
 };
 
+export const getFilterElements = async(id: string) => {
+  const url = `${URL}/filter/${id}`;
+
+  try {
+    const response = await axios.get(url);
+
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const validateType = async(option: string, value: string) => {
   const url = `${URL}/validate`;
 

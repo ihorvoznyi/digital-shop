@@ -384,10 +384,6 @@ export class ProductService {
     return new TypeProductIterator(collection);
   }
 
-  private getReverseIterator(collection: Product[]): any {
-    return new TypeProductIterator(collection, true);
-  }
-
   static updateRate(product: Product): number {
     const { comments } = product;
     const size: number = comments.length;

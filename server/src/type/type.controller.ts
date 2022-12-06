@@ -25,6 +25,11 @@ export class TypeController {
     return this.typeService.getTypes();
   }
 
+  @Get('/filter/:id')
+  getFilterOptions(@Param('id') typeId: string) {
+    return this.typeService.getFilterOptions(typeId);
+  }
+
   @Get('/for-table')
   getTableTypes() {
     return this.typeService.getTableTypes();

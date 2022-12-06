@@ -30,6 +30,7 @@ const BRAND_ROUTES = [
 const TYPE_ROUTES = [
   { path: '/types', method: RequestMethod.GET },
   { path: '/types/:id', method: RequestMethod.GET },
+  { path: '/types/filter/:id', method: RequestMethod.GET },
   { path: '/types/validate', method: RequestMethod.POST },
 ];
 

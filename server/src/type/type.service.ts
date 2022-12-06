@@ -57,6 +57,15 @@ export class TypeService {
     return TypeService.generateClientType(type);
   }
 
+  async getFilterOptions(typeId: string) {
+    const type = await this.typeRepository.findOne({
+      where: { id: typeId },
+      relations: ['features', 'features.featureValues'],
+    });
+
+    return TypeService.generateFilterOptions(type);
+  }
+
   async createType(dto: CreateTypeDto): Promise<Type> {
     const { typeName, featureList, tag } = dto;
 
@@ -207,6 +216,22 @@ export class TypeService {
         features: newProductFeatures,
       });
     }
+  }
+
+  static generateFilterOptions(type: Type) {
+    const options = type.features.map((feature) => {
+      const uniqueValues = new Set<string>();
+
+      feature.featureValues.forEach((value) => uniqueValues.add(value.value));
+
+      return {
+        name: feature.name,
+        tag: feature.tag,
+        values: Array.from(uniqueValues),
+      };
+    });
+
+    return options;
   }
 
   static generateClientType(type: Type) {
