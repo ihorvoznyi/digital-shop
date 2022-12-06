@@ -1,5 +1,5 @@
 import { IProduct } from '../product/interfaces';
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable } from 'mobx';
 import { CartItem } from './interfaces';
 
 class CartStore {

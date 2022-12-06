@@ -6,12 +6,10 @@ import Format from '../../../utils/Format';
 
 import './styles/Cart.scss';
 import { useNavigate } from 'react-router-dom';
-
-const imageLink = 'https://jabko.ua/image/cache/catalog/products/2022/04/081823/iphone11-black-select-2019-124x124.jpg';
+import CartItem from './CartItem';
 
 const Cart = () => {
   const navigate = useNavigate();
-  const { format } = Format;
   const size = cartStore.cart.length;
 
   const handleRedirect = () => {
@@ -36,29 +34,7 @@ const Cart = () => {
         {!size
           ? <li className='navbar__cart-empty'>Корзина пуста</li>
           : cartStore.cart.map((item) => (
-            <Fragment key={item.product.id}>
-              <li className='navbar__cart-product'>
-                <div className='navbar__cart-right'>
-                  <img className='navbar__cart-product-image' src={imageLink} alt={item.product.name} />
-
-                  <div className='navbar__cart-product-details'>
-                    <div className='navbar__cart-product-name'>
-                      {item.product.name}
-                    </div>
-
-                    <div className='navbar__cart-product-price'>
-                      {format(item.product.price)} грн
-                    </div>
-                  </div>
-                </div>
-
-                <div className='navbar__cart-remove' onClick={() => cartStore.removeFromCart(item.product.id)}>
-                  <span>X</span>
-                </div>
-              </li>
-
-              <div className='divider' />
-            </Fragment>
+              <CartItem key={item.product.id} product={item.product} />
           ))}
 
         {cartStore.cart.length ? (

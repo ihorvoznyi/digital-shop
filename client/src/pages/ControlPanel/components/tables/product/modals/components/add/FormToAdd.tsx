@@ -6,6 +6,7 @@ import { IBrand, IType } from '../../../../../../../../store/general/interfaces'
 import { fetchBrands, fetchTypes } from '../../../../../../../../store/general/services';
 import { useStyles, customization } from '../../../Styles';
 import { validateProduct } from '../../../../../../../../store/product/ProductService';
+import { filterableGridColumnsIdsSelector } from '@mui/x-data-grid';
 
 interface PropsType {
   onChange: (key: string, value: string) => void;
@@ -52,15 +53,16 @@ const FormToAdd: FC<PropsType> = ({ onChange, onSelect }) => {
       onChange('price', '0');
     }
     if (isValid) return;
-    if (value.length > 1 && value[0] === '0') {
-      const sliced = value.slice(1);
 
-      setPrice(sliced);
-      onChange('price', sliced);
-    }
-    if (new RegExp(/[0-9]/).test(value)) {
-      setPrice(value);
-      onChange('price', value);
+    if (parseInt(value, 10) > 0) {
+      let finalValue = value;
+
+      if (value[0] === '0') {
+        finalValue = finalValue.slice(1);
+      }
+
+      setPrice(finalValue);
+      onChange('price', finalValue);
     }
   }), []);
 

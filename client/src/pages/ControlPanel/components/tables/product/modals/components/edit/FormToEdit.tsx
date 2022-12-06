@@ -59,16 +59,16 @@ const FormToEdit: FC<PropsType> = ({ onChange, onSelect, product }) => {
       onChange('price', '0');
     }
     if (isValid) return;
-    if (value.length > 1 && value[0] === '0') {
-      const sliced = value.slice(1);
 
-      setPrice('');
-      setPrice(sliced);
-      onChange('price', sliced);
-    }
-    if (new RegExp(/[0-9]/).test(value)) {
-      setPrice(value);
-      onChange('price', value);
+    if (parseInt(value, 10) > 0) {
+      let finalValue = value;
+
+      if (value[0] === '0') {
+        finalValue = finalValue.slice(1);
+      }
+
+      setPrice(finalValue);
+      onChange('price', finalValue);
     }
   }), []);
 
