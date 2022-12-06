@@ -70,7 +70,7 @@ const EditProductModal = () => {
 
   const handleUpload = (event: any) => {
     const file = event.target.files[0];
-    
+
     setImage(URL.createObjectURL(file));
     setProduct((prev) => ({ ...prev, image: file }));
   };
@@ -102,7 +102,7 @@ const EditProductModal = () => {
         id: value,
       }
     }));
-    else if (select === 'type'){
+    else if (select === 'type') {
       setProduct((prev) => ({ ...prev, type: value }));
       fetchType(value).then((data: IType) => {
         const featuresWithValue = data.features.map((feature) => ({ id: feature.id, value: '' }));
@@ -206,7 +206,7 @@ const EditProductModal = () => {
 
             {/* Content Box */}
             <FormToEdit product={product} onChange={handleProductChange} onSelect={handleSelect} />
-            
+
           </Stack>
 
           {/* Features Box */}
@@ -222,7 +222,11 @@ const EditProductModal = () => {
 
           </Box>
 
-          <CloseSubmit onCreate={handleUpdate} onClose={handleClose} />
+          <CloseSubmit
+            onCreate={handleUpdate}
+            onClose={handleClose}
+            submitText={'Редагувати'}
+          />
 
         </Box>
       </Fade>

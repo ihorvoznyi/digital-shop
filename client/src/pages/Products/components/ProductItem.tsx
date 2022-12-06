@@ -3,8 +3,8 @@ import { IProduct } from '../../../store/product/interfaces';
 import { Rating } from "../../../components";
 
 import Format from '../../../utils/Format';
-import './styles/ProductItem.scss';
 import { useNavigate } from 'react-router-dom';
+import './styles/ProductItem.scss';
 
 interface PropsType {
   product: IProduct,
@@ -26,19 +26,24 @@ const ProductItem: FC<PropsType> = ({ product }) => {
     <div className={`product-item ${!product.isActive ? 'disabled' : ''}`} onClick={() => handleClick(product.id)}>
       <div className='product-item__container'>
         <div className='product-item__image'>
-          <img src={product.image ? product.image : imageUrl} alt={'Product'}/>
+          <img src={product.image ? product.image : imageUrl} alt={'Product'} />
         </div>
 
         <div className='product-item__details'>
           <div className='product-item__rating'>
-            <Rating rating={product.rating} fontSize={'24px'}/>
+            <Rating rating={product.rating} fontSize={'24px'} />
           </div>
 
           <div className='product-item__title'>
-            <span>{product.name}</span>
+            <span>
+              {product.name.length <= 20
+                ? product.name
+                : product.name.slice(0, 20) + '...'
+              }
+            </span>
           </div>
 
-          <div className='divider'/>
+          <div className='divider' />
 
           <div className='product-item__price'>
             <span>

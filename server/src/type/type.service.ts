@@ -1,8 +1,6 @@
 import {
-  forwardRef,
   HttpException,
   HttpStatus,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -13,16 +11,14 @@ import { Feature, Type } from '../database/entities';
 import { CreateTypeDto } from './dtos';
 import { FeatureService } from '../feature/feature.service';
 import { IClientType, UpdateTypeDto } from './interfaces';
-import { ProductService } from 'src/product/product.service';
+import { IFeatureValue, IProductFeature } from 'src/feature/interfaces';
 
 @Injectable()
 export class TypeService {
   constructor(
     @InjectRepository(Type)
     private typeRepository: Repository<Type>,
-    private featureService: FeatureService,
-    @Inject(forwardRef(() => ProductService))
-    private productService: ProductService
+    private featureService: FeatureService
   ) {}
 
   async getTypes() {
@@ -125,7 +121,12 @@ export class TypeService {
   async updateType(typeId: string, dto: UpdateTypeDto) {
     const type = await this.typeRepository.findOne({
       where: { id: typeId },
-      relations: ['features', 'products', 'products.features'],
+      relations: [
+        'features',
+        'products',
+        'products.features',
+        'products.features.feature',
+      ],
     });
 
     if (!type) {
@@ -181,14 +182,52 @@ export class TypeService {
 
     const savedType = await this.typeRepository.save(type);
 
-    await this.updateProducts(savedType);
+    if (type.products.length) {
+      await this.updateProducts(savedType);
+    }
 
     return TypeService.generateClientType(savedType);
   }
 
   private async updateProducts(type: Type) {
-    console.log(type.products[0]);
-    console.log(type.features);
+    const testProduct = type.products[0];
+
+    const ids = type.features.map((item) => item.id);
+
+    const notNewIdList = testProduct.features
+      .filter((feature) => ids.includes(feature.feature.id))
+      .map((item) => item.feature.id);
+
+    if (notNewIdList.length === 0) {
+      const newFeatures = ids.map((id) => ({ id, value: '' }));
+
+      await this.featureService.createProductFeatureList({
+        type,
+        product: testProduct,
+        features: newFeatures,
+      });
+
+      return;
+    }
+
+    const toDeleteList = testProduct.features
+      .filter((feature) => !ids.includes(feature.feature.id))
+      .map((item) => item.feature.id);
+
+    // await this.featureService.deleteFeatures(toDeleteList);
+
+    console.log(ids);
+    console.log(toDeleteList);
+
+    // const newProductFeatures: IFeatureValue[] = ids
+    //   .filter((id) => !notNewIdList.includes(id))
+    //   .map((id) => ({ id, value: '' }));
+
+    // await this.featureService.createProductFeatureList({
+    //   type,
+    //   product: testProduct,
+    //   features: newProductFeatures,
+    // });
   }
 
   static generateClientType(type: Type) {

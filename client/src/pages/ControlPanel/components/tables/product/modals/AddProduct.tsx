@@ -159,7 +159,11 @@ const AddProductModal = () => {
             </Stack>
           </Box>
 
-          <CloseSubmit onCreate={handleCreate} onClose={setIsCreateModal} />
+          <CloseSubmit
+            onCreate={handleCreate}
+            onClose={setIsCreateModal}
+            submitText='Створити'
+          />
 
         </Box>
       </Fade>

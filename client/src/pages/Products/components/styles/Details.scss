@@ -43,6 +43,36 @@
     }
   }
 
+  &__description {
+    margin-top: 1rem;
+
+    inline-size: 700px;
+    overflow-wrap: break-word;
+
+    max-height: 250px;
+
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 10px;
+    }
+  
+    /* Track */
+    &::-webkit-scrollbar-track {
+      background: #1D1D1D;
+    }
+  
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: #888;
+    }
+  
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  }
+
   &__divider {
     margin: 1rem 0;
   }
